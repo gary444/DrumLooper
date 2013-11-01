@@ -11,15 +11,15 @@
 
 #include "AppWindow.h"
 #include "AppComponent.h"
-#include "Audio.h"
+//#include "Audio.h"
 
 //#include "RecordButton.h"
 //#include "PlayButton.h"
-//#include "MasterControls.h"
+#include "MasterControls.h"
 //#include "Looper.h"
 //#include "LooperGUI.h"
-//#include "TriggerResponse.h"
+#include "TriggerResponse.h"
 //#include "Metronome.h"
-//#include "Meter.h"
+#include "Meter.h"
 
 #endif

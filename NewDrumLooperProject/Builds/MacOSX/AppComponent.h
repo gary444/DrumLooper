@@ -101,6 +101,7 @@ private:
     FilenameComponent* sampleChooser;
     File* file;
     
+    
     ScopedPointer<Audio> audio;
     //Audio audio;
     

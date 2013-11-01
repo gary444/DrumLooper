@@ -96,6 +96,8 @@ AppComponent::AppComponent()
     //metronome.loadFile(*file);
     
     audio = new Audio;
+    addAndMakeVisible(audio);
+    
     
 }
 AppComponent::~AppComponent()
@@ -114,6 +116,8 @@ void AppComponent::resized()
 {
     //int x = getWidth();
     //int y = getHeight();
+    
+    audio->setBounds(0, 0, 600, 600);
     
     //playButton.setBounds(10, 10, 50, 50);
     //recordButton.setBounds(70, 10, 50, 50);

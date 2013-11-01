@@ -6,12 +6,55 @@
 //
 //
 
+
 #include "Audio.h"
 
-Audio::Audio(){
-    
+#define NUMBER_OF_METERS 2
+
+Audio::Audio()
+{
+    //audio
     audioDeviceManager.initialise(3, 2, 0, true, String::empty, 0);
     audioDeviceManager.addAudioCallback(this);
+    
+    //master
+    masterControls = new MasterControls;
+    addAndMakeVisible(masterControls);
+    
+    //trigger
+    triggerResponse = new TriggerResponse;
+    triggerResponse->setListener(this);
+    addAndMakeVisible(triggerResponse);
+    
+    //meters
+    for (int i = 0; i < NUMBER_OF_METERS; i++) {
+        
+        meter[i].setMeterNumber(i + 1);
+        addAndMakeVisible(&meter[i]);
+    }
+}
+Audio::~Audio(){
+    
+    
+}
+
+//ComponentCallbacks============================================================
+void Audio::resized(){
+    
+    int x = getWidth();
+    int y = getHeight();
+    
+    
+    masterControls->setBounds(x - 50, y - 150, 50 , 150);
+    triggerResponse->setBounds(x - 50, 0, 50, 50);
+    
+    //meters
+    for (int i = 0; i < NUMBER_OF_METERS; i++) {
+        meter[i].setBounds(x - 110, 100 + (i * 20), 110, 20);
+    }
+}
+void Audio::paint (Graphics &g){
+    
 }
 
 //AudioCallbacks================================================================
@@ -33,15 +76,21 @@ void Audio::audioDeviceIOCallback (const float** inputChannelData,
     
     while(numSamples--)
     {
-        //float outputL, outputR = 0.f;
+        float outputL, outputR = 0.f;
         
-        *outL = *inL;
-        *outR = *inR;
+        //obtain values from pointers
+        outputL = *inL;
+        outputR = *inR;
         
-        if (*outL > 0.1) {
-            //std::cout << "level detected";
-        }
+        //pass to meters
+        //meter[0].process(outputL);
+        //meter[1].process(outputR);
         
+        //apply master control
+        *outL = masterControls->processSample(outputL);
+        *outR = masterControls->processSample(outputR);
+    
+        //increment pointers
         inL++;
         inR++;
         outL++;
@@ -54,4 +103,9 @@ void Audio::audioDeviceAboutToStart (AudioIODevice* device){
 }
 void Audio::audioDeviceStopped(){
     
+}
+//Trigger Response Callbacks
+void Audio::triggerReceived  (const int triggerType){
+    
+    std::cout << "trigger recieved\n";
 }

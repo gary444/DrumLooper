@@ -27,6 +27,9 @@
 		882D843160FB5CB905C95A63 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BAB27F0EC9E45CB0F2B455 /* QuartzCore.framework */; };
 		88B3E13A9F29B57C62622E78 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42604195C2EB0B9B5F0E2CC2 /* IOKit.framework */; };
 		95DD198E5C3CC00B5920FFED /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD84E7F25842988E15EC773E /* Carbon.framework */; };
+		B762A033182412B500D7D268 /* Meter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A031182412B500D7D268 /* Meter.cpp */; };
+		B762A036182412C300D7D268 /* TriggerResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A034182412C300D7D268 /* TriggerResponse.cpp */; };
+		B762A039182412D400D7D268 /* MasterControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A037182412D400D7D268 /* MasterControls.cpp */; };
 		B7EB38981823E67000FBCE4E /* AppWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7EB38961823E67000FBCE4E /* AppWindow.cpp */; };
 		B7EB389B1823E78D00FBCE4E /* AppComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7EB38991823E78D00FBCE4E /* AppComponent.cpp */; };
 		B7EB389E1823EA6100FBCE4E /* Audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7EB389C1823EA6000FBCE4E /* Audio.cpp */; };
@@ -663,6 +666,12 @@
 		B6D966BDA0C94D7C9145A6DB /* juce_WeakReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_WeakReference.h; path = ../../JuceLibraryCode/modules/juce_core/memory/juce_WeakReference.h; sourceTree = SOURCE_ROOT; };
 		B6FF4892021E2F1572210BF5 /* juce_win32_SystemTrayIcon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_win32_SystemTrayIcon.cpp; path = ../../JuceLibraryCode/modules/juce_gui_extra/native/juce_win32_SystemTrayIcon.cpp; sourceTree = SOURCE_ROOT; };
 		B72D69CA0BB7952E5B229E2D /* juce_ApplicationCommandManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_ApplicationCommandManager.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/commands/juce_ApplicationCommandManager.h; sourceTree = SOURCE_ROOT; };
+		B762A031182412B500D7D268 /* Meter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Meter.cpp; sourceTree = "<group>"; };
+		B762A032182412B500D7D268 /* Meter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Meter.h; sourceTree = "<group>"; };
+		B762A034182412C300D7D268 /* TriggerResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TriggerResponse.cpp; sourceTree = "<group>"; };
+		B762A035182412C300D7D268 /* TriggerResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriggerResponse.h; sourceTree = "<group>"; };
+		B762A037182412D400D7D268 /* MasterControls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MasterControls.cpp; sourceTree = "<group>"; };
+		B762A038182412D400D7D268 /* MasterControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterControls.h; sourceTree = "<group>"; };
 		B7C896D9FADC82721568BB43 /* juce_TemporaryFile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TemporaryFile.cpp; path = ../../JuceLibraryCode/modules/juce_core/files/juce_TemporaryFile.cpp; sourceTree = SOURCE_ROOT; };
 		B7EB38961823E67000FBCE4E /* AppWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppWindow.cpp; sourceTree = "<group>"; };
 		B7EB38971823E67000FBCE4E /* AppWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppWindow.h; sourceTree = "<group>"; };
@@ -1815,6 +1824,12 @@
 				B7EB389C1823EA6000FBCE4E /* Audio.cpp */,
 				B7EB389D1823EA6100FBCE4E /* Audio.h */,
 				B7EB389F1823F06E00FBCE4E /* DrumLooperHeaders.h */,
+				B762A031182412B500D7D268 /* Meter.cpp */,
+				B762A032182412B500D7D268 /* Meter.h */,
+				B762A034182412C300D7D268 /* TriggerResponse.cpp */,
+				B762A035182412C300D7D268 /* TriggerResponse.h */,
+				B762A037182412D400D7D268 /* MasterControls.cpp */,
+				B762A038182412D400D7D268 /* MasterControls.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -2682,6 +2697,9 @@
 				B7EB38981823E67000FBCE4E /* AppWindow.cpp in Sources */,
 				B7EB389B1823E78D00FBCE4E /* AppComponent.cpp in Sources */,
 				B7EB389E1823EA6100FBCE4E /* Audio.cpp in Sources */,
+				B762A033182412B500D7D268 /* Meter.cpp in Sources */,
+				B762A036182412C300D7D268 /* TriggerResponse.cpp in Sources */,
+				B762A039182412D400D7D268 /* MasterControls.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
