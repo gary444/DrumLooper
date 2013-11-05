@@ -11,7 +11,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MasterControls.h"
-//#include "Looper.h"
+#include "Looper.h"
 #include "TriggerResponse.h"
 #include "Meter.h"
 
@@ -47,6 +47,7 @@ private:
     //Components
     ScopedPointer<TriggerResponse> triggerResponse;
     ScopedPointer<MasterControls> masterControls;
+    ScopedPointer<Looper> looper;
     Meter meter[2];
 };
 

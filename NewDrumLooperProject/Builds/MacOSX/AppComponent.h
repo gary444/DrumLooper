@@ -43,24 +43,13 @@ public:
     //Button Listener
     void buttonClicked (Button* button);
     
-    //triggerResponse callback
-    //void triggerReceived  (const unsigned int triggerType);
-    
     //mouse callbacks
     //void mouseDown (const MouseEvent &event);
     
     //FilenameComponent Callback
     void filenameComponentChanged (FilenameComponent* fileComponentThatHasChanged);
     
-    /*//AudioCallbacks================================================================
-    void audioDeviceIOCallback (const float** inputChannelData,
-                                int numInputChannels,
-                                float** outputChannelData,
-                                int numOutputChannels,
-                                int numSamples);
     
-    void audioDeviceAboutToStart (AudioIODevice* device);
-    void audioDeviceStopped();*/
     
     //MenuBarEnums/Callbacks========================================================
     enum Menus
@@ -88,12 +77,6 @@ private:
     BigInteger noInputChannels;
     BigInteger noOutputChannels;
     //Components
-    //PlayButton playButton;
-    //RecordButton recordButton;
-    //MasterControls masterControls;
-    //Looper looper;
-    //LooperGUI looperGUI;
-    //TriggerResponse triggerResponse;
     
     //metro test
     TextButton metroTestButton;
@@ -103,10 +86,6 @@ private:
     
     
     ScopedPointer<Audio> audio;
-    //Audio audio;
-    
-    //Meters
-    //Meter meters[3];
     
 };
 

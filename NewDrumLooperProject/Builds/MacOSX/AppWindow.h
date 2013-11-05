@@ -10,7 +10,7 @@
 #define __DrumLooper__AppWindow__
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "DrumLooperHeaders.h"
+#include "AppComponent.h"
 
 
 /**

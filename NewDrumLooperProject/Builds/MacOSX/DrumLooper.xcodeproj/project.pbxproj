@@ -30,6 +30,10 @@
 		B762A033182412B500D7D268 /* Meter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A031182412B500D7D268 /* Meter.cpp */; };
 		B762A036182412C300D7D268 /* TriggerResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A034182412C300D7D268 /* TriggerResponse.cpp */; };
 		B762A039182412D400D7D268 /* MasterControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A037182412D400D7D268 /* MasterControls.cpp */; };
+		B7D79624182933D7002A5EBE /* Looper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D79622182933D7002A5EBE /* Looper.cpp */; };
+		B7D796271829349D002A5EBE /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D796251829349D002A5EBE /* Layer.cpp */; };
+		B7D7962A18293705002A5EBE /* LooperGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D7962818293705002A5EBE /* LooperGUI.cpp */; };
+		B7D7962F182963A9002A5EBE /* LayerGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D7962D182963A8002A5EBE /* LayerGUI.cpp */; };
 		B7EB38981823E67000FBCE4E /* AppWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7EB38961823E67000FBCE4E /* AppWindow.cpp */; };
 		B7EB389B1823E78D00FBCE4E /* AppComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7EB38991823E78D00FBCE4E /* AppComponent.cpp */; };
 		B7EB389E1823EA6100FBCE4E /* Audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7EB389C1823EA6000FBCE4E /* Audio.cpp */; };
@@ -673,13 +677,22 @@
 		B762A037182412D400D7D268 /* MasterControls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MasterControls.cpp; sourceTree = "<group>"; };
 		B762A038182412D400D7D268 /* MasterControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterControls.h; sourceTree = "<group>"; };
 		B7C896D9FADC82721568BB43 /* juce_TemporaryFile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TemporaryFile.cpp; path = ../../JuceLibraryCode/modules/juce_core/files/juce_TemporaryFile.cpp; sourceTree = SOURCE_ROOT; };
+		B7D79622182933D7002A5EBE /* Looper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Looper.cpp; sourceTree = "<group>"; };
+		B7D79623182933D7002A5EBE /* Looper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Looper.h; sourceTree = "<group>"; };
+		B7D796251829349D002A5EBE /* Layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Layer.cpp; sourceTree = "<group>"; };
+		B7D796261829349D002A5EBE /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
+		B7D7962818293705002A5EBE /* LooperGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LooperGUI.cpp; sourceTree = "<group>"; };
+		B7D7962918293705002A5EBE /* LooperGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LooperGUI.h; sourceTree = "<group>"; };
+		B7D7962B18293797002A5EBE /* PlayButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayButton.h; sourceTree = "<group>"; };
+		B7D7962C182937A5002A5EBE /* RecordButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecordButton.h; sourceTree = "<group>"; };
+		B7D7962D182963A8002A5EBE /* LayerGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LayerGUI.cpp; sourceTree = "<group>"; };
+		B7D7962E182963A9002A5EBE /* LayerGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerGUI.h; sourceTree = "<group>"; };
 		B7EB38961823E67000FBCE4E /* AppWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppWindow.cpp; sourceTree = "<group>"; };
 		B7EB38971823E67000FBCE4E /* AppWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppWindow.h; sourceTree = "<group>"; };
 		B7EB38991823E78D00FBCE4E /* AppComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppComponent.cpp; sourceTree = "<group>"; };
 		B7EB389A1823E78D00FBCE4E /* AppComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppComponent.h; sourceTree = "<group>"; };
 		B7EB389C1823EA6000FBCE4E /* Audio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Audio.cpp; sourceTree = "<group>"; };
 		B7EB389D1823EA6100FBCE4E /* Audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Audio.h; sourceTree = "<group>"; };
-		B7EB389F1823F06E00FBCE4E /* DrumLooperHeaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrumLooperHeaders.h; sourceTree = "<group>"; };
 		B8BE686BBF45445B183D1DCD /* juce_OpenGL_android.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_OpenGL_android.h; path = ../../JuceLibraryCode/modules/juce_opengl/native/juce_OpenGL_android.h; sourceTree = SOURCE_ROOT; };
 		B924C8B2F2AF36ACAE8A7504 /* juce_Drawable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_Drawable.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/drawables/juce_Drawable.cpp; sourceTree = SOURCE_ROOT; };
 		B9984874DB90E20BA5A13765 /* juce_Logger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_Logger.h; path = ../../JuceLibraryCode/modules/juce_core/logging/juce_Logger.h; sourceTree = SOURCE_ROOT; };
@@ -1823,13 +1836,22 @@
 				B7EB389A1823E78D00FBCE4E /* AppComponent.h */,
 				B7EB389C1823EA6000FBCE4E /* Audio.cpp */,
 				B7EB389D1823EA6100FBCE4E /* Audio.h */,
-				B7EB389F1823F06E00FBCE4E /* DrumLooperHeaders.h */,
 				B762A031182412B500D7D268 /* Meter.cpp */,
 				B762A032182412B500D7D268 /* Meter.h */,
 				B762A034182412C300D7D268 /* TriggerResponse.cpp */,
 				B762A035182412C300D7D268 /* TriggerResponse.h */,
 				B762A037182412D400D7D268 /* MasterControls.cpp */,
 				B762A038182412D400D7D268 /* MasterControls.h */,
+				B7D79622182933D7002A5EBE /* Looper.cpp */,
+				B7D79623182933D7002A5EBE /* Looper.h */,
+				B7D796251829349D002A5EBE /* Layer.cpp */,
+				B7D796261829349D002A5EBE /* Layer.h */,
+				B7D7962818293705002A5EBE /* LooperGUI.cpp */,
+				B7D7962918293705002A5EBE /* LooperGUI.h */,
+				B7D7962B18293797002A5EBE /* PlayButton.h */,
+				B7D7962C182937A5002A5EBE /* RecordButton.h */,
+				B7D7962D182963A8002A5EBE /* LayerGUI.cpp */,
+				B7D7962E182963A9002A5EBE /* LayerGUI.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -2700,6 +2722,10 @@
 				B762A033182412B500D7D268 /* Meter.cpp in Sources */,
 				B762A036182412C300D7D268 /* TriggerResponse.cpp in Sources */,
 				B762A039182412D400D7D268 /* MasterControls.cpp in Sources */,
+				B7D79624182933D7002A5EBE /* Looper.cpp in Sources */,
+				B7D796271829349D002A5EBE /* Layer.cpp in Sources */,
+				B7D7962A18293705002A5EBE /* LooperGUI.cpp in Sources */,
+				B7D7962F182963A9002A5EBE /* LayerGUI.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

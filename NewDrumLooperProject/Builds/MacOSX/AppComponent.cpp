@@ -13,17 +13,6 @@
 
 AppComponent::AppComponent()
 {
-    //playButton.addListener(this);
-    //addAndMakeVisible(&playButton);
-    
-    //recordButton.addListener(this);
-    //addAndMakeVisible(&recordButton);
-    
-    //meters
-    //for (int i = 0; i < NUMBER_OF_METERS; i++) {
-     //   meters[i].setMeterNumber(i + 1);
-       // addAndMakeVisible(&meters[i]);
-    //}
     
     //metro test================================================
     //metroTestButton.setButtonText("Metro Test");
@@ -44,11 +33,6 @@ AppComponent::AppComponent()
     sampleChooser->addListener (this);
     sampleChooser->setBrowseButtonText ("...");*/
     //end of metro test================================================
-    
-    ///addAndMakeVisible(&masterControls);
-    
-    //addAndMakeVisible(&triggerResponse);
-    //triggerResponse.setListener(this);
     
     //audio setup================================================================================
     
@@ -80,11 +64,6 @@ AppComponent::AppComponent()
     std::cout << s;
 */    
     
-    //looper GUI================================================================================
-    
-    //looper.setGUIReference(&looperGUI);
-    //looper.setListener(&looperGUI);
-    //addAndMakeVisible(&looperGUI);
     
     
     //load metronome file
@@ -119,23 +98,11 @@ void AppComponent::resized()
     
     audio->setBounds(0, 0, 600, 600);
     
-    //playButton.setBounds(10, 10, 50, 50);
-    //recordButton.setBounds(70, 10, 50, 50);
-    //masterControls.setBounds(10, 80, 50, 130);
-    
-    //looperGUI.setBounds(10, 300, 500, 500);
-    
-    //triggerResponse.setBounds(500, 10, 100, 100);
-    
     
     //metroTestButton.setBounds(200, 10, 100, 30);
     
     //sampleChooser->setBounds(200, 50, 100, 30);
     
-    //meters
-    //for (int i = 0; i < NUMBER_OF_METERS; i++) {
-    //    meters[i].setBounds(200, 100 + (i * 20), 110, 20);
-    //}
 }
 
 void AppComponent::paint (Graphics &g)
@@ -143,22 +110,10 @@ void AppComponent::paint (Graphics &g)
     
 }
 
-//MidiInputCallback=============================================================
-
 void AppComponent::buttonClicked (Button* button)
 {
     /*
-    if (button == &playButton)
-    {
-        looper.setPlayState (!looper.getPlayState());
-        playButton.setToggleState (looper.getPlayState(), false);
-    }
-    else if (button == &recordButton)
-    {
-        looper.setRecordState (!looper.getRecordState());
-        recordButton.setToggleState (looper.getRecordState(), false);
-    }
-    else if (button == &metroTestButton)
+    if (button == &metroTestButton)
     {
         std::cout << "metro test\n";
         metronome.tick();
@@ -166,69 +121,6 @@ void AppComponent::buttonClicked (Button* button)
     }
      */
 }
-
-/*void AppComponent::triggerReceived  (const unsigned int triggerType)
-{
-    std::cout << "trigger type " << triggerType << " receieved" << std::endl;
-}*/
-
-/*//AudioCallbacks================================================================
-void AppComponent::audioDeviceIOCallback (const float** inputChannelData,
-                                          int numInputChannels,
-                                          float** outputChannelData,
-                                          int numOutputChannels,
-                                          int numSamples)
-{
-    //3 input
-    const float *inL, *inR, *inTrigger;
-    float *outL, *outR;
-    
-    inL = inputChannelData[0];
-    inR = inputChannelData[1];
-    inTrigger = inputChannelData[2];
-    outL = outputChannelData[0];
-    outR = outputChannelData[1];
-    
-    while(numSamples--)
-    {
-        float outputL, outputR = 0.f;
-        
-        //pass inputs to meters
-        //meters[0].process(*inL);
-        //meters[1].process(*inR);
-        //meters[2].process(*inTrigger);
-        
-        
-       // outputL = looper.processSample (*inL, 0);
-        //outputR = looper.processSample(*inR, 1);
-        
-        //pass channel 3 input to triggerResponse class
-        //triggerResponse.processInput(*inTrigger);
-        
-        //outputL += metronome.getNextSample(0);
-        //outputR += metronome.getNextSample(1);
-        
-        //*outL = masterControls.processSample(outputL);
-        //*outR = masterControls.processSample(outputR);
-        
-        inL++;
-        inR++;
-        inTrigger++;
-        outL++;
-        outR++;
-    }
-    
-}
-
-void AppComponent::audioDeviceAboutToStart (AudioIODevice* device)
-{
-    
-}
-
-void AppComponent::audioDeviceStopped()
-{
-    
-}*/
 
 //void AppComponent::mouseDown (const MouseEvent &event)
 //{

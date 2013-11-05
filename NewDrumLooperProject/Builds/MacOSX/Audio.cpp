@@ -32,6 +32,12 @@ Audio::Audio()
         meter[i].setMeterNumber(i + 1);
         addAndMakeVisible(&meter[i]);
     }
+    
+    //looper
+    looper = new Looper;
+    addAndMakeVisible(looper);
+    
+    
 }
 Audio::~Audio(){
     
@@ -47,6 +53,7 @@ void Audio::resized(){
     
     masterControls->setBounds(x - 50, y - 150, 50 , 150);
     triggerResponse->setBounds(x - 50, 0, 50, 50);
+    looper->setBoundsRelative(0.0, 0.0, 0.8, 1.0);
     
     //meters
     for (int i = 0; i < NUMBER_OF_METERS; i++) {
@@ -83,8 +90,12 @@ void Audio::audioDeviceIOCallback (const float** inputChannelData,
         outputR = *inR;
         
         //pass to meters
-        //meter[0].process(outputL);
-        //meter[1].process(outputR);
+        meter[0].process(outputL);
+        meter[1].process(outputR);
+        
+        //pass to looper
+        outputL = looper->processSample(outputL, 0);
+        outputR = looper->processSample(outputR, 1);
         
         //apply master control
         *outL = masterControls->processSample(outputL);

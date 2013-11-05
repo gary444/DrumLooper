@@ -16,26 +16,30 @@ Meter::Meter(){
     oldMaxValue = 0.f;
     meterNumber = 0;
     
-    meterSlider.setSliderStyle(Slider::LinearBar);
-    meterSlider.setTextBoxIsEditable(false);
-    meterSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-    meterSlider.setColour(Slider::backgroundColourId, Colours::whitesmoke);
-    meterSlider.setValue(0.0);
-    addAndMakeVisible(&meterSlider);
+    meterSlider = new Slider;
+    meterSlider->setSliderStyle(Slider::LinearBar);
+    meterSlider->setTextBoxIsEditable(false);
+    meterSlider->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+    meterSlider->setColour(Slider::backgroundColourId, Colours::whitesmoke);
+    meterSlider->setValue(0.0);
+    addAndMakeVisible(meterSlider);
     
-    meterLabel.setEditable(false);
-    meterLabel.setText("0", dontSendNotification);
-    addAndMakeVisible(&meterLabel);
+    meterLabel = new Label;
+    meterLabel->setEditable(false);
+    meterLabel->setText("0", dontSendNotification);
+    addAndMakeVisible(meterLabel);
 }
 Meter::~Meter(){
     
+    meterLabel = nullptr;
+    meterSlider = nullptr;
 }
 
 //ComponentCallbacks============================================================
 void Meter::resized(){
     
-    meterLabel.setBounds(0, 0, 30, 20);
-    meterSlider.setBounds(35, 0, 80, 10);
+    meterLabel->setBounds(0, 0, 30, 20);
+    meterSlider->setBounds(35, 0, 80, 10);
 }
 void Meter::paint(Graphics &g){
     
@@ -43,8 +47,8 @@ void Meter::paint(Graphics &g){
 
 void Meter::process(const float inputValue){
     
-    float input;
-    float absInput;
+    float input = 0.f;
+    float absInput = 0.f;
     
     
     
@@ -74,11 +78,14 @@ void Meter::process(const float inputValue){
             maxValue = (maxValue * 0.1) + (oldMaxValue * 0.9);
         }
         
+        
+        
         //this part courtesy of Julian Storer at http://www.juce.com/api/classMessageManagerLock.html
         MessageManagerLock mml (Thread::getCurrentThread());
         if (! mml.lockWasGained())
-            return;
-        meterSlider.setValue(maxValue);
+          return;
+        //**problem here**//
+        //meterSlider->setValue(maxValue, dontSendNotification);
         
         //record peak
         oldMaxValue = maxValue;
@@ -94,5 +101,5 @@ void Meter::setMeterNumber(const int newNumber){
     
     String labelText;
     labelText << newNumber;
-    meterLabel.setText(labelText, dontSendNotification);
+    meterLabel->setText(labelText, dontSendNotification);
 }
