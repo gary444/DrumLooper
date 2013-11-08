@@ -72,6 +72,14 @@ public:
      */
     float getReaderPosition ();
     
+    void trigger();
+    
+    void startLoop();
+    
+    void endLoop();
+    
+    void setMode(int newModeIndex);
+    
     /**
      Processes the audio sample by sample.
      */
@@ -80,8 +88,6 @@ public:
     //set sample rate in order to calculate correct tempos
     void setSampleRate(const int newSampleRate);
     
-    //sets gain of specified layer
-    void setLayerGain(int layerIndex, float newGain);
     
     
     
@@ -100,6 +106,7 @@ private:
     unsigned int bufferPosition;
     int test;
     int sampleRate;
+    int modeIndex;
     
     //layers
     

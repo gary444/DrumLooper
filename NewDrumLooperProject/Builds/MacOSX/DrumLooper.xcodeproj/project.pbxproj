@@ -30,6 +30,8 @@
 		B762A033182412B500D7D268 /* Meter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A031182412B500D7D268 /* Meter.cpp */; };
 		B762A036182412C300D7D268 /* TriggerResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A034182412C300D7D268 /* TriggerResponse.cpp */; };
 		B762A039182412D400D7D268 /* MasterControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A037182412D400D7D268 /* MasterControls.cpp */; };
+		B7D336C1182D1DB100D48688 /* ModeSelecter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D336BF182D1DB100D48688 /* ModeSelecter.cpp */; };
+		B7D336C4182D1ED300D48688 /* ModeButtons.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D336C2182D1ED300D48688 /* ModeButtons.cpp */; };
 		B7D79624182933D7002A5EBE /* Looper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D79622182933D7002A5EBE /* Looper.cpp */; };
 		B7D796271829349D002A5EBE /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D796251829349D002A5EBE /* Layer.cpp */; };
 		B7D7962A18293705002A5EBE /* LooperGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D7962818293705002A5EBE /* LooperGUI.cpp */; };
@@ -677,6 +679,10 @@
 		B762A037182412D400D7D268 /* MasterControls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MasterControls.cpp; sourceTree = "<group>"; };
 		B762A038182412D400D7D268 /* MasterControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterControls.h; sourceTree = "<group>"; };
 		B7C896D9FADC82721568BB43 /* juce_TemporaryFile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TemporaryFile.cpp; path = ../../JuceLibraryCode/modules/juce_core/files/juce_TemporaryFile.cpp; sourceTree = SOURCE_ROOT; };
+		B7D336BF182D1DB100D48688 /* ModeSelecter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModeSelecter.cpp; sourceTree = "<group>"; };
+		B7D336C0182D1DB100D48688 /* ModeSelecter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModeSelecter.h; sourceTree = "<group>"; };
+		B7D336C2182D1ED300D48688 /* ModeButtons.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModeButtons.cpp; sourceTree = "<group>"; };
+		B7D336C3182D1ED300D48688 /* ModeButtons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModeButtons.h; sourceTree = "<group>"; };
 		B7D79622182933D7002A5EBE /* Looper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Looper.cpp; sourceTree = "<group>"; };
 		B7D79623182933D7002A5EBE /* Looper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Looper.h; sourceTree = "<group>"; };
 		B7D796251829349D002A5EBE /* Layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Layer.cpp; sourceTree = "<group>"; };
@@ -1829,29 +1835,9 @@
 		79919CBBF676DB672C0A55B7 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				0C5D79FA8CE9C9D622B583ED /* Main.cpp */,
-				B7EB38961823E67000FBCE4E /* AppWindow.cpp */,
-				B7EB38971823E67000FBCE4E /* AppWindow.h */,
-				B7EB38991823E78D00FBCE4E /* AppComponent.cpp */,
-				B7EB389A1823E78D00FBCE4E /* AppComponent.h */,
-				B7EB389C1823EA6000FBCE4E /* Audio.cpp */,
-				B7EB389D1823EA6100FBCE4E /* Audio.h */,
-				B762A031182412B500D7D268 /* Meter.cpp */,
-				B762A032182412B500D7D268 /* Meter.h */,
-				B762A034182412C300D7D268 /* TriggerResponse.cpp */,
-				B762A035182412C300D7D268 /* TriggerResponse.h */,
-				B762A037182412D400D7D268 /* MasterControls.cpp */,
-				B762A038182412D400D7D268 /* MasterControls.h */,
-				B7D79622182933D7002A5EBE /* Looper.cpp */,
-				B7D79623182933D7002A5EBE /* Looper.h */,
-				B7D796251829349D002A5EBE /* Layer.cpp */,
-				B7D796261829349D002A5EBE /* Layer.h */,
-				B7D7962818293705002A5EBE /* LooperGUI.cpp */,
-				B7D7962918293705002A5EBE /* LooperGUI.h */,
-				B7D7962B18293797002A5EBE /* PlayButton.h */,
-				B7D7962C182937A5002A5EBE /* RecordButton.h */,
-				B7D7962D182963A8002A5EBE /* LayerGUI.cpp */,
-				B7D7962E182963A9002A5EBE /* LayerGUI.h */,
+				B7D336BE182D192700D48688 /* AudioIO */,
+				B7D336BB182D18AB00D48688 /* Framework */,
+				B7D336BC182D18C000D48688 /* Looper */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -2224,6 +2210,70 @@
 				5AB88B63B03587B73CB426A4 /* juce_PixelFormats.h */,
 			);
 			name = colour;
+			sourceTree = "<group>";
+		};
+		B7D336BB182D18AB00D48688 /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				0C5D79FA8CE9C9D622B583ED /* Main.cpp */,
+				B7EB38961823E67000FBCE4E /* AppWindow.cpp */,
+				B7EB38971823E67000FBCE4E /* AppWindow.h */,
+				B7EB38991823E78D00FBCE4E /* AppComponent.cpp */,
+				B7EB389A1823E78D00FBCE4E /* AppComponent.h */,
+			);
+			name = Framework;
+			sourceTree = "<group>";
+		};
+		B7D336BC182D18C000D48688 /* Looper */ = {
+			isa = PBXGroup;
+			children = (
+				B7D79622182933D7002A5EBE /* Looper.cpp */,
+				B7D79623182933D7002A5EBE /* Looper.h */,
+				B7D796251829349D002A5EBE /* Layer.cpp */,
+				B7D796261829349D002A5EBE /* Layer.h */,
+				B7D7962818293705002A5EBE /* LooperGUI.cpp */,
+				B7D7962918293705002A5EBE /* LooperGUI.h */,
+				B7D7962D182963A8002A5EBE /* LayerGUI.cpp */,
+				B7D7962E182963A9002A5EBE /* LayerGUI.h */,
+				B7D336BD182D18F700D48688 /* Buttons */,
+			);
+			name = Looper;
+			sourceTree = "<group>";
+		};
+		B7D336BD182D18F700D48688 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				B7D7962B18293797002A5EBE /* PlayButton.h */,
+				B7D7962C182937A5002A5EBE /* RecordButton.h */,
+			);
+			name = Buttons;
+			sourceTree = "<group>";
+		};
+		B7D336BE182D192700D48688 /* AudioIO */ = {
+			isa = PBXGroup;
+			children = (
+				B7EB389C1823EA6000FBCE4E /* Audio.cpp */,
+				B7EB389D1823EA6100FBCE4E /* Audio.h */,
+				B762A031182412B500D7D268 /* Meter.cpp */,
+				B762A032182412B500D7D268 /* Meter.h */,
+				B762A034182412C300D7D268 /* TriggerResponse.cpp */,
+				B762A035182412C300D7D268 /* TriggerResponse.h */,
+				B762A037182412D400D7D268 /* MasterControls.cpp */,
+				B762A038182412D400D7D268 /* MasterControls.h */,
+				B7D336C8182D2E6D00D48688 /* ModeSelection */,
+			);
+			name = AudioIO;
+			sourceTree = "<group>";
+		};
+		B7D336C8182D2E6D00D48688 /* ModeSelection */ = {
+			isa = PBXGroup;
+			children = (
+				B7D336BF182D1DB100D48688 /* ModeSelecter.cpp */,
+				B7D336C0182D1DB100D48688 /* ModeSelecter.h */,
+				B7D336C2182D1ED300D48688 /* ModeButtons.cpp */,
+				B7D336C3182D1ED300D48688 /* ModeButtons.h */,
+			);
+			name = ModeSelection;
 			sourceTree = "<group>";
 		};
 		BB30214AB09B4B97A0A1FB72 /* Resources */ = {
@@ -2726,6 +2776,8 @@
 				B7D796271829349D002A5EBE /* Layer.cpp in Sources */,
 				B7D7962A18293705002A5EBE /* LooperGUI.cpp in Sources */,
 				B7D7962F182963A9002A5EBE /* LayerGUI.cpp in Sources */,
+				B7D336C1182D1DB100D48688 /* ModeSelecter.cpp in Sources */,
+				B7D336C4182D1ED300D48688 /* ModeButtons.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -56,7 +56,7 @@ private:
     
     Listener* listener;
     
-    float threshold;
+    float triggerThreshold;
     float noiseThreshold;
     int sampleRate;
     float holdTime;

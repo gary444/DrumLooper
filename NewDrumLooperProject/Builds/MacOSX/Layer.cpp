@@ -19,7 +19,7 @@ Layer::Layer()
     //audioSampleBuffer->clear();
 }
 
-Layer::Layer(int newLayerIndex, float newLayerGain)
+Layer::Layer(int newLayerIndex, unsigned int newBufferSize, float newLayerGain)
 {
     layerIndex = newLayerIndex;
     
@@ -33,10 +33,10 @@ Layer::Layer(int newLayerIndex, float newLayerGain)
     }
     
     
-    bufferSize = 352800;
+    //bufferSize = newBufferSize;
     
     //create and init buffer
-    audioSampleBuffer = new AudioSampleBuffer(2, bufferSize);
+    audioSampleBuffer = new AudioSampleBuffer(2, newBufferSize);
 }
 
 Layer::~Layer()
@@ -93,12 +93,18 @@ void Layer::setLayerGain(float newGain){
     
 }
 
-void Layer::setBufferSize(int newBufferSize){
+//void Layer::setBufferSize(int newBufferSize){
     
-    sharedMemory.enter();//is this needed?
-    bufferSize = newBufferSize;
-    sharedMemory.exit();
-}
+    //sharedMemory.enter();//is this needed?
+    //bufferSize = newBufferSize;
+    //sharedMemory.exit();
+//}
+
+
+//void Layer::setSize(unsigned int newSize){
+//    
+//    audioSampleBuffer->setSize(2, newSize, true);
+//}
 
 int Layer::getLayerIndex(){
     

@@ -23,7 +23,7 @@ DocumentWindow(
     //AppComponent*
     appComponent = new AppComponent();
     setContentOwned(appComponent, false);
-    setMenuBar (appComponent);
+    //setMenuBar (appComponent);
 }
 
 AppWindow::~AppWindow()

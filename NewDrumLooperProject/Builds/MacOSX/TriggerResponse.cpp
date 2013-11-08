@@ -15,7 +15,7 @@ TriggerResponse::TriggerResponse(){
     holdTime = 0.1;
     holdTimeInSamples = static_cast<int>(sampleRate * holdTime);
     
-    threshold = 0.5;
+    triggerThreshold = 0.5;
     noiseThreshold = 0.05;
     
     testButton.addListener(this);
@@ -38,8 +38,6 @@ void TriggerResponse::buttonClicked(Button* button){
     
     if (button == &testButton)
     {
-        std::cout << "TEST" << std::endl;
-        
         listener->triggerReceived(1);
     }
     
@@ -67,7 +65,7 @@ void TriggerResponse::processInput(float input){
     if (input > noiseThreshold) {
         
         //compare to threshold value
-        if (input > threshold) {
+        if (input > triggerThreshold) {
             
             //alert listener if trigger is detected
             listener->triggerReceived(1);

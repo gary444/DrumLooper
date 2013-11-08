@@ -13,6 +13,8 @@
 
 Audio::Audio()
 {
+    modeIndex = 0;
+    
     //audio
     audioDeviceManager.initialise(3, 2, 0, true, String::empty, 0);
     audioDeviceManager.addAudioCallback(this);
@@ -26,12 +28,18 @@ Audio::Audio()
     triggerResponse->setListener(this);
     addAndMakeVisible(triggerResponse);
     
+    //mode selecter
+    modeSelecter = new ModeSelecter;
+    modeSelecter->addListener(this);
+    addAndMakeVisible(modeSelecter);
+    
+    
     //meters
-    for (int i = 0; i < NUMBER_OF_METERS; i++) {
-        
-        meter[i].setMeterNumber(i + 1);
-        addAndMakeVisible(&meter[i]);
-    }
+//    for (int i = 0; i < NUMBER_OF_METERS; i++) {
+//        
+//        meter[i].setMeterNumber(i + 1);
+//        addAndMakeVisible(&meter[i]);
+//    }
     
     //looper
     looper = new Looper;
@@ -55,11 +63,12 @@ void Audio::resized(){
     masterControls->setBounds(x - 50, y - 150, 50 , 150);
     triggerResponse->setBounds(x - 50, 0, 50, 50);
     looper->setBoundsRelative(0.0, 0.0, 0.8, 1.0);
+    modeSelecter->setBoundsRelative(0.8, 0.1, 0.2, 0.5);
     
     //meters
-    for (int i = 0; i < NUMBER_OF_METERS; i++) {
-        meter[i].setBounds(x - 110, 100 + (i * 20), 110, 20);
-    }
+//    for (int i = 0; i < NUMBER_OF_METERS; i++) {
+//        meter[i].setBounds(x - 110, 100 + (i * 20), 110, 20);
+//    }
 }
 void Audio::paint (Graphics &g){
     
@@ -90,9 +99,9 @@ void Audio::audioDeviceIOCallback (const float** inputChannelData,
         outputL = *inL;
         outputR = *inR;
         
-        //pass to meters
-        meter[0].process(outputL);
-        meter[1].process(outputR);
+//        //pass to meters
+//        meter[0].process(outputL);
+//        meter[1].process(outputR);
         
         //pass to looper
         outputL = looper->processSample(outputL, 0);
@@ -119,5 +128,20 @@ void Audio::audioDeviceStopped(){
 //Trigger Response Callbacks
 void Audio::triggerReceived  (const int triggerType){
     
-    std::cout << "trigger recieved\n";
+    //std::cout << "trigger recieved\n";
+    
+    //first mode
+    if (modeIndex == 0) {
+        looper->trigger();
+    }
+    
+}
+
+//mode selecter callbacks
+void Audio::newModeSelected(int newModeIndex){
+    
+    std::cout << "new mode: " << newModeIndex + 1 << std::endl;
+    
+    modeIndex = newModeIndex;
+    looper->setMode(newModeIndex);
 }

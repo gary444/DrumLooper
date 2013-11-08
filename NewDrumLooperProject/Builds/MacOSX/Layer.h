@@ -17,7 +17,7 @@ class Layer
 public:
     Layer();
     
-    Layer(int newLayerIndex, float newLayerGain);
+    Layer(int newLayerIndex, unsigned int newBufferSize, float newLayerGain);
     
     ~Layer();
     
@@ -29,7 +29,8 @@ public:
     
     void setLayerGain(float newGain);
     
-    void setBufferSize(int newBufferSize);
+    //void setBufferSize(int newBufferSize);
+    //void setSize(unsigned int newSize);
     
     int getLayerIndex();
     
@@ -39,7 +40,7 @@ public:
     
 private:
     //Audio data
-    int bufferSize; //constant (90 sec = 3969000)
+    unsigned int bufferSize; //constant (90 sec = 3969000)
     int layerIndex;
     float layerGain;
     

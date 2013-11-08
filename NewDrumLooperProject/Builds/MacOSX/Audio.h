@@ -14,10 +14,12 @@
 #include "Looper.h"
 #include "TriggerResponse.h"
 #include "Meter.h"
+#include "ModeSelecter.h"
 
 class Audio : public AudioIODeviceCallback,
                 public Component,
-                public TriggerResponse::Listener
+                public TriggerResponse::Listener,
+ModeSelecter::Listener
 {
 public:
     
@@ -41,6 +43,9 @@ public:
     //Trigger Response Callbacks
     void triggerReceived  (const int triggerType);
     
+    //mode selecter callbacks
+    void newModeSelected(int newModeIndex);
+    
 private:
     AudioDeviceManager audioDeviceManager;
     
@@ -48,7 +53,10 @@ private:
     ScopedPointer<TriggerResponse> triggerResponse;
     ScopedPointer<MasterControls> masterControls;
     ScopedPointer<Looper> looper;
-    Meter meter[2];
+    ScopedPointer<ModeSelecter> modeSelecter;
+    //Meter meter[2];
+    
+    int modeIndex;
 };
 
 #endif /* defined(__DrumLooper__Audio__) */
