@@ -31,8 +31,11 @@ Meter::Meter(){
 }
 Meter::~Meter(){
     
-    meterLabel = nullptr;
-    meterSlider = nullptr;
+    //meterLabel = nullptr;
+    //meterSlider = nullptr;
+    
+    
+    std::cout << "meter dtor\n";
 }
 
 //ComponentCallbacks============================================================

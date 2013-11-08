@@ -88,6 +88,9 @@ AppComponent::~AppComponent()
     //if (file != nullptr)
     //  delete file;
     
+    
+    std::cout << "AppComponent dtor\n";
+    
 }
 
 //ComponentCallbacks============================================================
@@ -96,7 +99,7 @@ void AppComponent::resized()
     //int x = getWidth();
     //int y = getHeight();
     
-    audio->setBounds(0, 0, 600, 600);
+    audio->setBounds(0, 0, 700, 600);
     
     
     //metroTestButton.setBounds(200, 10, 100, 30);

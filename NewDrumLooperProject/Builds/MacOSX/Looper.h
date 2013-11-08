@@ -45,7 +45,7 @@ public:
     //looperGUI listener callbacks
     void playButtonToggled();
     void recordButtonToggled();
-    void layerGainChanged(const int layerNumber, float newGain);
+    void layerGainChanged(const int layerIndex, float newGain);
     
     /**
      Starts or stops playback of the looper
@@ -81,32 +81,31 @@ public:
     void setSampleRate(const int newSampleRate);
     
     //sets gain of specified layer
-    void setLayerGain(int layerNum, float newGain);
+    void setLayerGain(int layerIndex, float newGain);
     
     
     
     
 private:
+    
+    
     //Shared data
     Atomic<int> recordState;        //these are atomics which means they can be read/written
     Atomic<int> playState;          //in different threads without a CriticalSection
     
     CriticalSection sharedMemory;
     
-    //Listener* listener;
-    
     //Audio data
     int bufferSize;
     unsigned int bufferPosition;
     int test;
     int sampleRate;
-    //float audioSampleBuffer[bufferSize];
-    //AudioSampleBuffer* audioSampleBuffer;
     
     //layers
-    Layer layer[8];
+    
+    OwnedArray<Layer> layers;
+    
     int currentLayer;
-    //std::vector<Layer> layers;
     
     //gui
     ScopedPointer<LooperGUI> looperGUI;

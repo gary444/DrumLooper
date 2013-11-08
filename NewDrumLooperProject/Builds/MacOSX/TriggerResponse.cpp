@@ -24,6 +24,8 @@ TriggerResponse::TriggerResponse(){
 }
 TriggerResponse::~TriggerResponse(){
     
+    
+    std::cout << "trigger response dtor\n";
 }
 
 void TriggerResponse::resized(){

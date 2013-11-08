@@ -22,14 +22,12 @@ Looper::Looper()
     addAndMakeVisible(looperGUI);
     
     
-    //layers.resize(1);
-    
     bufferSize  = 352800;
     
-    for (int i = 0; i < 8; i++) {
-        layer[i].setLayerId(i);
-        layer[i].setBufferSize(bufferSize);
-    }
+    //for (int i = 0; i < 8; i++) {
+    //    layer[i].setLayerIndex(i);
+    //    layer[i].setBufferSize(bufferSize);
+    //}
     
     currentLayer = 0;
     
@@ -39,7 +37,8 @@ Looper::Looper()
 
 Looper::~Looper()
 {
-    //delete audioSampleBuffer;
+
+    std::cout << "Looper dtor\n";
 }
 
 //ComponentCallbacks============================================================
@@ -56,17 +55,32 @@ void Looper::playButtonToggled(){
     
     setPlayState(!getPlayState());
     
+    //add a first layer if looper started
+    if (layers.size() == 0) {
+        
+        Layer* newLayer = new Layer(0, 0.8);
+        layers.add(newLayer);
+        layers[0]->signal();
+        
+    }
+    
 }
 void Looper::recordButtonToggled(){
     
     setRecordState(!getRecordState());
 }
 
-void Looper::layerGainChanged(const int layerNumber, float newGain){
+void Looper::layerGainChanged(const int layerIndex, float newGain){
     
-    //subtract 1 from layer number to translate to 'computer nos'
-    layer[layerNumber - 1].setLayerGain(newGain);
-    std::cout << "new gain = " << newGain << " for layer = " << layerNumber << "\n";
+    //layer[layerIndex].setLayerGain(newGain);
+    
+    //check layerIndex is valid before processing request
+    if (layerIndex < currentLayer) {
+        layers[layerIndex]->setLayerGain(newGain);
+    }
+    
+    
+    std::cout << "new gain = " << newGain << " for layer = " << layerIndex + 1 << "\n";
 }
 
 
@@ -79,7 +93,6 @@ void Looper::setPlayState (const bool newState)
 bool Looper::getPlayState () const
 {
     return playState.get();
-    
 }
 
 void Looper::setRecordState (const bool newState)
@@ -126,7 +139,8 @@ float Looper::processSample (float input, int channel)
     {
         //read from all preceding layers (from 0 to current layer -1)
         for (int i = 0; i < currentLayer; i++) {
-            output += layer[i].getSampleData(0, bufferPosition);
+            //output += layer[i].getSampleData(channel, bufferPosition);
+            output += layers[i]->getSampleData(channel, bufferPosition);
         }
         
         //click 16 times each bufferLength
@@ -136,16 +150,18 @@ float Looper::processSample (float input, int channel)
             //metronome.tick();
         }
         
-        
-        
         //record
         if (recordState.get() == true){
             
             //if recording, write input ONLY to current layer
-            layer[currentLayer].setSampleData(0, bufferPosition, input);
+            //layer[currentLayer].setSampleData(channel, bufferPosition, input);
+            layers[currentLayer]->setSampleData(channel, bufferPosition, input);
+            
         }
         else {
-            output += layer[currentLayer].getSampleData(0, bufferPosition);
+            //read from current layer
+            //output += layer[currentLayer].getSampleData(channel, bufferPosition);
+            output += layers[currentLayer]->getSampleData(channel, bufferPosition);
         }
         
         //add metronome output
@@ -160,9 +176,23 @@ float Looper::processSample (float input, int channel)
         if (bufferPosition == bufferSize){
             
             if (recordState.get() == true && currentLayer != 7){
+                //notify gui
                 looperGUI->addLayer();
+                
+                //add pointer to new layer to array
+                Layer* newLayer = new Layer(currentLayer + 1, 0.8);
+                layers.add(newLayer);
+                
+                //increment current layer to correspond to layer just added
                 currentLayer++;
-                layer[currentLayer].signal();
+                
+                layers[currentLayer]->signal();
+                //layer[currentLayer].signal();
+                
+                //tell looper to start transport if just added first layer
+                if (currentLayer == 1) {
+                    looperGUI->setTransportRunningState(true);
+                }
             }
             
             bufferPosition = 0;
@@ -181,7 +211,8 @@ void Looper::setSampleRate(const int newSampleRate){
     sampleRate = newSampleRate;
 }
 
-void Looper::setLayerGain(int layerNum, float newGain){
+void Looper::setLayerGain(int layerIndex, float newGain){
     
-    layer[layerNum].setLayerGain(newGain);
+    //layer[layerNum].setLayerGain(newGain);
+    //layers[
 }

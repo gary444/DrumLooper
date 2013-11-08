@@ -27,13 +27,20 @@ public:
     void initialise (const String& commandLine)
     {
         appWindow = new AppWindow();
-        appWindow->centreWithSize(600, 620);
+        appWindow->centreWithSize(700, 620);
         appWindow->setVisible(true);
     }
 
     void shutdown()
     {
+        
+        std::cout << "main shutdown reached\n";
+        
         deleteAndZero (appWindow);
+        //delete appWindow;
+        
+        std::cout << "main shutdown reached - app window deleted\n";
+        
     }
 
     //==============================================================================
@@ -53,6 +60,8 @@ public:
     
 private:
     AppWindow* appWindow;
+    //ScopedPointer<AppWindow> appWindow;
+    
 };
 
 //==============================================================================

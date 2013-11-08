@@ -42,6 +42,7 @@ Audio::Audio()
 Audio::~Audio(){
     
     
+    std::cout << "Audio dtor\n";
 }
 
 //ComponentCallbacks============================================================

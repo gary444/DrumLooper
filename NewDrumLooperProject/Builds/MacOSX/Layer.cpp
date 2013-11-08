@@ -10,18 +10,51 @@
 
 Layer::Layer()
 {
+    layerIndex = 0;
     bufferSize = 352800;
+    layerGain = 0.8;
+    
+    //create and init buffer
+    audioSampleBuffer = new AudioSampleBuffer(2, bufferSize);
+    //audioSampleBuffer->clear();
+}
+
+Layer::Layer(int newLayerIndex, float newLayerGain)
+{
+    layerIndex = newLayerIndex;
+    
+    //check gain is in range
+    if (newLayerGain >= 0.0 && newLayerGain <= 1.0)
+    {
+        layerGain = newLayerGain;
+    }
+    else{
+        layerGain = 0.8;
+    }
+    
+    
+    bufferSize = 352800;
+    
+    //create and init buffer
     audioSampleBuffer = new AudioSampleBuffer(2, bufferSize);
 }
+
 Layer::~Layer()
 {
     delete audioSampleBuffer;
+    
+    
+    std::cout << "Layer dtor\n";
 }
 float Layer::getSampleData(int channel, int offset)
 {
     float* sample = audioSampleBuffer->getSampleData(channel, offset);
     //play
     float output = *sample;
+    
+    sharedMemory.enter();
+    output = output * layerGain;
+    sharedMemory.exit();
     
     return output;
     
@@ -30,14 +63,14 @@ float Layer::getSampleData(int channel, int offset)
 void Layer::setSampleData(int channel, int offset, float newVal)
 {
     float* sample = audioSampleBuffer->getSampleData(channel, offset);
-    
     *sample = newVal;
+    
 }
 
-void Layer::setLayerId(int iD){
+void Layer::setLayerIndex(int newLayerIndex){
     
     sharedMemory.enter();//is this needed?
-    layerId = iD;
+    layerIndex = newLayerIndex;
     sharedMemory.exit();
 }
 
@@ -46,9 +79,17 @@ void Layer::setLayerGain(float newGain){
     //**problem here when accessing audioSampleBuffer
     //if (audioSampleBuffer != NULL) {
     
-    audioSampleBuffer->applyGain(0, audioSampleBuffer->getNumSamples(), newGain);
+    //audioSampleBuffer->applyGain(newGain);
     
     //}
+    
+    if (newGain >= 0.0 && newGain <= 1.0)
+    {
+        sharedMemory.enter();//is this needed?
+        layerGain = newGain;
+        sharedMemory.exit();
+    }
+    
     
 }
 
@@ -59,10 +100,10 @@ void Layer::setBufferSize(int newBufferSize){
     sharedMemory.exit();
 }
 
-int Layer::getLayerId(){
+int Layer::getLayerIndex(){
     
     sharedMemory.enter();//is this needed?
-    int iD = layerId;
+    int iD = layerIndex;
     sharedMemory.exit();
     
     return iD;
@@ -71,6 +112,6 @@ int Layer::getLayerId(){
 void Layer::signal(){
     
     sharedMemory.enter();
-    std::cout << "New Layer: Number" << layerId << "\n";
+    std::cout << "New Layer: Number" << layerIndex + 1 << "\n";
     sharedMemory.exit();
 }

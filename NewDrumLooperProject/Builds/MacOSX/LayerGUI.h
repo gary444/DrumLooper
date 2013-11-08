@@ -17,17 +17,46 @@ class LayerGUI : public Component
     
 public:
     
+    //listener for layer GUI
+    class Listener
+    {
+    public:
+        
+        virtual ~Listener() {}
+        
+        virtual void selected(LayerGUI* layerGUI) = 0;
+        
+    };
+    
     LayerGUI();
     
+    LayerGUI(int newLayerIndex);
+    
     ~LayerGUI();
+    
+    void addListener(Listener* newListener);
 
     //ComponentCallbacks============================================================
 	void resized();
 	void paint (Graphics &g);
     
+    //mouse callbacks
+    void mouseDown(const MouseEvent &event);
+    
+    
+    int getLayerIndex();
+    
+    void setSelected(bool shouldBeSelected);
+    
+    
+    
 private:
     
-    int layerId;
+    int layerIndex;
+    bool isSelected;
+    
+    //pointer to listener
+    Listener* listener;
 };
 
 

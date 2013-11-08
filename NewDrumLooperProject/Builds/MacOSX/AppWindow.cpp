@@ -20,13 +20,15 @@ DocumentWindow(
 {
     setResizable(true, false);
 	setTitleBarHeight(20);
-    AppComponent* appComponent = new AppComponent();
+    //AppComponent*
+    appComponent = new AppComponent();
     setContentOwned(appComponent, false);
     setMenuBar (appComponent);
 }
 
 AppWindow::~AppWindow()
 {
+    std::cout << "AppWindow dtor\n";
     
 }
 

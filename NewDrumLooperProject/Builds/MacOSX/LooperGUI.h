@@ -13,13 +13,16 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "RecordButton.h"
 #include "PlayButton.h"
+#include "LayerGUI.h"
 
 
 
 class LooperGUI :   public Component,
 public Button::Listener,
 public Thread,
-public Slider::Listener
+public Slider::Listener,
+public LayerGUI::Listener,
+public Label::Listener
 //public MouseListener
 {
 public:
@@ -40,7 +43,7 @@ public:
          virtual void recordButtonToggled() = 0;
          
          //called when the gain of a layer is changed
-         virtual void layerGainChanged(const int layerNumber, float newGain) = 0;
+         virtual void layerGainChanged(const int layerIndex, float newGain) = 0;
          
      };
      
@@ -58,6 +61,9 @@ public:
     
     //Button Listener
     void buttonClicked (Button* button);
+    
+    //label listener
+    void labelTextChanged (Label *labelThatHasChanged);
     
     /**
      Starts or stops playback of the looper
@@ -79,6 +85,10 @@ public:
      */
     bool getRecordState () const;
     
+    void setLoopSampleLength(const int newLength);
+    
+    void setTransportRunningState(bool shouldBeRunning);
+    
     //Thread Callback===============================================================
 	void run();
     
@@ -87,6 +97,9 @@ public:
     
     //mouse callbacks
     void mouseDown(const MouseEvent &event);
+    
+    //layerGUI listener callbacks
+    void selected(LayerGUI* layerGUI);
     
     
     void addLayer();
@@ -97,35 +110,30 @@ private:
     
     PlayButton playButton;
     RecordButton recordButton;
-    //test button
-    TextButton testButton;
     Slider gainSlider;
     Label gainLabel;
+    Label selectedLabel;
+    Label selecterLabel;
+
+    OwnedArray<LayerGUI> layerIcons;
+    Array<float> gainValues;
+    //test button
+    TextButton testButton;
     
-    float gainValues[8];
+    //float gainValues[8];
     
     CriticalSection sharedMemory;
     
-    //pointer to looper
-    //Looper* looper;
+    //pointer to listener
     Listener* listener;
     
-    //layout variables
-    int topCornerX;
-    int topCornerY;
-    int layerWidth;
-    int layerHeight;
-    int cornerSize;
-    int gapBetweenLayers;
-    int timeDisplayWidth;
-    int timeDisplayHeight;
-    
     int noOfLayers;
-    int selectedLayer;
+    int selectedLayerIndex;
     int playPosition;
     Atomic<int> recordState;
     Atomic<int> playState;
-    //MouseListener mouseListener;
+    Atomic<int> transportState;
+    int loopSampleLength;
 };
 
 #endif /* defined(__DrumLooper__LooperGUI__) */

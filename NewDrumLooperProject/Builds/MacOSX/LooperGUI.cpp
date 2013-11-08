@@ -8,28 +8,29 @@
 
 #include "LooperGUI.h"
 
+#define TOP_CORNER_X 0
+#define TOP_CORNER_Y 100
+#define LAYER_WIDTH 400
+#define LAYER_HEIGHT 20
+#define CORNER_SIZE 3
+#define GAP_BETWEEN_LAYERS 10
+#define TIME_DISPLAY_WIDTH 400
+#define TIME_DISPLAY_HEIGHT 240
 
 LooperGUI::LooperGUI()  : Thread ("GuiThread")
 {
+    //initialisations
     noOfLayers = 0;
-    
-    setThreadState(true);
-    
-    selectedLayer = 1;
-    
+    selectedLayerIndex = -1;
     playPosition = 0;
+    listener = nullptr;
     
-    //layout initialisations
-    topCornerX = 0;
-    topCornerY = 100;
-    layerWidth = 400;
-    layerHeight = 20;
-    cornerSize = 3;
-    gapBetweenLayers = 10;
-    timeDisplayWidth = layerWidth;
-    timeDisplayHeight = 240;
+    //initialise gain values
+    //for (int i = 0; i < 8; i++)
+    //    gainValues[i] = 0.f;
     
-    //this->addMouseListener(this, true);
+    //run thread
+    setThreadState(true);
     
     testButton.addListener(this);
     testButton.setButtonText("Test");
@@ -40,7 +41,7 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
 	gainSlider.setRange(0.0, 1.0, 0.01);
 	gainSlider.setSliderStyle(Slider::RotaryVerticalDrag);
 	gainSlider.addListener(this);
-	gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 100, 20);
+	gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 40, 20);
 	gainSlider.setValue(0.8, dontSendNotification);
     
     //Labels
@@ -48,11 +49,16 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
 	gainLabel.setJustificationType(Justification::centred);
 	addAndMakeVisible(&gainLabel);
     
-    //initialise gain values
-    for (int i = 0; i < 8; i++)
-        gainValues[i] = 0.f;
+    selectedLabel.setText("Selected Layer:", dontSendNotification);
+    selectedLabel.setJustificationType(Justification::centred);
+    selectedLabel.setEditable(false);
+    addAndMakeVisible(&selectedLabel);
     
-    listener = nullptr;
+    selecterLabel.setText("None", dontSendNotification);
+    selecterLabel.setJustificationType(Justification::centred);
+    selecterLabel.setEditable(true);
+    selecterLabel.addListener(this);
+    addAndMakeVisible(&selecterLabel);
     
     //play and record buttons
     playButton.addListener(this);
@@ -67,6 +73,8 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
 LooperGUI::~LooperGUI(){
     
     setThreadState(false);
+    
+    std::cout << "LooperGui dtor\n";
 }
 
 void LooperGUI::setListener(Listener* newListener){
@@ -80,58 +88,118 @@ void LooperGUI::resized(){
     //int y = getHeight();
     
     testButton.setBounds(410, 10, 60, 30);
-    gainSlider.setBounds(410, 50, 70, 70);
-    gainLabel.setBounds(410, 120, 70, 20);
+    selectedLabel.setBounds(TIME_DISPLAY_WIDTH + 2, TOP_CORNER_Y + 0, 100, 20);
+    selecterLabel.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 20, 70, 20);
+    gainSlider.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 70, 70, 70);
+    gainLabel.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 50, 70, 20);
     
     playButton.setBounds(10, 10, 50, 50);
     recordButton.setBounds(70, 10, 50, 50);
+    
+    for (int i = 0; i < layerIcons.size(); i++) {
+        layerIcons.getUnchecked(i)->setBounds(TOP_CORNER_X, TOP_CORNER_Y + (i * (LAYER_HEIGHT + GAP_BETWEEN_LAYERS)), LAYER_WIDTH, LAYER_HEIGHT);
+    }
 }
 
 
 void LooperGUI::paint(Graphics &g){
     
-    //**layout variables in header file**
-    
     //draw time display background
     g.setColour(Colours::slateblue);
-    g.fillRoundedRectangle(topCornerX, topCornerY, timeDisplayWidth, timeDisplayHeight, cornerSize);
+    g.fillRoundedRectangle(TOP_CORNER_X, TOP_CORNER_Y, TIME_DISPLAY_WIDTH, TIME_DISPLAY_HEIGHT, CORNER_SIZE);
     
-    g.setColour(Colours::lightblue);
-    
-    sharedMemory.enter();
-    
-    //draw layers
-    for (int i = 0; i < noOfLayers; i++) {
-        
-        g.fillRoundedRectangle(topCornerX + 0, topCornerY + (i * (layerHeight + gapBetweenLayers)), layerWidth, layerHeight, cornerSize);
+    //draw label if recording first layer
+    if (recordState.get() == true && playState.get() == true && noOfLayers == 0) {
+        g.setColour(Colours::red);
+        g.drawSingleLineText("Recording First Layer...", TOP_CORNER_X + 30, TOP_CORNER_Y + 60);
     }
     
-    g.setColour(Colours::black);
     
-    //add labels
-    for (int i = 0; i < noOfLayers; i++) {
-        
-        String label;
-        label << "Layer " << i + 1;
-        g.drawSingleLineText(label, topCornerX + 10, topCornerY + (layerHeight - 5) + (i * (layerHeight + gapBetweenLayers)));
-    }
-    
-    //outline selected layer
-    g.setColour(Colours::black);
-    if (noOfLayers > 0) {
-        g.drawRoundedRectangle(topCornerX + 0, topCornerY + ((selectedLayer - 1) * (layerHeight + gapBetweenLayers)), layerWidth, layerHeight, cornerSize, 2);
-    }
-    
-    sharedMemory.exit();
     
     //play head
     g.setColour(Colours::pink);
-    g.drawRect(topCornerX + playPosition, topCornerY, 2, timeDisplayHeight);
+    g.drawRect(TOP_CORNER_X + playPosition, TOP_CORNER_Y, 2, TIME_DISPLAY_HEIGHT);
 }
+
+//ButtonCallback==============================================================================
+void LooperGUI::buttonClicked(Button* button){
+    
+    if (button == &playButton)
+    {
+        //only start playing if record is enabled, or there is pre-existing layers
+        if (recordState.get() == true || noOfLayers > 0)
+        {
+            if (listener != nullptr) {
+                listener->playButtonToggled();
+            }
+            
+            playButton.setToggleState (getPlayState(), dontSendNotification);
+        }
+        
+    }
+    else if (button == &recordButton)
+    {
+        if (listener != nullptr) {
+            listener->recordButtonToggled();
+        }
+        
+        recordButton.setToggleState (getRecordState(), dontSendNotification);
+    }
+    else if (button == &testButton){
+        
+        String s;
+        
+        for (int i = 0; i < gainValues.size(); i++) {
+            s << gainValues[i] << " ";
+        }
+        std::cout << s << "\n";
+    }
+}
+
+
+//label listener
+void LooperGUI::labelTextChanged (Label *labelThatHasChanged){
+    
+    if (labelThatHasChanged == &selecterLabel)
+    {
+        String input = labelThatHasChanged->getText();
+        //check input value is in range
+        if (input.getIntValue() > 0 && input.getIntValue() <= noOfLayers) {
+            
+            sharedMemory.enter();
+            //subtract one to convert from number to index
+            selectedLayerIndex = input.getIntValue() - 1;
+            std::cout << "selected layer = " << input.getIntValue() << "\n";
+            sharedMemory.exit();
+            
+            //tell all icons whether they are selected
+            for (int i = 0; i < layerIcons.size(); i++)
+            {
+                if (i == selectedLayerIndex)
+                    layerIcons[i]->setSelected(true);
+                
+                else
+                    layerIcons[i]->setSelected(false);
+                
+            }
+            
+            //change slider value to selected layer's value
+            gainSlider.setValue(gainValues[selectedLayerIndex], dontSendNotification);
+        }
+    }
+    
+}
+
 
 void LooperGUI::setPlayState (const bool newState)
 {
     playState = newState;
+    if (playState.get() == true && noOfLayers > 0) {
+        setTransportRunningState(playState.get());
+    }
+    repaint();
+    
+    
 }
 
 bool LooperGUI::getPlayState () const
@@ -142,6 +210,7 @@ bool LooperGUI::getPlayState () const
 void LooperGUI::setRecordState (const bool newState)
 {
     recordState = newState;
+    repaint();
 }
 
 bool LooperGUI::getRecordState () const
@@ -149,108 +218,26 @@ bool LooperGUI::getRecordState () const
     return recordState.get();
 }
 
-void LooperGUI::mouseDown(const MouseEvent &event)
-{
-    std::cout << "Mouse Down detected" << std::endl;
+
+void LooperGUI::setLoopSampleLength(const int newLength){
     
-    int x = event.x;
-    int y = event.y - topCornerY;
-    
-    //new selected layer variable - init to 1
-    sharedMemory.enter();
-    int newSelectedLayer = selectedLayer;
-    
-    
-    //check that mouseclick is on one of the layers. check width first
-    if (x <= layerWidth) {
-        
-        //then heights
-        for (int i = 0; i <= noOfLayers; i++) {
-            
-            if (y >= ((layerHeight + gapBetweenLayers) * (i - 1)) && y <= ((layerHeight * i) + (gapBetweenLayers * (i - 1))))
-            {
-                newSelectedLayer = i;
-            }
-        }
-    }
-    
-    selectedLayer = newSelectedLayer;
-    std::cout << "New selected layer = " << selectedLayer << std::endl;
-    
-    sharedMemory.exit();
-    
+    loopSampleLength = newLength;
 }
 
 
-//ButtonCallback==============================================================================
-void LooperGUI::buttonClicked(Button* button){
+void LooperGUI::setTransportRunningState(bool shouldBeRunning){
     
-    if (button == &testButton)
-    {
-        int val = 0;
-        //val = looper->getReaderPosition();
-        
-        std::cout << "TEST" << std::endl;
-        std::cout << "position = " << val << std::endl;
-        
-    }
-    else if (button == &playButton)
-    {
-        
-        if (listener != nullptr) {
-            listener->playButtonToggled();
-        }
-        
-        playButton.setToggleState (getPlayState(), dontSendNotification);
-    }
-    else if (button == &recordButton)
-    {
-        if (listener != nullptr) {
-            listener->recordButtonToggled();
-        }
-        
-        recordButton.setToggleState (getRecordState(), dontSendNotification);
-    }
-}
-
-//SliderCallback==============================================================================
-void LooperGUI::sliderValueChanged (Slider* slider)
-{
-    if (slider == &gainSlider)
-    {
-		gainValues[selectedLayer] = slider->getValue();
-        listener->layerGainChanged(selectedLayer, slider->getValue());
-	}
-}
-
-void LooperGUI::addLayer(){
-    
-    std::cout << "GUI Layer Added\n";
-    
-    sharedMemory.enter();
-    noOfLayers++;
-    sharedMemory.exit();
-    
-}
-void LooperGUI::setThreadState (bool shouldBeRunning)
-{
-    if(shouldBeRunning == true)
-        startThread();
-    else
-        stopThread(500);
+    transportState.set(shouldBeRunning);
 }
 
 void LooperGUI::run()
 {
-    //uint32 startTime = Time::getMillisecondCounter();
+    //int startTime = Time::getMillisecondCounter();
+    //std::cout << "start time = " << startTime << "\n";
     
 	while (!threadShouldExit())
     {
         uint32 time = Time::getMillisecondCounter();
-        
-        //if (listener != nullptr)
-        //  listener->counterIncremented(time - startTime);
-        
 		Time::waitForMillisecondCounter (time + 100);
         
         
@@ -259,6 +246,7 @@ void LooperGUI::run()
         MessageManagerLock mml (Thread::getCurrentThread());
         if (! mml.lockWasGained())
             return;
+        
         
         //find play position from looper
         //sharedMemory.enter();
@@ -269,3 +257,90 @@ void LooperGUI::run()
         repaint();
 	}
 }
+
+//SliderCallback=================================================================
+void LooperGUI::sliderValueChanged (Slider* slider)
+{
+    if (slider == &gainSlider)
+    {
+        // selected layer is valid
+        if (selectedLayerIndex >= 0 && selectedLayerIndex < noOfLayers)
+        {
+            gainValues.set(selectedLayerIndex, slider->getValue());
+            listener->layerGainChanged(selectedLayerIndex, slider->getValue());
+        }
+		
+	}
+}
+
+void LooperGUI::mouseDown(const MouseEvent &event)
+{
+    
+}
+
+
+//layerGUI listener callbacks
+void LooperGUI::selected(LayerGUI* layerGUI){
+    
+    //tell all icons whether they are selected
+    for (int i = 0; i < layerIcons.size(); i++)
+    {
+        if (i == layerGUI->getLayerIndex())
+            layerIcons[i]->setSelected(true);
+        
+        else
+            layerIcons[i]->setSelected(false);
+    
+    }
+    
+    selectedLayerIndex = layerGUI->getLayerIndex();
+    String s;
+    s << selectedLayerIndex + 1;
+    selecterLabel.setText(s, dontSendNotification);
+    
+    //change slider value to selected layer's value
+    gainSlider.setValue(gainValues[selectedLayerIndex]);
+    
+    
+    
+    //layerGUI->getLayerId();
+    std::cout << "selected layer = " << layerGUI->getLayerIndex() + 1 << "\n";
+}
+
+
+void LooperGUI::addLayer(){
+    
+    std::cout << "GUI Layer Added\n";
+    
+    //add a new layer Icon - first create a pointer to a new object
+    LayerGUI* newLayerGUI = new LayerGUI(noOfLayers);
+    //pass this to owned array
+    layerIcons.add(newLayerGUI);
+    //add this looper gui object as its listener
+    newLayerGUI->addListener(this);
+    //make it visible
+    
+    MessageManagerLock mml (Thread::getCurrentThread());
+    if (! mml.lockWasGained())
+        return;
+    addAndMakeVisible(newLayerGUI);
+    //call resized to set bounds
+    resized();
+    
+    
+    sharedMemory.enter();
+    //increment number of layers and add gain value
+    gainValues.add(0.8);
+    noOfLayers++;
+    sharedMemory.exit();
+    
+    repaint();
+}
+void LooperGUI::setThreadState (bool shouldBeRunning)
+{
+    if(shouldBeRunning == true)
+        startThread();
+    else
+        stopThread(500);
+}
+
