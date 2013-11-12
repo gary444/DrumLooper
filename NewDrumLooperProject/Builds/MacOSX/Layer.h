@@ -29,8 +29,10 @@ public:
     
     void setLayerGain(float newGain);
     
+    void setMuted(bool shouldBeMuted);
+    
     //void setBufferSize(int newBufferSize);
-    //void setSize(unsigned int newSize);
+    void setSize(unsigned int newSize);
     
     int getLayerIndex();
     
@@ -43,9 +45,11 @@ private:
     unsigned int bufferSize; //constant (90 sec = 3969000)
     int layerIndex;
     float layerGain;
+    bool isMuted;
     
     //members
-    AudioSampleBuffer* audioSampleBuffer;
+    //AudioSampleBuffer* audioSampleBuffer;
+    ScopedPointer<AudioSampleBuffer> audioSampleBuffer;
     CriticalSection sharedMemory;//is this needed?
     
     

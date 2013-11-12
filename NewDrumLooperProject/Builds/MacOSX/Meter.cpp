@@ -16,18 +16,18 @@ Meter::Meter(){
     oldMaxValue = 0.f;
     meterNumber = 0;
     
-    meterSlider = new Slider;
-    meterSlider->setSliderStyle(Slider::LinearBar);
-    meterSlider->setTextBoxIsEditable(false);
-    meterSlider->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-    meterSlider->setColour(Slider::backgroundColourId, Colours::whitesmoke);
-    meterSlider->setValue(0.0);
-    addAndMakeVisible(meterSlider);
+    //meterSlider = new Slider;
+    meterSlider.setSliderStyle(Slider::LinearBar);
+    meterSlider.setTextBoxIsEditable(false);
+    meterSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+    meterSlider.setColour(Slider::backgroundColourId, Colours::whitesmoke);
+    meterSlider.setValue(0.0);
+    addAndMakeVisible(&meterSlider);
     
-    meterLabel = new Label;
-    meterLabel->setEditable(false);
-    meterLabel->setText("0", dontSendNotification);
-    addAndMakeVisible(meterLabel);
+    //meterLabel = new Label;
+    meterLabel.setEditable(false);
+    meterLabel.setText("0", dontSendNotification);
+    addAndMakeVisible(&meterLabel);
 }
 Meter::~Meter(){
     
@@ -41,8 +41,8 @@ Meter::~Meter(){
 //ComponentCallbacks============================================================
 void Meter::resized(){
     
-    meterLabel->setBounds(0, 0, 30, 20);
-    meterSlider->setBounds(35, 0, 80, 10);
+    meterLabel.setBounds(0, 0, 30, 20);
+    meterSlider.setBounds(35, 0, 80, 10);
 }
 void Meter::paint(Graphics &g){
     
@@ -104,5 +104,5 @@ void Meter::setMeterNumber(const int newNumber){
     
     String labelText;
     labelText << newNumber;
-    meterLabel->setText(labelText, dontSendNotification);
+    meterLabel.setText(labelText, dontSendNotification);
 }

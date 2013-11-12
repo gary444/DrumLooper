@@ -46,6 +46,7 @@ public:
     void playButtonToggled();
     void recordButtonToggled();
     void layerGainChanged(const int layerIndex, float newGain);
+    void layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted);
     
     /**
      Starts or stops playback of the looper
@@ -58,7 +59,7 @@ public:
     bool getPlayState () const;
     
     /**
-     Sets/unsets the record state of the looper
+     Sets the record state of the looper
      */
     void setRecordState (const bool newState);
     
@@ -79,6 +80,11 @@ public:
     void endLoop();
     
     void setMode(int newModeIndex);
+    
+    
+    //mode 2 stuff
+    void tempoValueChanged(const float newTempo);
+    void numberOfBeatsChanged(const int newNumberOfBeats);
     
     /**
      Processes the audio sample by sample.
@@ -101,21 +107,24 @@ private:
     
     CriticalSection sharedMemory;
     
-    //Audio data
+    //Audio/loop data
     int bufferSize;
     unsigned int bufferPosition;
     int test;
     int sampleRate;
     int modeIndex;
+    int beats;
+    float tempo;
+    
     
     //layers
-    
     OwnedArray<Layer> layers;
     
     int currentLayer;
     
     //gui
-    ScopedPointer<LooperGUI> looperGUI;
+    //ScopedPointer<LooperGUI> looperGUI;
+    LooperGUI looperGUI;
     
     //metro
     //Metronome metronome;

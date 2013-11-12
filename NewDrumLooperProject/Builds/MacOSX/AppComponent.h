@@ -85,7 +85,8 @@ private:
     File* file;
     
     
-    ScopedPointer<Audio> audio;
+    //ScopedPointer<Audio> audio;
+    Audio audio;
     
 };
 

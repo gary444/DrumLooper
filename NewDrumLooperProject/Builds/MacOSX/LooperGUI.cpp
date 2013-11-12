@@ -25,10 +25,6 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     playPosition = 0;
     listener = nullptr;
     
-    //initialise gain values
-    //for (int i = 0; i < 8; i++)
-    //    gainValues[i] = 0.f;
-    
     //run thread
     setThreadState(true);
     
@@ -60,12 +56,15 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     selecterLabel.addListener(this);
     addAndMakeVisible(&selecterLabel);
     
-    //play and record buttons
+    //buttons
     playButton.addListener(this);
     addAndMakeVisible(&playButton);
     
     recordButton.addListener(this);
     addAndMakeVisible(&recordButton);
+    
+    muteButton.addListener(this);
+    addAndMakeVisible(&muteButton);
 
     
     
@@ -73,6 +72,7 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
 LooperGUI::~LooperGUI(){
     
     setThreadState(false);
+    listener = nullptr;
     
     std::cout << "LooperGui dtor\n";
 }
@@ -92,6 +92,7 @@ void LooperGUI::resized(){
     selecterLabel.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 20, 70, 20);
     gainSlider.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 70, 70, 70);
     gainLabel.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 50, 70, 20);
+    muteButton.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 150, 50, 50);
     
     playButton.setBounds(10, 10, 50, 50);
     recordButton.setBounds(70, 10, 50, 50);
@@ -145,6 +146,22 @@ void LooperGUI::buttonClicked(Button* button){
         
         recordButton.setToggleState (getRecordState(), dontSendNotification);
     }
+    else if (button == &muteButton){
+        
+        
+        //if selected layer is valid
+        if (selectedLayerIndex >= 0 && selectedLayerIndex < noOfLayers)
+        {
+            muteButton.setToggleState(!muteButton.getToggleState(), dontSendNotification);
+            if (listener != nullptr) {
+                listener->layerMuteToggled(selectedLayerIndex, muteButton.getToggleState());
+            }
+            muteValues.set(selectedLayerIndex, muteButton.getToggleState());
+            layerIcons[selectedLayerIndex]->setMuted(muteButton.getToggleState());
+            
+        }
+        
+    }
     else if (button == &testButton){
         
         String s;
@@ -185,6 +202,7 @@ void LooperGUI::labelTextChanged (Label *labelThatHasChanged){
             
             //change slider value to selected layer's value
             gainSlider.setValue(gainValues[selectedLayerIndex], dontSendNotification);
+            muteButton.setToggleState(muteValues[selectedLayerIndex], dontSendNotification);
         }
     }
     
@@ -268,6 +286,7 @@ void LooperGUI::sliderValueChanged (Slider* slider)
         {
             gainValues.set(selectedLayerIndex, slider->getValue());
             listener->layerGainChanged(selectedLayerIndex, slider->getValue());
+            layerIcons[selectedLayerIndex]->setGain(slider->getValue());
         }
 		
 	}
@@ -300,6 +319,7 @@ void LooperGUI::selected(LayerGUI* layerGUI){
     
     //change slider value to selected layer's value
     gainSlider.setValue(gainValues[selectedLayerIndex]);
+    muteButton.setToggleState(muteValues[selectedLayerIndex], dontSendNotification);
     
     
     

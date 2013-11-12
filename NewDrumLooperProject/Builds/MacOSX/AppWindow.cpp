@@ -21,8 +21,8 @@ DocumentWindow(
     setResizable(true, false);
 	setTitleBarHeight(20);
     //AppComponent*
-    appComponent = new AppComponent();
-    setContentOwned(appComponent, false);
+    //appComponent = new AppComponent();
+    setContentOwned(&appComponent, false);
     //setMenuBar (appComponent);
 }
 

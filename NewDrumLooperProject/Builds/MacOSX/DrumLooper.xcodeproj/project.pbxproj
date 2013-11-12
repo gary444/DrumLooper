@@ -27,6 +27,8 @@
 		882D843160FB5CB905C95A63 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BAB27F0EC9E45CB0F2B455 /* QuartzCore.framework */; };
 		88B3E13A9F29B57C62622E78 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42604195C2EB0B9B5F0E2CC2 /* IOKit.framework */; };
 		95DD198E5C3CC00B5920FFED /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD84E7F25842988E15EC773E /* Carbon.framework */; };
+		B72C40AC1832ABAC00D92B8E /* ManualLoopControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B72C40AA1832ABAC00D92B8E /* ManualLoopControl.cpp */; };
+		B72C40AF1832BB2600D92B8E /* Metronome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B72C40AD1832BB2500D92B8E /* Metronome.cpp */; };
 		B762A033182412B500D7D268 /* Meter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A031182412B500D7D268 /* Meter.cpp */; };
 		B762A036182412C300D7D268 /* TriggerResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A034182412C300D7D268 /* TriggerResponse.cpp */; };
 		B762A039182412D400D7D268 /* MasterControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A037182412D400D7D268 /* MasterControls.cpp */; };
@@ -671,6 +673,11 @@
 		B677329F2D0A97FA9FFD935E /* juce_RectanglePlacement.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_RectanglePlacement.cpp; path = ../../JuceLibraryCode/modules/juce_graphics/placement/juce_RectanglePlacement.cpp; sourceTree = SOURCE_ROOT; };
 		B6D966BDA0C94D7C9145A6DB /* juce_WeakReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_WeakReference.h; path = ../../JuceLibraryCode/modules/juce_core/memory/juce_WeakReference.h; sourceTree = SOURCE_ROOT; };
 		B6FF4892021E2F1572210BF5 /* juce_win32_SystemTrayIcon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_win32_SystemTrayIcon.cpp; path = ../../JuceLibraryCode/modules/juce_gui_extra/native/juce_win32_SystemTrayIcon.cpp; sourceTree = SOURCE_ROOT; };
+		B72C40A81832A13D00D92B8E /* MuteButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuteButton.h; sourceTree = "<group>"; };
+		B72C40AA1832ABAC00D92B8E /* ManualLoopControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ManualLoopControl.cpp; sourceTree = "<group>"; };
+		B72C40AB1832ABAC00D92B8E /* ManualLoopControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManualLoopControl.h; sourceTree = "<group>"; };
+		B72C40AD1832BB2500D92B8E /* Metronome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Metronome.cpp; sourceTree = "<group>"; };
+		B72C40AE1832BB2600D92B8E /* Metronome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Metronome.h; sourceTree = "<group>"; };
 		B72D69CA0BB7952E5B229E2D /* juce_ApplicationCommandManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_ApplicationCommandManager.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/commands/juce_ApplicationCommandManager.h; sourceTree = SOURCE_ROOT; };
 		B762A031182412B500D7D268 /* Meter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Meter.cpp; sourceTree = "<group>"; };
 		B762A032182412B500D7D268 /* Meter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Meter.h; sourceTree = "<group>"; };
@@ -2212,6 +2219,15 @@
 			name = colour;
 			sourceTree = "<group>";
 		};
+		B72C40A91832AB3000D92B8E /* TempoAndBeatSelection */ = {
+			isa = PBXGroup;
+			children = (
+				B72C40AA1832ABAC00D92B8E /* ManualLoopControl.cpp */,
+				B72C40AB1832ABAC00D92B8E /* ManualLoopControl.h */,
+			);
+			name = TempoAndBeatSelection;
+			sourceTree = "<group>";
+		};
 		B7D336BB182D18AB00D48688 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -2227,6 +2243,8 @@
 		B7D336BC182D18C000D48688 /* Looper */ = {
 			isa = PBXGroup;
 			children = (
+				B72C40AD1832BB2500D92B8E /* Metronome.cpp */,
+				B72C40AE1832BB2600D92B8E /* Metronome.h */,
 				B7D79622182933D7002A5EBE /* Looper.cpp */,
 				B7D79623182933D7002A5EBE /* Looper.h */,
 				B7D796251829349D002A5EBE /* Layer.cpp */,
@@ -2243,6 +2261,7 @@
 		B7D336BD182D18F700D48688 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
+				B72C40A81832A13D00D92B8E /* MuteButton.h */,
 				B7D7962B18293797002A5EBE /* PlayButton.h */,
 				B7D7962C182937A5002A5EBE /* RecordButton.h */,
 			);
@@ -2252,6 +2271,7 @@
 		B7D336BE182D192700D48688 /* AudioIO */ = {
 			isa = PBXGroup;
 			children = (
+				B72C40A91832AB3000D92B8E /* TempoAndBeatSelection */,
 				B7EB389C1823EA6000FBCE4E /* Audio.cpp */,
 				B7EB389D1823EA6100FBCE4E /* Audio.h */,
 				B762A031182412B500D7D268 /* Meter.cpp */,
@@ -2778,6 +2798,8 @@
 				B7D7962F182963A9002A5EBE /* LayerGUI.cpp in Sources */,
 				B7D336C1182D1DB100D48688 /* ModeSelecter.cpp in Sources */,
 				B7D336C4182D1ED300D48688 /* ModeButtons.cpp in Sources */,
+				B72C40AC1832ABAC00D92B8E /* ManualLoopControl.cpp in Sources */,
+				B72C40AF1832BB2600D92B8E /* Metronome.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,13 +19,13 @@ TriggerResponse::TriggerResponse(){
     noiseThreshold = 0.05;
     
     testButton.addListener(this);
-    testButton.setButtonText("Test");
+    testButton.setButtonText("Trigger");
     addAndMakeVisible(&testButton);
 }
 TriggerResponse::~TriggerResponse(){
     
     
-    std::cout << "trigger response dtor\n";
+    //std::cout << "trigger response dtor\n";
 }
 
 void TriggerResponse::resized(){

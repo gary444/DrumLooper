@@ -32,7 +32,8 @@ public:
 	//==============================================================================
 	// called when the close button is pressed or esc is pushed
 	void closeButtonPressed();
-    ScopedPointer<AppComponent> appComponent;
+    //ScopedPointer<AppComponent> appComponent;
+    AppComponent appComponent;
 	
 };
 

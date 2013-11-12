@@ -14,15 +14,17 @@ Looper::Looper()
     playState = false;
     recordState = false;
     modeIndex = 0;
+    beats = 8;
+    tempo = 100.f;
     //position to the start of audioSampleBuffer
     bufferPosition = 0;
     //default SR is 44k1
     sampleRate = 44100;
     
     //gui
-    looperGUI = new LooperGUI;
-    looperGUI->setListener(this);
-    addAndMakeVisible(looperGUI);
+    //looperGUI = new LooperGUI;
+    looperGUI.setListener(this);
+    addAndMakeVisible(&looperGUI);
     
     
     bufferSize  = 3969000;//start at 90 sec @ 44.1khz
@@ -47,7 +49,7 @@ Looper::~Looper()
 //ComponentCallbacks============================================================
 void Looper::resized(){
     
-    looperGUI->setBoundsRelative(0.0, 0.0, 1.0, 1.0);
+    looperGUI.setBoundsRelative(0.0, 0.0, 1.0, 1.0);
 }
 void Looper::paint (Graphics &g){
     
@@ -76,6 +78,10 @@ void Looper::layerGainChanged(const int layerIndex, float newGain){
     
     std::cout << "new gain = " << newGain << " for layer = " << layerIndex + 1 << "\n";
 }
+void Looper::layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted){
+    
+    layers[layerIndexToggled]->setMuted(shouldBeMuted);
+}
 
 
 void Looper::setPlayState (const bool newState)
@@ -91,7 +97,7 @@ void Looper::setPlayState (const bool newState)
     }
     
     playState = newState;
-    looperGUI->setPlayState(getPlayState());
+    looperGUI.setPlayState(getPlayState());
 }
 
 bool Looper::getPlayState () const
@@ -102,7 +108,7 @@ bool Looper::getPlayState () const
 void Looper::setRecordState (const bool newState)
 {
     recordState = newState;
-    looperGUI->setRecordState(getRecordState());
+    looperGUI.setRecordState(getRecordState());
 }
 
 bool Looper::getRecordState () const
@@ -169,6 +175,20 @@ void Looper::setMode(int newModeIndex){
     modeIndex = newModeIndex;
 }
 
+
+//mode 2 stuff
+void Looper::tempoValueChanged(const float newTempo){
+    
+    tempo = newTempo;
+    std::cout << "new Looper tempo = " << newTempo << std::endl;
+}
+void Looper::numberOfBeatsChanged(const int newNumberOfBeats){
+    
+    beats = newNumberOfBeats;
+    std::cout << "new Looper beats = " << newNumberOfBeats << std::endl;
+}
+
+
 //
 //if the same function is used for L + R, buffer should not be moved on each time!
 //
@@ -203,7 +223,6 @@ float Looper::processSample (float input, int channel)
         }
         else {
             //read from current layer
-            //output += layer[currentLayer].getSampleData(channel, bufferPosition);
             output += layers[currentLayer]->getSampleData(channel, bufferPosition);
         }
         
@@ -220,7 +239,7 @@ float Looper::processSample (float input, int channel)
             
             if (recordState.get() == true && currentLayer != 7){
                 //notify gui
-                looperGUI->addLayer();
+                looperGUI.addLayer();
                 
                 //add pointer to new layer to array
                 Layer* newLayer = new Layer(currentLayer + 1, bufferSize, 0.8);
@@ -234,7 +253,7 @@ float Looper::processSample (float input, int channel)
                 
                 //tell looper to start transport if just added first layer
                 if (currentLayer == 1) {
-                    looperGUI->setTransportRunningState(true);
+                    looperGUI.setTransportRunningState(true);
                 }
             }
             

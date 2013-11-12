@@ -13,6 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "RecordButton.h"
 #include "PlayButton.h"
+#include "MuteButton.h"
 #include "LayerGUI.h"
 
 
@@ -44,6 +45,9 @@ public:
          
          //called when the gain of a layer is changed
          virtual void layerGainChanged(const int layerIndex, float newGain) = 0;
+         
+         //called when a layer is muted or unmuted
+         virtual void layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted) = 0;
          
      };
      
@@ -112,11 +116,13 @@ private:
     RecordButton recordButton;
     Slider gainSlider;
     Label gainLabel;
+    MuteButton muteButton;
     Label selectedLabel;
     Label selecterLabel;
 
     OwnedArray<LayerGUI> layerIcons;
     Array<float> gainValues;
+    Array<bool> muteValues;
     //test button
     TextButton testButton;
     

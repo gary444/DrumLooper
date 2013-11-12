@@ -20,19 +20,22 @@ Audio::Audio()
     audioDeviceManager.addAudioCallback(this);
     
     //master
-    masterControls = new MasterControls;
-    addAndMakeVisible(masterControls);
+    //masterControls = new MasterControls;
+    addAndMakeVisible(&masterControls);
     
     //trigger
-    triggerResponse = new TriggerResponse;
-    triggerResponse->setListener(this);
-    addAndMakeVisible(triggerResponse);
+    //triggerResponse = new TriggerResponse;
+    triggerResponse.setListener(this);
+    addAndMakeVisible(&triggerResponse);
     
     //mode selecter
-    modeSelecter = new ModeSelecter;
-    modeSelecter->addListener(this);
-    addAndMakeVisible(modeSelecter);
+    //modeSelecter = new ModeSelecter;
+    modeSelecter.addListener(this);
+    addAndMakeVisible(&modeSelecter);
     
+    //manual Loop control
+    manualLoopControl.addListener(this);
+    addAndMakeVisible(&manualLoopControl);
     
     //meters
 //    for (int i = 0; i < NUMBER_OF_METERS; i++) {
@@ -42,15 +45,15 @@ Audio::Audio()
 //    }
     
     //looper
-    looper = new Looper;
-    addAndMakeVisible(looper);
+    //looper = new Looper;
+    addAndMakeVisible(&looper);
     
     
 }
 Audio::~Audio(){
     
     
-    std::cout << "Audio dtor\n";
+    //std::cout << "Audio dtor\n";
 }
 
 //ComponentCallbacks============================================================
@@ -60,10 +63,11 @@ void Audio::resized(){
     int y = getHeight();
     
     
-    masterControls->setBounds(x - 50, y - 150, 50 , 150);
-    triggerResponse->setBounds(x - 50, 0, 50, 50);
-    looper->setBoundsRelative(0.0, 0.0, 0.8, 1.0);
-    modeSelecter->setBoundsRelative(0.8, 0.1, 0.2, 0.5);
+    masterControls.setBounds(x - 50, y - 150, 50 , 150);
+    triggerResponse.setBounds(x - 50, 0, 50, 50);
+    looper.setBoundsRelative(0.0, 0.0, 0.75, 1.0);
+    modeSelecter.setBoundsRelative(0.75, 0.1, 0.25, 0.35);
+    manualLoopControl.setBoundsRelative(0.75, 0.46, 0.25, 0.28);
     
     //meters
 //    for (int i = 0; i < NUMBER_OF_METERS; i++) {
@@ -104,12 +108,12 @@ void Audio::audioDeviceIOCallback (const float** inputChannelData,
 //        meter[1].process(outputR);
         
         //pass to looper
-        outputL = looper->processSample(outputL, 0);
-        outputR = looper->processSample(outputR, 1);
+        outputL = looper.processSample(outputL, 0);
+        outputR = looper.processSample(outputR, 1);
         
         //apply master control
-        *outL = masterControls->processSample(outputL);
-        *outR = masterControls->processSample(outputR);
+        *outL = masterControls.processSample(outputL);
+        *outR = masterControls.processSample(outputR);
     
         //increment pointers
         inL++;
@@ -132,7 +136,7 @@ void Audio::triggerReceived  (const int triggerType){
     
     //first mode
     if (modeIndex == 0) {
-        looper->trigger();
+        looper.trigger();
     }
     
 }
@@ -143,5 +147,35 @@ void Audio::newModeSelected(int newModeIndex){
     std::cout << "new mode: " << newModeIndex + 1 << std::endl;
     
     modeIndex = newModeIndex;
-    looper->setMode(newModeIndex);
+    looper.setMode(newModeIndex);
+    
+    if (newModeIndex == 1) {
+        manualLoopControl.setEnabled(true);
+    }
+    else{
+        manualLoopControl.setEnabled(false);
+    }
+}
+
+//manual loop control callbacks (for mode 2)
+void Audio::tempoValueChanged(const float newTempo){
+    
+    if (modeIndex == 1) {
+        looper.tempoValueChanged(newTempo);
+    }
+    
+}
+void Audio::numberOfBeatsChanged(const int newNumberOfBeats)
+{
+    if (modeIndex == 1) {
+        looper.numberOfBeatsChanged(newNumberOfBeats);
+    }
+
+}
+
+void Audio::countInChanged(const int newNumberOfBeats){
+    
+}
+void Audio::tapTempoChanged(const bool shouldTapTempo){
+    
 }

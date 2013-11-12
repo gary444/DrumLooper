@@ -15,11 +15,13 @@
 #include "TriggerResponse.h"
 #include "Meter.h"
 #include "ModeSelecter.h"
+#include "ManualLoopControl.h"
 
 class Audio : public AudioIODeviceCallback,
                 public Component,
                 public TriggerResponse::Listener,
-ModeSelecter::Listener
+ModeSelecter::Listener,
+ManualLoopControl::Listener
 {
 public:
     
@@ -46,14 +48,21 @@ public:
     //mode selecter callbacks
     void newModeSelected(int newModeIndex);
     
+    //manual loop control callbacks (for mode 2)
+    void tempoValueChanged(const float newTempo);
+    void numberOfBeatsChanged(const int newNumberOfBeats);
+    void countInChanged(const int newNumberOfBeats);
+    void tapTempoChanged(const bool shouldTapTempo);
+    
 private:
     AudioDeviceManager audioDeviceManager;
     
     //Components
-    ScopedPointer<TriggerResponse> triggerResponse;
-    ScopedPointer<MasterControls> masterControls;
-    ScopedPointer<Looper> looper;
-    ScopedPointer<ModeSelecter> modeSelecter;
+    TriggerResponse triggerResponse;
+    MasterControls masterControls;
+    Looper looper;
+    ModeSelecter modeSelecter;
+    ManualLoopControl manualLoopControl;
     //Meter meter[2];
     
     int modeIndex;

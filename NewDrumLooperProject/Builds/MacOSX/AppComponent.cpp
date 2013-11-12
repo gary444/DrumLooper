@@ -74,8 +74,8 @@ AppComponent::AppComponent()
     //file = new File(path);
     //metronome.loadFile(*file);
     
-    audio = new Audio;
-    addAndMakeVisible(audio);
+    //audio = new Audio;
+    addAndMakeVisible(&audio);
     
     
 }
@@ -99,7 +99,7 @@ void AppComponent::resized()
     //int x = getWidth();
     //int y = getHeight();
     
-    audio->setBounds(0, 0, 700, 600);
+    audio.setBounds(0, 0, 700, 600);
     
     
     //metroTestButton.setBounds(200, 10, 100, 30);

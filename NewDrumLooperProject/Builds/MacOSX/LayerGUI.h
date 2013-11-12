@@ -48,12 +48,18 @@ public:
     
     void setSelected(bool shouldBeSelected);
     
+    void setGain(float newGain);
+    
+    void setMuted(float shouldBeMuted);
+    
     
     
 private:
     
     int layerIndex;
     bool isSelected;
+    bool isMuted;
+    float gain;
     
     //pointer to listener
     Listener* listener;

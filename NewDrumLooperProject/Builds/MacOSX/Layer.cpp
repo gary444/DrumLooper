@@ -13,6 +13,7 @@ Layer::Layer()
     layerIndex = 0;
     bufferSize = 352800;
     layerGain = 0.8;
+    isMuted = false;
     
     //create and init buffer
     audioSampleBuffer = new AudioSampleBuffer(2, bufferSize);
@@ -22,6 +23,7 @@ Layer::Layer()
 Layer::Layer(int newLayerIndex, unsigned int newBufferSize, float newLayerGain)
 {
     layerIndex = newLayerIndex;
+    isMuted = false;
     
     //check gain is in range
     if (newLayerGain >= 0.0 && newLayerGain <= 1.0)
@@ -33,15 +35,13 @@ Layer::Layer(int newLayerIndex, unsigned int newBufferSize, float newLayerGain)
     }
     
     
-    //bufferSize = newBufferSize;
-    
     //create and init buffer
     audioSampleBuffer = new AudioSampleBuffer(2, newBufferSize);
 }
 
 Layer::~Layer()
 {
-    delete audioSampleBuffer;
+    //delete audioSampleBuffer;
     
     
     std::cout << "Layer dtor\n";
@@ -53,7 +53,12 @@ float Layer::getSampleData(int channel, int offset)
     float output = *sample;
     
     sharedMemory.enter();
-    output = output * layerGain;
+    
+    if (isMuted)
+        output = 0.f;
+    else
+        output = output * layerGain;
+
     sharedMemory.exit();
     
     return output;
@@ -93,6 +98,13 @@ void Layer::setLayerGain(float newGain){
     
 }
 
+void Layer::setMuted(bool shouldBeMuted){
+    
+    sharedMemory.enter();
+    isMuted = shouldBeMuted;
+    sharedMemory.exit();
+}
+
 //void Layer::setBufferSize(int newBufferSize){
     
     //sharedMemory.enter();//is this needed?
@@ -101,10 +113,10 @@ void Layer::setLayerGain(float newGain){
 //}
 
 
-//void Layer::setSize(unsigned int newSize){
-//    
-//    audioSampleBuffer->setSize(2, newSize, true);
-//}
+void Layer::setSize(unsigned int newSize){
+    
+    audioSampleBuffer->setSize(2, newSize, true);
+}
 
 int Layer::getLayerIndex(){
     
