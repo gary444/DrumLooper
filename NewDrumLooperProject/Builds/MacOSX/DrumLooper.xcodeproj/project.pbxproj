@@ -679,6 +679,8 @@
 		B72C40AD1832BB2500D92B8E /* Metronome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Metronome.cpp; sourceTree = "<group>"; };
 		B72C40AE1832BB2600D92B8E /* Metronome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Metronome.h; sourceTree = "<group>"; };
 		B72D69CA0BB7952E5B229E2D /* juce_ApplicationCommandManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_ApplicationCommandManager.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/commands/juce_ApplicationCommandManager.h; sourceTree = SOURCE_ROOT; };
+		B72DA1161836400700A02020 /* ClearAllButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearAllButton.h; sourceTree = "<group>"; };
+		B72DA1171836407000A02020 /* ClearLayerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearLayerButton.h; sourceTree = "<group>"; };
 		B762A031182412B500D7D268 /* Meter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Meter.cpp; sourceTree = "<group>"; };
 		B762A032182412B500D7D268 /* Meter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Meter.h; sourceTree = "<group>"; };
 		B762A034182412C300D7D268 /* TriggerResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TriggerResponse.cpp; sourceTree = "<group>"; };
@@ -2264,6 +2266,8 @@
 				B72C40A81832A13D00D92B8E /* MuteButton.h */,
 				B7D7962B18293797002A5EBE /* PlayButton.h */,
 				B7D7962C182937A5002A5EBE /* RecordButton.h */,
+				B72DA1161836400700A02020 /* ClearAllButton.h */,
+				B72DA1171836407000A02020 /* ClearLayerButton.h */,
 			);
 			name = Buttons;
 			sourceTree = "<group>";
@@ -2271,7 +2275,6 @@
 		B7D336BE182D192700D48688 /* AudioIO */ = {
 			isa = PBXGroup;
 			children = (
-				B72C40A91832AB3000D92B8E /* TempoAndBeatSelection */,
 				B7EB389C1823EA6000FBCE4E /* Audio.cpp */,
 				B7EB389D1823EA6100FBCE4E /* Audio.h */,
 				B762A031182412B500D7D268 /* Meter.cpp */,
@@ -2280,6 +2283,7 @@
 				B762A035182412C300D7D268 /* TriggerResponse.h */,
 				B762A037182412D400D7D268 /* MasterControls.cpp */,
 				B762A038182412D400D7D268 /* MasterControls.h */,
+				B72C40A91832AB3000D92B8E /* TempoAndBeatSelection */,
 				B7D336C8182D2E6D00D48688 /* ModeSelection */,
 			);
 			name = AudioIO;

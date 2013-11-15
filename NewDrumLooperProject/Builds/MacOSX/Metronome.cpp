@@ -17,14 +17,45 @@ Metronome::Metronome(){
     //Set audio sample buffer to NULL - no file loaded initially
     audioSampleBuffer = NULL;
     
-    //File file;
     
-    //loadFile(<#juce::File fileToLoad#>)
+    //create a reader to load default file
+    WavAudioFormat wavFormat;
+    ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (new MemoryInputStream (BinaryData::BB_90_K03_HAT01_WAV,
+                                                                                                    BinaryData::BB_90_K03_HAT01_WAVSize,
+                                                                                                    false),
+                                                                             true));
+    
+//    AudioFormatManager formatManager;
+//    formatManager.registerBasicFormats();
+//    AudioFormatReader* reader = formatManager.createReaderFor(fileToLoad);
+    
+    if (audioReader != 0)
+    {
+        //load the new sample
+        AudioSampleBuffer *newAudioSampleBuffer;
+        AudioSampleBuffer *oldAudioSampleBuffer = nullptr;
+        newAudioSampleBuffer = new AudioSampleBuffer(audioReader->numChannels, audioReader->lengthInSamples);
+        audioReader->read(newAudioSampleBuffer, 0, audioReader->lengthInSamples, 0, true, true);
+       
+        
+        //swap pointers load the file before blocking the audio thread!
+        sharedMemory.enter();
+        oldAudioSampleBuffer = audioSampleBuffer;
+        audioSampleBuffer = newAudioSampleBuffer;
+        bufferPosition = 0;
+        sharedMemory.exit();
+        
+        //delete old buffer first time this will be NULL
+        if (oldAudioSampleBuffer != nullptr)
+            delete oldAudioSampleBuffer;
+        
+        std::cout << "file loaded to metronome\n";
+    }
 }
 Metronome::~Metronome(){
     
     //only delete if previously allocated
-    if (audioSampleBuffer != NULL)
+    if (audioSampleBuffer != nullptr)
         delete audioSampleBuffer;
 }
 
@@ -32,11 +63,11 @@ float Metronome::getNextSample(int channel){
     
     float output = 0.f;
     
-    sharedMemory.enter();
+    //sharedMemory.enter();
     //if there's no file or we are not playing then do nothing
-    if(playing && audioSampleBuffer != NULL)
+    if(playing && audioSampleBuffer != nullptr)
     {
-        output = *audioSampleBuffer->getSampleData(0, bufferPosition);
+        output = *audioSampleBuffer->getSampleData(channel, bufferPosition);
     
     
         //only move on and check buffer if dealing with Right channel
@@ -53,7 +84,7 @@ float Metronome::getNextSample(int channel){
         }
         
     }
-    sharedMemory.exit();
+    //sharedMemory.exit();
     
     return output;
 }
@@ -93,30 +124,30 @@ void Metronome::loadFile(File fileToLoad){
 
 void Metronome::tick()
 {
-    sharedMemory.enter();
+    //sharedMemory.enter();
     if (audioSampleBuffer != NULL)
     {
         playing = true;
         bufferPosition = 0;
     }
-    sharedMemory.exit();
+    //sharedMemory.exit();
     
     std::cout << "tick\n";
 }
 
 void Metronome::togglePlayState()
 {
-    sharedMemory.enter();
+    //sharedMemory.enter();
     if (audioSampleBuffer != NULL)
         playing = !playing;
-    sharedMemory.exit();
+    //sharedMemory.exit();
 }
 
 bool Metronome::isPlaying() const
 {
-    sharedMemory.enter();
+    //sharedMemory.enter();
     bool state = playing;
-    sharedMemory.exit();
+    //sharedMemory.exit();
     
     return state;
 }

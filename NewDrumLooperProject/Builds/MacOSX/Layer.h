@@ -31,14 +31,9 @@ public:
     
     void setMuted(bool shouldBeMuted);
     
-    //void setBufferSize(int newBufferSize);
     void setSize(unsigned int newSize);
     
     int getLayerIndex();
-    
-    //test function to check number of layer
-    void signal();
-    
     
 private:
     //Audio data

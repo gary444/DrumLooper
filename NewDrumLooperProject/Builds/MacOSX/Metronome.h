@@ -43,7 +43,6 @@ private:
     
     //Audio data
     unsigned int bufferPosition;
-    unsigned int sampleLength;
     AudioSampleBuffer* audioSampleBuffer;
 
 };

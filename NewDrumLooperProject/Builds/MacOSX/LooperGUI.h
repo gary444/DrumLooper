@@ -14,6 +14,8 @@
 #include "RecordButton.h"
 #include "PlayButton.h"
 #include "MuteButton.h"
+#include "ClearAllButton.h"
+#include "ClearLayerButton.h"
 #include "LayerGUI.h"
 
 
@@ -48,6 +50,14 @@ public:
          
          //called when a layer is muted or unmuted
          virtual void layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted) = 0;
+         
+         //called when a certain layer should be deleted
+         virtual void deleteLayer(int layerIndex) = 0;
+         
+         //called when all layers should be deleted.
+         virtual void deleteAllLayers() = 0;
+         
+         virtual void tick() = 0;
          
      };
      
@@ -91,7 +101,7 @@ public:
     
     void setLoopSampleLength(const int newLength);
     
-    void setTransportRunningState(bool shouldBeRunning);
+    void setTransportUpdateStatus(bool shouldUpdate, float relativePosition, bool countingIn);
     
     //Thread Callback===============================================================
 	void run();
@@ -107,6 +117,10 @@ public:
     
     
     void addLayer();
+    void deleteLayer(int layerIndex);
+    void deleteAllLayers();
+    
+    
     
     void setThreadState (bool shouldBeRunning);
     
@@ -119,6 +133,8 @@ private:
     MuteButton muteButton;
     Label selectedLabel;
     Label selecterLabel;
+    ClearAllButton clearAllButton;
+    ClearLayerButton clearLayerButton;
 
     OwnedArray<LayerGUI> layerIcons;
     Array<float> gainValues;
@@ -133,13 +149,26 @@ private:
     //pointer to listener
     Listener* listener;
     
-    int noOfLayers;
+    //int noOfLayers;
     int selectedLayerIndex;
-    int playPosition;
+    //int playPosition;
     Atomic<int> recordState;
     Atomic<int> playState;
-    Atomic<int> transportState;
+    Atomic<int> countIn;
+    Atomic<int> updateState;
+    Atomic<float> transportPosition;
     int loopSampleLength;
+    
+    
+    //layout variables
+    static const int TOP_CORNER_X = 0;
+    static const int TOP_CORNER_Y = 100;
+    static const int LAYER_WIDTH = 400;
+    static const int LAYER_HEIGHT = 20;
+    static const int CORNER_SIZE = 3;
+    static const int GAP_BETWEEN_LAYERS = 10;
+    static const int TIME_DISPLAY_WIDTH = 400;
+    static const int TIME_DISPLAY_HEIGHT = 240;
 };
 
 #endif /* defined(__DrumLooper__LooperGUI__) */

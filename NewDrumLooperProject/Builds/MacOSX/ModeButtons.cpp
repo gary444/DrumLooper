@@ -99,3 +99,15 @@ void ModeButtons::addListener(Listener* newListener){
     
     listener = newListener;
 }
+
+void ModeButtons::setEnabled(bool shouldBeEnabled){
+    
+    //enabled = shouldBeEnabled;
+    
+    for (int i = 0; i < NUMBER_OF_MODES; i++){
+        
+        buttons[i]->setEnabled(shouldBeEnabled);
+    }
+    
+    std::cout << "buttons enabled: " << shouldBeEnabled << "\n";
+}

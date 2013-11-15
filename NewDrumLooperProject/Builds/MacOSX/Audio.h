@@ -21,7 +21,8 @@ class Audio : public AudioIODeviceCallback,
                 public Component,
                 public TriggerResponse::Listener,
 ModeSelecter::Listener,
-ManualLoopControl::Listener
+ManualLoopControl::Listener,
+Looper::Listener
 {
 public:
     
@@ -53,6 +54,10 @@ public:
     void numberOfBeatsChanged(const int newNumberOfBeats);
     void countInChanged(const int newNumberOfBeats);
     void tapTempoChanged(const bool shouldTapTempo);
+    void metroToggled(const bool shouldBeOn);
+    
+    //looper listener callback
+    void looperReady(bool isReady);
     
 private:
     AudioDeviceManager audioDeviceManager;

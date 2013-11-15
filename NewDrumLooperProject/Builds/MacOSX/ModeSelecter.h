@@ -66,6 +66,7 @@ public:
     
     void addListener(Listener* newListener);
     void newModeSelected(int modeIndex);
+    void setEnabled(bool shouldBeEnabled);
     
 private:
     ScopedPointer<TabbedComponent> tabbedComponent;

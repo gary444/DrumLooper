@@ -35,15 +35,19 @@ public:
 	void paint (Graphics &g);
     //button callback====================================
     void buttonClicked(Button* button);
-    
     void addListener(Listener* newListener);
+    void setEnabled(bool shouldBeEnabled);
     
 private:
+    
+    //void toggleEnabled();
     
     OwnedArray<Label> labels;
     OwnedArray<ToggleButton> buttons;
     
     Listener* listener;
+    
+    //bool enabled;
 };
 
 #endif /* defined(__DrumLooper__ModeButtons__) */

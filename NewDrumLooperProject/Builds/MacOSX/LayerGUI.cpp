@@ -14,6 +14,7 @@ LayerGUI::LayerGUI(){
     listener = nullptr;
     isSelected = false;
     gain = 0.8;
+    isMuted = false;
 }
 
 LayerGUI::LayerGUI(int newLayerIndex){
@@ -23,6 +24,7 @@ LayerGUI::LayerGUI(int newLayerIndex){
     listener = nullptr;
     isSelected = false;
     gain = 0.8;
+    isMuted = false;
 }
 
 LayerGUI::~LayerGUI(){
@@ -88,6 +90,12 @@ void LayerGUI::mouseDown(const MouseEvent &event){
 int LayerGUI::getLayerIndex(){
     
     return layerIndex;
+}
+
+
+void LayerGUI::setLayerIndex(int newIndex){
+    
+    layerIndex = newIndex;
 }
 
 void LayerGUI::setSelected(bool shouldBeSelected){

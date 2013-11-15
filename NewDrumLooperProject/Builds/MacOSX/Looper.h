@@ -13,19 +13,23 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Layer.h"
 #include "LooperGUI.h"
-//#include "Metronome.h"
-
-//forward declaration of looperGUI
-class LooperGUI;
+#include "Metronome.h"
 
 /**
- Simple audio looper class - loops an audio buffer and records its input into the buffer.
- Also produces a click 4 times each loop.
+
  */
 class Looper :  public Component,
                 public LooperGUI::Listener
 {
 public:
+    
+    class Listener
+    {
+    public:
+        virtual ~Listener(){}
+        virtual void looperReady(bool isReady) = 0;
+        
+    };
     
     /**
      Constructor - initialise everything
@@ -47,6 +51,8 @@ public:
     void recordButtonToggled();
     void layerGainChanged(const int layerIndex, float newGain);
     void layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted);
+    void deleteLayer(int layerIndex);
+    void deleteAllLayers();
     
     /**
      Starts or stops playback of the looper
@@ -68,10 +74,7 @@ public:
      */
     bool getRecordState () const;
     
-    /**
-     Returns reader position as a number between 0 and 1
-     */
-    float getReaderPosition ();
+    void setCountInState (const bool newState);
     
     void trigger();
     
@@ -85,6 +88,8 @@ public:
     //mode 2 stuff
     void tempoValueChanged(const float newTempo);
     void numberOfBeatsChanged(const int newNumberOfBeats);
+    void countInChanged(const int newNumberOfBeats);
+    void metroToggled(bool shouldBeOn);
     
     /**
      Processes the audio sample by sample.
@@ -94,32 +99,44 @@ public:
     //set sample rate in order to calculate correct tempos
     void setSampleRate(const int newSampleRate);
     
+    void setListener(Listener* newListener);
     
+    
+    void tick();
     
     
     
 private:
     
     
-    //Shared data
-    Atomic<int> recordState;        //these are atomics which means they can be read/written
-    Atomic<int> playState;          //in different threads without a CriticalSection
+    //state data
+    Atomic<int> recordState;
+    Atomic<int> playState;
+    Atomic<int> countInState;
     
     CriticalSection sharedMemory;
     
     //Audio/loop data
     int bufferSize;
-    unsigned int bufferPosition;
-    int test;
+    int bufferPosition;
     int sampleRate;
     int modeIndex;
     int beats;
     float tempo;
     
+    bool metroOn;
+    int countInLength;
+    int countInCount;
+    int countInBeats;
+    
+    int guiUpdateCount;
+    
+    bool ready;
+    Listener* listener;
+    
     
     //layers
     OwnedArray<Layer> layers;
-    
     int currentLayer;
     
     //gui
@@ -127,7 +144,7 @@ private:
     LooperGUI looperGUI;
     
     //metro
-    //Metronome metronome;
+    Metronome metronome;
 };
 
 #endif /* defined(__DrumLooper__Looper__) */

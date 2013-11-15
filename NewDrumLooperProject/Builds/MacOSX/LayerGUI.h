@@ -43,6 +43,7 @@ public:
     //mouse callbacks
     void mouseDown(const MouseEvent &event);
     
+    void setLayerIndex(int newIndex);
     
     int getLayerIndex();
     

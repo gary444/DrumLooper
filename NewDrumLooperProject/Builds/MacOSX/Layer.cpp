@@ -44,7 +44,7 @@ Layer::~Layer()
     //delete audioSampleBuffer;
     
     
-    std::cout << "Layer dtor\n";
+    //std::cout << "Layer dtor\n";
 }
 float Layer::getSampleData(int channel, int offset)
 {
@@ -81,21 +81,12 @@ void Layer::setLayerIndex(int newLayerIndex){
 
 void Layer::setLayerGain(float newGain){
     
-    //**problem here when accessing audioSampleBuffer
-    //if (audioSampleBuffer != NULL) {
-    
-    //audioSampleBuffer->applyGain(newGain);
-    
-    //}
-    
     if (newGain >= 0.0 && newGain <= 1.0)
     {
         sharedMemory.enter();//is this needed?
         layerGain = newGain;
         sharedMemory.exit();
     }
-    
-    
 }
 
 void Layer::setMuted(bool shouldBeMuted){
@@ -104,15 +95,6 @@ void Layer::setMuted(bool shouldBeMuted){
     isMuted = shouldBeMuted;
     sharedMemory.exit();
 }
-
-//void Layer::setBufferSize(int newBufferSize){
-    
-    //sharedMemory.enter();//is this needed?
-    //bufferSize = newBufferSize;
-    //sharedMemory.exit();
-//}
-
-
 void Layer::setSize(unsigned int newSize){
     
     audioSampleBuffer->setSize(2, newSize, true);
@@ -125,11 +107,4 @@ int Layer::getLayerIndex(){
     sharedMemory.exit();
     
     return iD;
-}
-
-void Layer::signal(){
-    
-    sharedMemory.enter();
-    std::cout << "New Layer: Number" << layerIndex + 1 << "\n";
-    sharedMemory.exit();
 }

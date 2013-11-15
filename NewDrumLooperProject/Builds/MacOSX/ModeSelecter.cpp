@@ -44,3 +44,8 @@ void ModeSelecter::newModeSelected(int modeIndex){
     if (listener != nullptr) 
         listener->newModeSelected(modeIndex);
 }
+
+void ModeSelecter::setEnabled(bool shouldBeEnabled){
+    
+    tabbedComponent->setEnabled(shouldBeEnabled);
+}

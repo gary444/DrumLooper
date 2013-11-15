@@ -47,6 +47,7 @@ Audio::Audio()
     //looper
     //looper = new Looper;
     addAndMakeVisible(&looper);
+    looper.setListener(this);
     
     
 }
@@ -138,6 +139,10 @@ void Audio::triggerReceived  (const int triggerType){
     if (modeIndex == 0) {
         looper.trigger();
     }
+    else if(modeIndex == 1){
+        
+        looper.trigger();
+    }
     
 }
 
@@ -175,7 +180,20 @@ void Audio::numberOfBeatsChanged(const int newNumberOfBeats)
 
 void Audio::countInChanged(const int newNumberOfBeats){
     
+    looper.countInChanged(newNumberOfBeats);
 }
 void Audio::tapTempoChanged(const bool shouldTapTempo){
     
+}
+void Audio::metroToggled(const bool shouldBeOn){
+ 
+    looper.metroToggled(shouldBeOn);
+}
+
+//looper listener callback
+void  Audio::looperReady(bool isReady){
+    
+    
+    modeSelecter.setEnabled(isReady);
+    manualLoopControl.setEnabled(isReady);
 }

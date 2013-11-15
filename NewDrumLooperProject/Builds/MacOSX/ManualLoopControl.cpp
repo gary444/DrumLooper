@@ -68,6 +68,16 @@ ManualLoopControl::ManualLoopControl()
     tapTempoLabel.setText("Tap Tempo?", dontSendNotification);
     tapTempoLabel.setEditable(false);
     addAndMakeVisible(&tapTempoLabel);
+    
+    //metro on off button
+    //metroOnOffButton.setEnabled(true);
+    metroOnOffButton.setToggleState(true, dontSendNotification);
+    metroOnOffButton.addListener(this);
+    addAndMakeVisible(&metroOnOffButton);
+    
+    metroOnOffLabel.setText("Metro On/Off?", dontSendNotification);
+    metroOnOffLabel.setEditable(false);
+    addAndMakeVisible(&metroOnOffLabel);
 }
 
 /**
@@ -144,6 +154,8 @@ void ManualLoopControl::resized()
     countInLabel.setBounds(100, 80, 70, 30);
     tapTempoButton.setBounds(0, 120, 30, 30);
     tapTempoLabel.setBounds(30, 120, 100, 30);
+    metroOnOffButton.setBounds(0, 150, 30, 30);
+    metroOnOffLabel.setBounds(30, 150, 100, 30);
     
     
 }
@@ -188,6 +200,10 @@ void ManualLoopControl::buttonClicked (Button* button)
         
         if (button == &tapTempoButton) {
             listener->tapTempoChanged(button->getToggleState());
+        }
+        else if (button == &metroOnOffButton){
+            
+            listener->metroToggled(button->getToggleState());
         }
     }
 }

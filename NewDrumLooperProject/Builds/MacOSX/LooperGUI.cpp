@@ -8,21 +8,14 @@
 
 #include "LooperGUI.h"
 
-#define TOP_CORNER_X 0
-#define TOP_CORNER_Y 100
-#define LAYER_WIDTH 400
-#define LAYER_HEIGHT 20
-#define CORNER_SIZE 3
-#define GAP_BETWEEN_LAYERS 10
-#define TIME_DISPLAY_WIDTH 400
-#define TIME_DISPLAY_HEIGHT 240
+
 
 LooperGUI::LooperGUI()  : Thread ("GuiThread")
 {
     //initialisations
-    noOfLayers = 0;
+    //noOfLayers = 0;
     selectedLayerIndex = -1;
-    playPosition = 0;
+    //playPosition = 0;
     listener = nullptr;
     
     //run thread
@@ -65,6 +58,12 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     
     muteButton.addListener(this);
     addAndMakeVisible(&muteButton);
+    
+    clearLayerButton.addListener(this);
+    addAndMakeVisible(&clearLayerButton);
+    
+    clearAllButton.addListener(this);
+    addAndMakeVisible(&clearAllButton);
 
     
     
@@ -74,7 +73,7 @@ LooperGUI::~LooperGUI(){
     setThreadState(false);
     listener = nullptr;
     
-    std::cout << "LooperGui dtor\n";
+    //std::cout << "LooperGui dtor\n";
 }
 
 void LooperGUI::setListener(Listener* newListener){
@@ -97,6 +96,9 @@ void LooperGUI::resized(){
     playButton.setBounds(10, 10, 50, 50);
     recordButton.setBounds(70, 10, 50, 50);
     
+    clearLayerButton.setBounds(TOP_CORNER_X + 10, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 10, 70, 30);
+    clearAllButton.setBounds(TOP_CORNER_X + 10, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 50, 70, 30);
+    
     for (int i = 0; i < layerIcons.size(); i++) {
         layerIcons.getUnchecked(i)->setBounds(TOP_CORNER_X, TOP_CORNER_Y + (i * (LAYER_HEIGHT + GAP_BETWEEN_LAYERS)), LAYER_WIDTH, LAYER_HEIGHT);
     }
@@ -110,15 +112,23 @@ void LooperGUI::paint(Graphics &g){
     g.fillRoundedRectangle(TOP_CORNER_X, TOP_CORNER_Y, TIME_DISPLAY_WIDTH, TIME_DISPLAY_HEIGHT, CORNER_SIZE);
     
     //draw label if recording first layer
-    if (recordState.get() == true && playState.get() == true && noOfLayers == 0) {
+    if (recordState.get() == true && playState.get() == true && layerIcons.size() == 0) {
         g.setColour(Colours::red);
-        g.drawSingleLineText("Recording First Layer...", TOP_CORNER_X + 30, TOP_CORNER_Y + 60);
+        
+        if (countIn.get() == true) {
+            g.drawSingleLineText("Count In...", TOP_CORNER_X + 30, TOP_CORNER_Y + 60);
+        }
+        else {
+            g.drawSingleLineText("Recording First Layer...", TOP_CORNER_X + 30, TOP_CORNER_Y + 60);
+        }
+        
     }
     
     
     
     //play head
     g.setColour(Colours::pink);
+    int playPosition = static_cast<int>(TIME_DISPLAY_WIDTH * transportPosition.get());
     g.drawRect(TOP_CORNER_X + playPosition, TOP_CORNER_Y, 2, TIME_DISPLAY_HEIGHT);
 }
 
@@ -128,7 +138,7 @@ void LooperGUI::buttonClicked(Button* button){
     if (button == &playButton)
     {
         //only start playing if record is enabled, or there is pre-existing layers
-        if (recordState.get() == true || noOfLayers > 0)
+        if (recordState.get() == true || layerIcons.size() > 0)
         {
             if (listener != nullptr) {
                 listener->playButtonToggled();
@@ -150,7 +160,7 @@ void LooperGUI::buttonClicked(Button* button){
         
         
         //if selected layer is valid
-        if (selectedLayerIndex >= 0 && selectedLayerIndex < noOfLayers)
+        if (selectedLayerIndex >= 0 && selectedLayerIndex < layerIcons.size())
         {
             muteButton.setToggleState(!muteButton.getToggleState(), dontSendNotification);
             if (listener != nullptr) {
@@ -162,14 +172,49 @@ void LooperGUI::buttonClicked(Button* button){
         }
         
     }
+    else if (button == &clearLayerButton){
+        
+        //only works if looper is not playing
+        if (playState.get() == false) {
+            
+            //if selected layer is valid
+            if (selectedLayerIndex >= 0 && selectedLayerIndex < layerIcons.size())
+            {
+                //inform looper
+                listener->deleteLayer(selectedLayerIndex);
+                //clear one element of icon and parameter arrays
+                layerIcons.remove(selectedLayerIndex);
+                gainValues.remove(selectedLayerIndex);
+                muteValues.remove(selectedLayerIndex);
+                
+                //reposition and re-number layers
+                for (int i = 0; i < layerIcons.size(); i++) {
+                    
+                    layerIcons[i]->setLayerIndex(i);
+                    
+                    layerIcons.getUnchecked(i)->setBounds(TOP_CORNER_X, TOP_CORNER_Y + (i * (LAYER_HEIGHT + GAP_BETWEEN_LAYERS)), LAYER_WIDTH, LAYER_HEIGHT);
+                    
+                }
+            }
+        }
+        
+        
+        
+    }
+    else if (button == &clearAllButton){
+        
+        //inform looper
+        listener->deleteAllLayers();
+        
+        //clear arrays of icons and parameters
+        layerIcons.clear();
+        gainValues.clear();
+        muteValues.clear();
+    }
+    
     else if (button == &testButton){
         
-        String s;
-        
-        for (int i = 0; i < gainValues.size(); i++) {
-            s << gainValues[i] << " ";
-        }
-        std::cout << s << "\n";
+        listener->tick();
     }
 }
 
@@ -181,7 +226,7 @@ void LooperGUI::labelTextChanged (Label *labelThatHasChanged){
     {
         String input = labelThatHasChanged->getText();
         //check input value is in range
-        if (input.getIntValue() > 0 && input.getIntValue() <= noOfLayers) {
+        if (input.getIntValue() > 0 && input.getIntValue() <= layerIcons.size()) {
             
             sharedMemory.enter();
             //subtract one to convert from number to index
@@ -212,9 +257,7 @@ void LooperGUI::labelTextChanged (Label *labelThatHasChanged){
 void LooperGUI::setPlayState (const bool newState)
 {
     playState = newState;
-    if (playState.get() == true && noOfLayers > 0) {
-        setTransportRunningState(playState.get());
-    }
+    clearLayerButton.setEnabled(!newState);
     repaint();
     
     
@@ -242,11 +285,13 @@ void LooperGUI::setLoopSampleLength(const int newLength){
     loopSampleLength = newLength;
 }
 
-
-void LooperGUI::setTransportRunningState(bool shouldBeRunning){
+void LooperGUI::setTransportUpdateStatus(bool shouldUpdate, float relativePosition, bool countingIn){
     
-    transportState.set(shouldBeRunning);
+    updateState.set(shouldUpdate);
+    transportPosition.set(relativePosition);
+    countIn.set(countingIn);
 }
+
 
 void LooperGUI::run()
 {
@@ -255,22 +300,16 @@ void LooperGUI::run()
     
 	while (!threadShouldExit())
     {
-        uint32 time = Time::getMillisecondCounter();
-		Time::waitForMillisecondCounter (time + 100);
         
+        //wait for whatever gui update time is
+        uint32 time = Time::getMillisecondCounter();
+		Time::waitForMillisecondCounter (time + 20);
         
         
         //this part courtesy of Julian Storer at http://www.juce.com/api/classMessageManagerLock.html
         MessageManagerLock mml (Thread::getCurrentThread());
         if (! mml.lockWasGained())
             return;
-        
-        
-        //find play position from looper
-        //sharedMemory.enter();
-        //float exactPlayPosition = (looper->getReaderPosition()) * timeDisplayWidth;
-        //playPosition = static_cast<int>(exactPlayPosition);
-        //sharedMemory.exit();
         
         repaint();
 	}
@@ -282,7 +321,7 @@ void LooperGUI::sliderValueChanged (Slider* slider)
     if (slider == &gainSlider)
     {
         // selected layer is valid
-        if (selectedLayerIndex >= 0 && selectedLayerIndex < noOfLayers)
+        if (selectedLayerIndex >= 0 && selectedLayerIndex < layerIcons.size())
         {
             gainValues.set(selectedLayerIndex, slider->getValue());
             listener->layerGainChanged(selectedLayerIndex, slider->getValue());
@@ -333,7 +372,7 @@ void LooperGUI::addLayer(){
     std::cout << "GUI Layer Added\n";
     
     //add a new layer Icon - first create a pointer to a new object
-    LayerGUI* newLayerGUI = new LayerGUI(noOfLayers);
+    LayerGUI* newLayerGUI = new LayerGUI(layerIcons.size());
     //pass this to owned array
     layerIcons.add(newLayerGUI);
     //add this looper gui object as its listener
@@ -351,7 +390,7 @@ void LooperGUI::addLayer(){
     sharedMemory.enter();
     //increment number of layers and add gain value
     gainValues.add(0.8);
-    noOfLayers++;
+    //noOfLayers++;
     sharedMemory.exit();
     
     repaint();
