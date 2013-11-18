@@ -29,6 +29,8 @@
 		95DD198E5C3CC00B5920FFED /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD84E7F25842988E15EC773E /* Carbon.framework */; };
 		B72C40AC1832ABAC00D92B8E /* ManualLoopControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B72C40AA1832ABAC00D92B8E /* ManualLoopControl.cpp */; };
 		B72C40AF1832BB2600D92B8E /* Metronome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B72C40AD1832BB2500D92B8E /* Metronome.cpp */; };
+		B72DA11A18367FC400A02020 /* SimpleTempoCalculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B72DA11818367FC400A02020 /* SimpleTempoCalculator.cpp */; };
+		B749DF5F183A31EF00050034 /* SimplePeakDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B749DF5D183A31EF00050034 /* SimplePeakDetector.cpp */; };
 		B762A033182412B500D7D268 /* Meter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A031182412B500D7D268 /* Meter.cpp */; };
 		B762A036182412C300D7D268 /* TriggerResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A034182412C300D7D268 /* TriggerResponse.cpp */; };
 		B762A039182412D400D7D268 /* MasterControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A037182412D400D7D268 /* MasterControls.cpp */; };
@@ -681,6 +683,10 @@
 		B72D69CA0BB7952E5B229E2D /* juce_ApplicationCommandManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_ApplicationCommandManager.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/commands/juce_ApplicationCommandManager.h; sourceTree = SOURCE_ROOT; };
 		B72DA1161836400700A02020 /* ClearAllButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearAllButton.h; sourceTree = "<group>"; };
 		B72DA1171836407000A02020 /* ClearLayerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearLayerButton.h; sourceTree = "<group>"; };
+		B72DA11818367FC400A02020 /* SimpleTempoCalculator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleTempoCalculator.cpp; sourceTree = "<group>"; };
+		B72DA11918367FC400A02020 /* SimpleTempoCalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleTempoCalculator.h; sourceTree = "<group>"; };
+		B749DF5D183A31EF00050034 /* SimplePeakDetector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimplePeakDetector.cpp; sourceTree = "<group>"; };
+		B749DF5E183A31EF00050034 /* SimplePeakDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePeakDetector.h; sourceTree = "<group>"; };
 		B762A031182412B500D7D268 /* Meter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Meter.cpp; sourceTree = "<group>"; };
 		B762A032182412B500D7D268 /* Meter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Meter.h; sourceTree = "<group>"; };
 		B762A034182412C300D7D268 /* TriggerResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TriggerResponse.cpp; sourceTree = "<group>"; };
@@ -2285,6 +2291,10 @@
 				B762A038182412D400D7D268 /* MasterControls.h */,
 				B72C40A91832AB3000D92B8E /* TempoAndBeatSelection */,
 				B7D336C8182D2E6D00D48688 /* ModeSelection */,
+				B72DA11818367FC400A02020 /* SimpleTempoCalculator.cpp */,
+				B72DA11918367FC400A02020 /* SimpleTempoCalculator.h */,
+				B749DF5D183A31EF00050034 /* SimplePeakDetector.cpp */,
+				B749DF5E183A31EF00050034 /* SimplePeakDetector.h */,
 			);
 			name = AudioIO;
 			sourceTree = "<group>";
@@ -2804,6 +2814,8 @@
 				B7D336C4182D1ED300D48688 /* ModeButtons.cpp in Sources */,
 				B72C40AC1832ABAC00D92B8E /* ManualLoopControl.cpp in Sources */,
 				B72C40AF1832BB2600D92B8E /* Metronome.cpp in Sources */,
+				B72DA11A18367FC400A02020 /* SimpleTempoCalculator.cpp in Sources */,
+				B749DF5F183A31EF00050034 /* SimplePeakDetector.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

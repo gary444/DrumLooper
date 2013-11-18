@@ -16,13 +16,15 @@
 #include "Meter.h"
 #include "ModeSelecter.h"
 #include "ManualLoopControl.h"
+#include "SimpleTempoCalculator.h"
 
 class Audio : public AudioIODeviceCallback,
                 public Component,
                 public TriggerResponse::Listener,
-ModeSelecter::Listener,
-ManualLoopControl::Listener,
-Looper::Listener
+public ModeSelecter::Listener,
+public ManualLoopControl::Listener,
+public Looper::Listener,
+public SimpleTempoCalculator::Listener
 {
 public:
     
@@ -59,8 +61,12 @@ public:
     //looper listener callback
     void looperReady(bool isReady);
     
+    //tempo calculator callbacks
+    void tempoDetected(float newTempo);
+    
 private:
     AudioDeviceManager audioDeviceManager;
+    int sampleRate;
     
     //Components
     TriggerResponse triggerResponse;
@@ -70,7 +76,15 @@ private:
     ManualLoopControl manualLoopControl;
     //Meter meter[2];
     
+    
     int modeIndex;
+    
+    //for mode 2 tap tempo
+    SimpleTempoCalculator tempoCalculator;
+    Atomic<int> isUsingTapTempo;
+    Atomic<int> tempoTapAboutToStartLooper;
+    int sampleCountTarget;
+    int sampleCount;
 };
 
 #endif /* defined(__DrumLooper__Audio__) */

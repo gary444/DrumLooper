@@ -14,6 +14,11 @@
 Audio::Audio()
 {
     modeIndex = 0;
+    isUsingTapTempo = false;
+    sampleRate = 44100;
+    sampleCount = 0;
+    sampleCountTarget = 0;
+    tempoTapAboutToStartLooper = false;
     
     //audio
     audioDeviceManager.initialise(3, 2, 0, true, String::empty, 0);
@@ -48,6 +53,9 @@ Audio::Audio()
     //looper = new Looper;
     addAndMakeVisible(&looper);
     looper.setListener(this);
+    
+    //tempo calc
+    tempoCalculator.setListener(this);
     
     
 }
@@ -108,9 +116,33 @@ void Audio::audioDeviceIOCallback (const float** inputChannelData,
 //        meter[0].process(outputL);
 //        meter[1].process(outputR);
         
+        
+        
+        //tempo calc test
+        if (isUsingTapTempo.get()) {
+             tempoCalculator.process(outputL);
+        }
+        
+        //for mode2 tap tempo
+        if (tempoTapAboutToStartLooper.get()) {
+            sampleCount++;
+            //if count has reached end...
+            if (sampleCount == sampleCountTarget) {
+                //and looper is set to record...
+                if (looper.getRecordState() == true) {
+                    //start looper
+                    looper.setPlayState(true);
+                    
+                    //reset
+                    tempoTapAboutToStartLooper.set(false);
+                    sampleCountTarget = sampleCount = 0;
+                }
+            }
+        }
+       
         //pass to looper
-        outputL = looper.processSample(outputL, 0);
-        outputR = looper.processSample(outputR, 1);
+        //        outputL = looper.processSample(outputL, 0);
+        //        outputR = looper.processSample(outputR, 1);
         
         //apply master control
         *outL = masterControls.processSample(outputL);
@@ -181,8 +213,11 @@ void Audio::numberOfBeatsChanged(const int newNumberOfBeats)
 void Audio::countInChanged(const int newNumberOfBeats){
     
     looper.countInChanged(newNumberOfBeats);
+    tempoCalculator.setCountInBeats(newNumberOfBeats);
 }
 void Audio::tapTempoChanged(const bool shouldTapTempo){
+    
+    isUsingTapTempo.set(shouldTapTempo);
     
 }
 void Audio::metroToggled(const bool shouldBeOn){
@@ -196,4 +231,20 @@ void  Audio::looperReady(bool isReady){
     
     modeSelecter.setEnabled(isReady);
     manualLoopControl.setEnabled(isReady);
+}
+
+//tempo calculator callbacks
+void Audio::tempoDetected(float newTempo){
+ 
+    looper.tempoValueChanged(newTempo);
+    
+    sampleCount = 0;
+    sampleCountTarget = (sampleRate * 60) / newTempo;
+    tempoTapAboutToStartLooper.set(true);
+    
+    //lock before updating slider
+    MessageManagerLock mml (Thread::getCurrentThread());
+    if (! mml.lockWasGained())
+        return;
+    manualLoopControl.setTempoValue(newTempo);
 }

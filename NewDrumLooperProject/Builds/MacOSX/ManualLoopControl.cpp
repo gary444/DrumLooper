@@ -143,6 +143,11 @@ void ManualLoopControl::setEnabled(bool shouldBeEnabled)
 
 }
 
+void ManualLoopControl::setTempoValue(float newTempo){
+    
+    tempoSlider.setValue(newTempo);
+}
+
 //ComponentCallbacks============================================================
 void ManualLoopControl::resized()
 {
@@ -156,8 +161,6 @@ void ManualLoopControl::resized()
     tapTempoLabel.setBounds(30, 120, 100, 30);
     metroOnOffButton.setBounds(0, 150, 30, 30);
     metroOnOffLabel.setBounds(30, 150, 100, 30);
-    
-    
 }
 
 void ManualLoopControl::paint (Graphics &g)
@@ -176,7 +179,7 @@ void ManualLoopControl::paint (Graphics &g)
 //SliderCallback================================================================
 void ManualLoopControl::sliderValueChanged (Slider* slider)
 {
-    
+    //pass info to listener (if not void)
     if (listener != nullptr) {
         
         if (slider == &tempoSlider){
@@ -196,10 +199,13 @@ void ManualLoopControl::sliderValueChanged (Slider* slider)
 //ButtonCallback================================================================
 void ManualLoopControl::buttonClicked (Button* button)
 {
+    //pass info to listener (if not void)
     if (listener != nullptr) {
         
         if (button == &tapTempoButton) {
             listener->tapTempoChanged(button->getToggleState());
+            
+            countInSlider.setEnabled(!button->getToggleState());
         }
         else if (button == &metroOnOffButton){
             

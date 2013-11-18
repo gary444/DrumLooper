@@ -62,6 +62,8 @@ public:
     
     
     void setEnabled(bool shouldBeEnabled);
+    
+    void setTempoValue(float newTempo);
 
     //ComponentCallbacks============================================================
 	void resized();

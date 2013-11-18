@@ -34,7 +34,7 @@ public:
     
     
     TriggerResponse();
-    ~TriggerResponse();
+    virtual ~TriggerResponse();
     
     //ComponentCallbacks============================================================
 	void resized();
@@ -50,7 +50,7 @@ public:
     
     void processInput(float input);
     
-private:
+protected:
     
     TextButton testButton;
     

@@ -17,6 +17,7 @@ TriggerResponse::TriggerResponse(){
     
     triggerThreshold = 0.5;
     noiseThreshold = 0.05;
+    listener = nullptr;
     
     testButton.addListener(this);
     testButton.setButtonText("Trigger");
@@ -68,7 +69,10 @@ void TriggerResponse::processInput(float input){
         if (input > triggerThreshold) {
             
             //alert listener if trigger is detected
-            listener->triggerReceived(1);
+            if (listener != nullptr) {
+                listener->triggerReceived(1);
+            }
+            
             //start holding
             isHolding = true;
         }

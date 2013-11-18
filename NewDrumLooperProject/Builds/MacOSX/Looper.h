@@ -140,7 +140,6 @@ private:
     int currentLayer;
     
     //gui
-    //ScopedPointer<LooperGUI> looperGUI;
     LooperGUI looperGUI;
     
     //metro
