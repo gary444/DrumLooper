@@ -73,6 +73,7 @@ ManualLoopControl::ManualLoopControl()
     //metroOnOffButton.setEnabled(true);
     metroOnOffButton.setToggleState(true, dontSendNotification);
     metroOnOffButton.addListener(this);
+    metroOnOffButton.setEnabled(false);
     addAndMakeVisible(&metroOnOffButton);
     
     metroOnOffLabel.setText("Metro On/Off?", dontSendNotification);
@@ -124,6 +125,39 @@ void ManualLoopControl::addListener(Listener* newListener){
 /**
  toggle whether the manual loop control is enabled
  */
+
+void ManualLoopControl::setModeIndex(int newModeIndex){
+    
+    switch (newModeIndex) {
+        case 0:
+            beatNumberSlider.setEnabled(false);
+            tempoSlider.setEnabled(false);
+            countInSlider.setEnabled(false);
+            tapTempoButton.setEnabled(false);
+            metroOnOffButton.setEnabled(false);
+            break;
+            
+        case 1:
+            beatNumberSlider.setEnabled(true);
+            tempoSlider.setEnabled(true);
+            countInSlider.setEnabled(true);
+            tapTempoButton.setEnabled(true);
+            metroOnOffButton.setEnabled(true);
+            break;
+            
+        case 2:
+            beatNumberSlider.setEnabled(true);
+            tempoSlider.setEnabled(false);
+            countInSlider.setEnabled(false);
+            tapTempoButton.setEnabled(false);
+            metroOnOffButton.setEnabled(false);
+            break;
+            
+        default:
+            break;
+    }
+}
+
 void ManualLoopControl::setEnabled(bool shouldBeEnabled)
 {
     //enabled = shouldBeEnabled;
@@ -146,6 +180,12 @@ void ManualLoopControl::setEnabled(bool shouldBeEnabled)
 void ManualLoopControl::setTempoValue(float newTempo){
     
     tempoSlider.setValue(newTempo);
+}
+
+void ManualLoopControl::setTapTempo(bool shouldBeOn){
+    
+    tapTempoButton.setToggleState(shouldBeOn, dontSendNotification);
+    //std::cout << "tap tempo toggled : " << tapTempoButton
 }
 
 //ComponentCallbacks============================================================
@@ -206,6 +246,7 @@ void ManualLoopControl::buttonClicked (Button* button)
             listener->tapTempoChanged(button->getToggleState());
             
             countInSlider.setEnabled(!button->getToggleState());
+            tempoSlider.setEnabled(!button->getToggleState());
         }
         else if (button == &metroOnOffButton){
             

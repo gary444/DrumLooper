@@ -22,7 +22,7 @@ MasterControls::MasterControls(){
 MasterControls::~MasterControls(){
     
     
-    std::cout << "MasterControls dtor\n";
+    //std::cout << "MasterControls dtor\n";
 }
 
 void MasterControls::resized(){

@@ -12,13 +12,12 @@
 class RecordButton : public TextButton
 {
 public:
-    RecordButton() : TextButton("l", "click here to record")
+    RecordButton() : TextButton("R", "click here to record")
     {
         setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnRight);
         setColour(TextButton::buttonColourId, Colours::darkred);
         setColour(TextButton::buttonOnColourId, Colours::red);
     }
-    Font 	getFont (){return Font ("Wingdings", jmin(getHeight(),getWidth())/1.5f, Font::plain);}
 private:
 };
 

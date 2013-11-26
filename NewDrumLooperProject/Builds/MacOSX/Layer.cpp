@@ -67,6 +67,11 @@ float Layer::getSampleData(int channel, int offset)
 
 void Layer::setSampleData(int channel, int offset, float newVal)
 {
+    
+    if (newVal > 1 || newVal < -1) {
+        std::cout << "layer sample out of range (" << newVal << ")\n";
+    }
+    
     float* sample = audioSampleBuffer->getSampleData(channel, offset);
     *sample = newVal;
     
@@ -98,6 +103,13 @@ void Layer::setMuted(bool shouldBeMuted){
 void Layer::setSize(unsigned int newSize){
     
     audioSampleBuffer->setSize(2, newSize, true);
+}
+
+int Layer::getSize(){
+    
+    //return bufferSize;
+    
+    return audioSampleBuffer->getNumSamples();
 }
 
 int Layer::getLayerIndex(){

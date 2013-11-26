@@ -33,6 +33,13 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
 	gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 40, 20);
 	gainSlider.setValue(0.8, dontSendNotification);
     
+    scaleSlider.setRange(1, 40, 1);
+    scaleSlider.setSliderStyle(Slider::LinearVertical);
+    scaleSlider.addListener(this);
+    scaleSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+    scaleSlider.setValue(10, dontSendNotification);
+    addAndMakeVisible(&scaleSlider);
+    
     //Labels
 	gainLabel.setText("Layer Gain", dontSendNotification);
 	gainLabel.setJustificationType(Justification::centred);
@@ -48,6 +55,10 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     selecterLabel.setEditable(true);
     selecterLabel.addListener(this);
     addAndMakeVisible(&selecterLabel);
+    
+    scaleLabel.setText("Scale", dontSendNotification);
+    scaleLabel.setJustificationType(Justification::centred);
+    addAndMakeVisible(&scaleLabel);
     
     //buttons
     playButton.addListener(this);
@@ -98,6 +109,9 @@ void LooperGUI::resized(){
     
     clearLayerButton.setBounds(TOP_CORNER_X + 10, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 10, 70, 30);
     clearAllButton.setBounds(TOP_CORNER_X + 10, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 50, 70, 30);
+    
+    scaleSlider.setBounds(TOP_CORNER_X + 90, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 10, 30, 60);
+    scaleLabel.setBounds(TOP_CORNER_X + 85, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 75, 40, 20);
     
     for (int i = 0; i < layerIcons.size(); i++) {
         layerIcons.getUnchecked(i)->setBounds(TOP_CORNER_X, TOP_CORNER_Y + (i * (LAYER_HEIGHT + GAP_BETWEEN_LAYERS)), LAYER_WIDTH, LAYER_HEIGHT);
@@ -214,7 +228,7 @@ void LooperGUI::buttonClicked(Button* button){
     
     else if (button == &testButton){
         
-        listener->tick();
+        //listener->tick();
     }
 }
 
@@ -311,6 +325,11 @@ void LooperGUI::run()
         if (! mml.lockWasGained())
             return;
         
+        if (updatePlayState.get()) {
+            setPlayState(true);
+            updatePlayState.set(false);
+        }
+        
         repaint();
 	}
 }
@@ -329,6 +348,12 @@ void LooperGUI::sliderValueChanged (Slider* slider)
         }
 		
 	}
+    else if (slider == &scaleSlider){
+        
+        for (int i = 0; i < layerIcons.size(); i++) {
+            layerIcons[i]->setScale(slider->getValue());
+        }
+    }
 }
 
 void LooperGUI::mouseDown(const MouseEvent &event)
@@ -366,13 +391,18 @@ void LooperGUI::selected(LayerGUI* layerGUI){
     std::cout << "selected layer = " << layerGUI->getLayerIndex() + 1 << "\n";
 }
 
+void LooperGUI::shouldUpdatePlayState(){
+    
+    updatePlayState.set(true);
+}
 
-void LooperGUI::addLayer(){
+
+void LooperGUI::addLayer(CustomAudioThumbnail thumbnailToAdd){
     
     std::cout << "GUI Layer Added\n";
     
     //add a new layer Icon - first create a pointer to a new object
-    LayerGUI* newLayerGUI = new LayerGUI(layerIcons.size());
+    LayerGUI* newLayerGUI = new LayerGUI(layerIcons.size(), thumbnailToAdd);
     //pass this to owned array
     layerIcons.add(newLayerGUI);
     //add this looper gui object as its listener

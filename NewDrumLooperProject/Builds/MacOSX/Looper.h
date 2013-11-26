@@ -14,12 +14,15 @@
 #include "Layer.h"
 #include "LooperGUI.h"
 #include "Metronome.h"
+#include "CustomAudioThumbnail.h"
+#include "BeatDetector.h"
 
 /**
 
  */
 class Looper :  public Component,
-                public LooperGUI::Listener
+                public LooperGUI::Listener,
+public BeatDetector::Listener
 {
 public:
     
@@ -53,6 +56,10 @@ public:
     void layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted);
     void deleteLayer(int layerIndex);
     void deleteAllLayers();
+    
+    //Beat Detector Callbacks
+    void setLoopStartPoint();
+    void setLoopEndPoint();
     
     /**
      Starts or stops playback of the looper
@@ -102,7 +109,7 @@ public:
     void setListener(Listener* newListener);
     
     
-    void tick();
+    //void tick();
     
     
     
@@ -113,6 +120,9 @@ private:
     Atomic<int> recordState;
     Atomic<int> playState;
     Atomic<int> countInState;
+    Atomic<int> mode1loopSet;
+    Atomic<int> mode3waiting;
+    Atomic<int> detectingBeat;
     
     CriticalSection sharedMemory;
     
@@ -144,6 +154,8 @@ private:
     
     //metro
     Metronome metronome;
+    
+    BeatDetector beatDetector;
 };
 
 #endif /* defined(__DrumLooper__Looper__) */

@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "CustomAudioThumbnail.h"
 
 class LayerGUI : public Component
 {
@@ -30,7 +31,7 @@ public:
     
     LayerGUI();
     
-    LayerGUI(int newLayerIndex);
+    LayerGUI(int newLayerIndex, CustomAudioThumbnail newThumbnailInfo);
     
     ~LayerGUI();
     
@@ -53,6 +54,8 @@ public:
     
     void setMuted(float shouldBeMuted);
     
+    void setScale(float newScale);
+    
     
     
 private:
@@ -60,10 +63,13 @@ private:
     int layerIndex;
     bool isSelected;
     bool isMuted;
+    bool gotThumbnailInfo;
     float gain;
+    float scale;
     
     //pointer to listener
     Listener* listener;
+    CustomAudioThumbnail thumbnailInfo;
 };
 
 

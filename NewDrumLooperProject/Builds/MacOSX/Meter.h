@@ -29,10 +29,8 @@ public:
     
 private:
     //visible components
-    //ScopedPointer<Slider> meterSlider;
     Slider meterSlider;
     Label meterLabel;
-    //ScopedPointer<Label> meterLabel;
     
     int meterNumber;
     

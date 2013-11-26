@@ -15,16 +15,23 @@ LayerGUI::LayerGUI(){
     isSelected = false;
     gain = 0.8;
     isMuted = false;
+    scale = 5;
+    gotThumbnailInfo = false;
+    
 }
 
-LayerGUI::LayerGUI(int newLayerIndex){
+LayerGUI::LayerGUI(int newLayerIndex, CustomAudioThumbnail newThumbnailInfo){
     
     layerIndex = newLayerIndex;
+    
+    thumbnailInfo = newThumbnailInfo;
     
     listener = nullptr;
     isSelected = false;
     gain = 0.8;
     isMuted = false;
+    scale = 20;
+    gotThumbnailInfo = false;
 }
 
 LayerGUI::~LayerGUI(){
@@ -43,7 +50,7 @@ void LayerGUI::addListener(Listener* newListener){
 //ComponentCallbacks============================================================
 void LayerGUI::resized(){
     
-    repaint();
+    //repaint();
 }
 void LayerGUI::paint (Graphics &g){
     
@@ -51,8 +58,29 @@ void LayerGUI::paint (Graphics &g){
     int y = getHeight();
     
     //bg fill
-    g.setColour(Colours::lightblue);
+    g.setColour(Colours::whitesmoke);
     g.fillRoundedRectangle(0, 0, x, y, 3);
+    
+    //thumbnail
+    if (!gotThumbnailInfo) {
+        thumbnailInfo.fitResolutionToSize(x, y);
+        gotThumbnailInfo = true;
+    }
+    
+    
+    g.setColour(Colours::lightblue);
+    
+    for (int i = 0; i < x; i++) {
+        
+        int drawSize = (thumbnailInfo.getPixelDrawValue(i)) * scale;
+        if (drawSize > y) 
+            drawSize = y;
+        
+        g.drawRect(i, (y / 2) - thumbnailInfo.getPixelDrawValue(i), 1, drawSize);
+        //g.drawRect(i, 0, 1, i % y);
+        
+    }
+    
     
     //label - add 1 to convert from index to human number. draw red if muted
     if (isMuted) {
@@ -113,5 +141,11 @@ void LayerGUI::setGain(float newGain){
 void LayerGUI::setMuted(float shouldBeMuted){
     
     isMuted = shouldBeMuted;
+    repaint();
+}
+
+void LayerGUI::setScale(float newScale){
+    
+    scale = newScale;
     repaint();
 }

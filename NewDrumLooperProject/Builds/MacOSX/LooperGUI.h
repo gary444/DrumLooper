@@ -17,7 +17,7 @@
 #include "ClearAllButton.h"
 #include "ClearLayerButton.h"
 #include "LayerGUI.h"
-
+#include "CustomAudioThumbnail.h"
 
 
 class LooperGUI :   public Component,
@@ -57,7 +57,7 @@ public:
          //called when all layers should be deleted.
          virtual void deleteAllLayers() = 0;
          
-         virtual void tick() = 0;
+         //virtual void tick() = 0;
          
      };
      
@@ -115,8 +115,10 @@ public:
     //layerGUI listener callbacks
     void selected(LayerGUI* layerGUI);
     
+    void shouldUpdatePlayState();
     
-    void addLayer();
+    
+    void addLayer(CustomAudioThumbnail thumbnailToAdd);
     void deleteLayer(int layerIndex);
     void deleteAllLayers();
     
@@ -135,6 +137,8 @@ private:
     Label selecterLabel;
     ClearAllButton clearAllButton;
     ClearLayerButton clearLayerButton;
+    Slider scaleSlider;
+    Label scaleLabel;
 
     OwnedArray<LayerGUI> layerIcons;
     Array<float> gainValues;
@@ -156,6 +160,7 @@ private:
     Atomic<int> playState;
     Atomic<int> countIn;
     Atomic<int> updateState;
+    Atomic<int> updatePlayState;
     Atomic<float> transportPosition;
     int loopSampleLength;
     

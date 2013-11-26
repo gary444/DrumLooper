@@ -28,13 +28,15 @@ void SimpleTempoCalculator::process(float input){
     if (peakDetector.detect(input) == true) {
         
         std::cout << "Calc received\n";
+        //listener->peakDetected();
         
         //increment number of beats that have been detected
         beatCount++;
         
         //if first hit, record sample time
         if (beatCount == 1) {
-            firstHitSampleTime = sampleCount;
+            //firstHitSampleTime = sampleCount;
+            sampleCount = 0;
         }
         //if last required hit...
         else if (beatCount == countInBeats){
@@ -44,8 +46,7 @@ void SimpleTempoCalculator::process(float input){
             
             //calculate tempo....
             // get average number of samples per beat
-            float samplesPerBeat = (lastHitSampleTime - firstHitSampleTime)
-                                        / (countInBeats - 1);
+            float samplesPerBeat = (lastHitSampleTime) / (countInBeats - 1);
             
             //tempo in bpm = number of samples in 1 min divided by num samples in one beat
             float tempo = (sampleRate * 60) / samplesPerBeat;

@@ -17,7 +17,7 @@ SimplePeakDetector::SimplePeakDetector(){
     isHolding = false;
     
     triggerThreshold = 0.2;
-    noiseThreshold = 0.001;
+    //noiseThreshold = 0.001;
     
     
 }
@@ -35,6 +35,9 @@ bool SimplePeakDetector::detect(float input){
         //obtain absolute value of input
         input = fabsf(input);
         
+        //double input to increase sensitivity
+        input = input * 2.0;
+        
         //compare to threshold value
         if (input > triggerThreshold) {
                 
@@ -50,7 +53,7 @@ bool SimplePeakDetector::detect(float input){
         
         holdCounter++;
         //if hold counter has reached hold length, stop holding and reset counter
-        if (holdCounter == holdTimeInSamples) {
+        if (holdCounter >= holdTimeInSamples) {
             isHolding = false;
             holdCounter = 0;
         }

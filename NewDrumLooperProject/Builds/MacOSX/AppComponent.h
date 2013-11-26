@@ -18,11 +18,7 @@
  The main component for the applicaiton
  */
 class AppComponent  :   public Component,
-                        public MenuBarModel,
-                        //public AudioIODeviceCallback,
-                        Button::Listener,
-                        //TriggerResponse::Listener,
-                        public FilenameComponentListener
+                        public MenuBarModel
 {
 public:
 	//==============================================================================
@@ -40,14 +36,7 @@ public:
 	void resized();
 	void paint (Graphics &g);
     
-    //Button Listener
-    void buttonClicked (Button* button);
     
-    //mouse callbacks
-    //void mouseDown (const MouseEvent &event);
-    
-    //FilenameComponent Callback
-    void filenameComponentChanged (FilenameComponent* fileComponentThatHasChanged);
     
     
     
@@ -74,18 +63,9 @@ private:
     //Audio
     AudioDeviceManager audioDeviceManager;
     AudioIODevice* currentDevice;
-    BigInteger noInputChannels;
-    BigInteger noOutputChannels;
     //Components
+
     
-    //metro test
-    TextButton metroTestButton;
-    //Metronome metronome;
-    FilenameComponent* sampleChooser;
-    File* file;
-    
-    
-    //ScopedPointer<Audio> audio;
     Audio audio;
     
 };

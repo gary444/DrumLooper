@@ -60,10 +60,13 @@ public:
     
     void addListener(Listener* newListener);
     
+    void setModeIndex(int newModeIndex);
     
     void setEnabled(bool shouldBeEnabled);
     
     void setTempoValue(float newTempo);
+    
+    void setTapTempo(bool shouldBeOn);
 
     //ComponentCallbacks============================================================
 	void resized();

@@ -33,6 +33,8 @@ public:
     
     void setSize(unsigned int newSize);
     
+    int getSize();
+    
     int getLayerIndex();
     
 private:

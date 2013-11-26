@@ -10,10 +10,13 @@
 
 Looper::Looper()
 {
-    //initialise - not playing / recording
+    //inits
     playState = false;
     recordState = false;
     countInState = false;
+    mode1loopSet = false;
+    detectingBeat = false;
+    mode3waiting = false;
     countInCount = 0;
     countInBeats = 4;
     countInLength = 105840;
@@ -28,9 +31,12 @@ Looper::Looper()
     sampleRate = 44100;
     guiUpdateCount = 0;
     
-    //gui
+    //add gui
     looperGUI.setListener(this);
     addAndMakeVisible(&looperGUI);
+    
+    //connect beat detector
+    beatDetector.setListener(this);
     
     
     bufferSize  = 3969000;//start at 90 sec @ 44.1khz
@@ -117,7 +123,21 @@ void Looper::deleteAllLayers(){
     //reset if mode 1
     if (modeIndex == 0) {
         bufferSize  = 3969000;//start at 90 sec @ 44.1khz
+        mode1loopSet.set(false);
     }
+}
+
+
+//Beat Detector Callbacks
+void Looper::setLoopStartPoint(){
+    
+    
+    mode3waiting = false;
+    setPlayState(true);
+    
+}
+void Looper::setLoopEndPoint(){
+    endLoop();
 }
 
 
@@ -132,9 +152,15 @@ void Looper::setPlayState (const bool newState)
     }
     
     playState = newState;
-    looperGUI.setPlayState(getPlayState());
     ready = false;
+    
+    MessageManagerLock mml (Thread::getCurrentThread());
+    if (! mml.lockWasGained())
+        return;
     listener->looperReady(false);
+    
+    
+    looperGUI.setPlayState(getPlayState());
 }
 
 bool Looper::getPlayState () const
@@ -170,10 +196,11 @@ void Looper::trigger(){
             setPlayState(true);
             //playButtonToggled();
         }
-        else {
+        else if(mode1loopSet.get() == false){
             //if playing, stop recording and set loop end point
             //setRecordState(false);
             endLoop();
+            mode1loopSet = true;
         }
     }
     
@@ -213,6 +240,11 @@ void Looper::setMode(int newModeIndex){
     if (newModeIndex == 1) {
         bufferSize = static_cast<int>(((60 * sampleRate) / tempo) * beats);
     }
+    else if (newModeIndex == 2){
+        
+        detectingBeat = true;
+        mode3waiting = true;
+    }
 }
 
 
@@ -223,31 +255,28 @@ void Looper::tempoValueChanged(const float newTempo){
     
     bufferSize = static_cast<int>(((60 * sampleRate) / tempo) * beats);
     
-    std::cout << "new Looper tempo = " << newTempo << std::endl;
 }
 void Looper::numberOfBeatsChanged(const int newNumberOfBeats){
     
     beats = newNumberOfBeats;
     
-    bufferSize = static_cast<int>(((60 * sampleRate) / tempo) * beats);
+    if (modeIndex == 1) {
+        
+        bufferSize = static_cast<int>(((60 * sampleRate) / tempo) * beats);
+    }
     
-    std::cout << "new Looper beats = " << newNumberOfBeats << std::endl;
 }
 
 void Looper::countInChanged(const int newNumberOfBeats){
     
     countInLength = static_cast<int>(((60 * sampleRate) / tempo) * newNumberOfBeats);
     countInBeats = newNumberOfBeats;
-    
-    std::cout << "new count in length = " << countInLength << "\n";
 }
 void Looper::metroToggled(bool shouldBeOn){
     
     metroOn = shouldBeOn;
 }
 
-
-//
 //if the same function is used for L + R, buffer should not be moved on each time!
 //
 float Looper::processSample (float input, int channel)
@@ -257,8 +286,13 @@ float Looper::processSample (float input, int channel)
     
     float output = 0.f;
     
+    //if waiting for loop to be started in mode 3
+    if (modeIndex == 2 && mode3waiting.get() && recordState.get()) {
+        
+        beatDetector.process(input, channel);
+    }
     //if playing....
-    if (playState.get() == true)
+    else if (playState.get() == true)
     {
         //if counting in
         if (countInState.get()){
@@ -307,29 +341,26 @@ float Looper::processSample (float input, int channel)
                 output += layers[currentLayer]->getSampleData(channel, bufferPosition);
             }
             
-            //if current mode is mode 2.....
-            if (modeIndex == 1) {
+            //if current mode is mode 2 and metro is on...
+            if (modeIndex == 1 && metroOn) {
                 
-                //if metro is on...
-                if (metroOn) {
-                    
-                    //trigger metronome
+                //only trigger metronome from R channel
+                if (channel == 1) {
+                    //...trigger metronome
                     if (bufferPosition % (bufferSize / beats) == 0) {
-                        //trigger metronome
                         metronome.tick();
                     }
-                    
-                    //add metronome output
-                    output += metronome.getNextSample(channel);
                 }
                 
+                //add metronome to output
+                output += metronome.getNextSample(channel);
                 
             }
             
-            
-            
-            
-            
+            else if (modeIndex == 2 && detectingBeat.get()) {
+                
+                beatDetector.process(input, channel);
+            }
             
             //increment the buffer position.
             //only increment if processing right channel (channel 1).
@@ -350,8 +381,7 @@ float Looper::processSample (float input, int channel)
                         looperGUI.setTransportUpdateStatus(true, f, false);
                     }
                 }
-                
-                
+
             }
             
             //if the end of the buffer is reached...
@@ -360,12 +390,17 @@ float Looper::processSample (float input, int channel)
                 //and if recording....
                 if (recordState.get() == true && currentLayer != 7){
                     
+                    //create thumbnail for recorded layer
+                    CustomAudioThumbnail newThumbnail;
+                    newThumbnail.translate(*layers[currentLayer], bufferSize);
+                    
+                    
                     //add a new layer.
                     //add pointer to new layer to owned array
                     Layer* newLayer = new Layer(currentLayer + 1, bufferSize, 0.8);
                     layers.add(newLayer);
                     //notify gui
-                    looperGUI.addLayer();
+                    looperGUI.addLayer(newThumbnail);
                     
                     //increment current layer to correspond to layer just added
                     currentLayer++;
@@ -374,10 +409,6 @@ float Looper::processSample (float input, int channel)
                 bufferPosition = 0;
             }
         }
-        
-        
-        
-        
     }
     
     
@@ -406,7 +437,7 @@ void Looper::setListener(Listener* newListener){
 }
 
 
-void Looper::tick(){
+//void Looper::tick(){
     
-    metronome.tick();
-}
+//    metronome.tick();
+//}

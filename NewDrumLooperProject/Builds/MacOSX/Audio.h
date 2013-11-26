@@ -17,6 +17,7 @@
 #include "ModeSelecter.h"
 #include "ManualLoopControl.h"
 #include "SimpleTempoCalculator.h"
+#include "PatchInfo.h"
 
 class Audio : public AudioIODeviceCallback,
                 public Component,
@@ -24,7 +25,8 @@ class Audio : public AudioIODeviceCallback,
 public ModeSelecter::Listener,
 public ManualLoopControl::Listener,
 public Looper::Listener,
-public SimpleTempoCalculator::Listener
+public SimpleTempoCalculator::Listener,
+public MenuBarModel
 {
 public:
     
@@ -47,6 +49,7 @@ public:
     
     //Trigger Response Callbacks
     void triggerReceived  (const int triggerType);
+    void tempoDetected(float newTempo);
     
     //mode selecter callbacks
     void newModeSelected(int newModeIndex);
@@ -62,10 +65,29 @@ public:
     void looperReady(bool isReady);
     
     //tempo calculator callbacks
-    void tempoDetected(float newTempo);
+    
+    //MenuBarEnums/Callbacks========================================================
+    enum Menus {
+		OptionMenu=0, NumMenus
+	};
+    
+    enum FileMenuItems
+	{
+        AudioPrefs = 1,
+		
+		NumFileItems
+	};
+    StringArray getMenuBarNames();
+    PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName);
+	void menuItemSelected (int menuItemID, int topLevelMenuIndex);
+    
+    void showAudioPreferences(Component* centerComponent);
+    void patch();
     
 private:
+    
     AudioDeviceManager audioDeviceManager;
+    PatchInfo patchInfo;
     int sampleRate;
     
     //Components
@@ -85,6 +107,9 @@ private:
     Atomic<int> tempoTapAboutToStartLooper;
     int sampleCountTarget;
     int sampleCount;
+    
+    // the command manager object used to dispatch command events
+    ApplicationCommandManager commandManager;
 };
 
 #endif /* defined(__DrumLooper__Audio__) */

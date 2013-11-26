@@ -13,6 +13,9 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SimplePeakDetector.h"
 
+class SimplePeakDetector;
+
+
 //class to pass values to a peak detector and determine a tempo from the peaks detected, with a given number of count in beats. Informs listener when tempo is found.
 
 class SimpleTempoCalculator {
@@ -25,6 +28,7 @@ public:
         
         virtual ~Listener() {}
         virtual void tempoDetected(float newTempo) = 0;
+        //virtual void peakDetected() = 0;
     };
     
     SimpleTempoCalculator();

@@ -14,14 +14,36 @@ TriggerResponse::TriggerResponse(){
     sampleRate = 44100;
     holdTime = 0.1;
     holdTimeInSamples = static_cast<int>(sampleRate * holdTime);
+    holdCounter = 0;
     
     triggerThreshold = 0.5;
-    noiseThreshold = 0.05;
+    //noiseThreshold = 0.05;
     listener = nullptr;
     
-    testButton.addListener(this);
-    testButton.setButtonText("Trigger");
-    addAndMakeVisible(&testButton);
+    //indicatorCount = 0;
+    //indicatorCounting = false;
+    
+    //tempoCalculator.setListener(this);
+    
+    //isUsingTapTempo.set(false);
+    
+    thresholdSlider.setValue(1.0 - triggerThreshold);
+    thresholdSlider.setSliderStyle(Slider::RotaryVerticalDrag);
+    thresholdSlider.setRange(0.f, 0.95, 0.01);
+    thresholdSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+    thresholdSlider.addListener(this);
+    addAndMakeVisible(&thresholdSlider);
+    
+    sensitivityLabel.setText("Sensitivity", dontSendNotification);
+    sensitivityLabel.setJustificationType(Justification::centred);
+    sensitivityLabel.setEditable(false);
+    addAndMakeVisible(&sensitivityLabel);
+    
+    indicatorButton.addListener(this);
+    indicatorButton.setButtonText("T");
+    indicatorButton.setColour(TextButton::buttonColourId, Colours::grey);
+    indicatorButton.setColour(TextButton::buttonOnColourId, Colours::red);
+    addAndMakeVisible(&indicatorButton);
 }
 TriggerResponse::~TriggerResponse(){
     
@@ -31,19 +53,44 @@ TriggerResponse::~TriggerResponse(){
 
 void TriggerResponse::resized(){
     
-    testButton.setBounds(0, 0, 50, 30);
+    indicatorButton.setBounds(40, 10, 10, 10);
+    thresholdSlider.setBounds(0, 0, 40, 40);
+    sensitivityLabel.setBounds(0, 40, 40, 20);
 }
 
-//test button
 void TriggerResponse::buttonClicked(Button* button){
     
-    if (button == &testButton)
+    if (button == &indicatorButton)
     {
         listener->triggerReceived(1);
     }
     
 }
 
+
+//slider callback
+void TriggerResponse::sliderValueChanged (Slider* slider){
+    
+    sharedMemory.enter();
+    triggerThreshold = 1.0 - slider->getValue();
+    sharedMemory.exit();
+    
+}
+
+//void TriggerResponse::tempoDetected(const float newTempo){
+//    
+//    listener->tempoDetected(newTempo);
+//    isUsingTapTempo.set(false);
+//    
+//}
+
+
+//void TriggerResponse::peakDetected(){
+//    
+//    setIndicatorState(true);
+//    indicatorCount = 0;
+//    indicatorCounting = true;
+//}
 
 
 void TriggerResponse::setListener(Listener* newListener){
@@ -59,11 +106,18 @@ void TriggerResponse::setSampleRate(const int newSampleRate){
 
 void TriggerResponse::processInput(float input){
     
-    //obtain absolute value of input
-    input = fabsf(input);
-    
-    //if input is above noise threshold
-    if (input > noiseThreshold) {
+//    if (isUsingTapTempo.get()) {
+//        tempoCalculator.process(input);
+//        
+//    }
+    //if not holding...
+    if (!isHolding) {
+        
+        //obtain absolute value of input
+        input = fabsf(input);
+        
+        //double input to increase sensitivity
+        input = input * 2.0;
         
         //compare to threshold value
         if (input > triggerThreshold) {
@@ -72,20 +126,54 @@ void TriggerResponse::processInput(float input){
             if (listener != nullptr) {
                 listener->triggerReceived(1);
             }
+            std::cout << "Trigger Detected\n";
             
             //start holding
             isHolding = true;
+            setIndicatorState(true);
+        }
+        
+    }
+    //if holding, increment 'hold' counter
+    else {
+        holdCounter++;
+        
+        //if hold counter has reached hold length, stop holding and reset counter
+        if (holdCounter >= holdTimeInSamples) {
+            isHolding = false;
+            holdCounter = 0;
+            setIndicatorState(false);
         }
     }
     
-    //if holding, increment 'hold' counter
-    if (isHolding == true) {
-        holdCounter++;
-    }
+//    if (indicatorCounting == true) {
+//        indicatorCount++;
+//        if (indicatorCount >= holdTimeInSamples) {
+//            setIndicatorState(false);
+//        }
+//    }
     
-    //if hold counter has reached hold length, stop holding and reset counter
-    if (holdCounter == holdTimeInSamples) {
-        isHolding = false;
-        holdCounter = 0;
-    }
+    
 }
+
+
+//void TriggerResponse::useTempoCalculator(bool shouldUseTempoCalculator){
+//    
+//    isUsingTapTempo.set(shouldUseTempoCalculator);
+//}
+
+
+//void TriggerResponse::setTapTempoCountInBeats(int newNumberOfBeats){
+//    
+//    tempoCalculator.setCountInBeats(newNumberOfBeats);
+//}
+
+void TriggerResponse::setIndicatorState(bool shouldBeOn){
+    
+    MessageManagerLock mml (Thread::getCurrentThread());
+    if (! mml.lockWasGained())
+        return;
+    
+    indicatorButton.setToggleState(shouldBeOn, dontSendNotification);
+}
+

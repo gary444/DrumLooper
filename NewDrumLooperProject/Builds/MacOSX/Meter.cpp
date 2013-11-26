@@ -16,7 +16,6 @@ Meter::Meter(){
     oldMaxValue = 0.f;
     meterNumber = 0;
     
-    //meterSlider = new Slider;
     meterSlider.setSliderStyle(Slider::LinearBar);
     meterSlider.setTextBoxIsEditable(false);
     meterSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
@@ -24,16 +23,11 @@ Meter::Meter(){
     meterSlider.setValue(0.0);
     addAndMakeVisible(&meterSlider);
     
-    //meterLabel = new Label;
     meterLabel.setEditable(false);
     meterLabel.setText("0", dontSendNotification);
     addAndMakeVisible(&meterLabel);
 }
 Meter::~Meter(){
-    
-    //meterLabel = nullptr;
-    //meterSlider = nullptr;
-    
     
     std::cout << "meter dtor\n";
 }
