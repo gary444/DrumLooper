@@ -17,9 +17,32 @@ SimpleTempoCalculator::SimpleTempoCalculator(){
     countInBeats = 4;
     beatCount = 0;
     firstHitSampleTime = lastHitSampleTime = 0;
+    
+    float indicatorTime = 0.1;
+    indicatorCounter = 0;
+    indicatorTarget = static_cast<int>(44100 * indicatorTime);
+    indicating = false;
+    
+    tapIndicator.setColour(TextButton::buttonColourId, Colours::grey);
+    tapIndicator.setColour(TextButton::buttonOnColourId, Colours::lightgreen);
+    addAndMakeVisible(&tapIndicator);
+    
+    tapLabel.setText("Tap", dontSendNotification);
+    tapLabel.setJustificationType(Justification::left);
+    addAndMakeVisible(&tapLabel);
+    
+    
+    
+    
 }
 SimpleTempoCalculator::~SimpleTempoCalculator(){
     
+}
+
+void SimpleTempoCalculator::resized(){
+    
+    tapIndicator.setBounds(0, 20, 10, 10);
+    tapLabel.setBounds(10, 17, 70, 20);
 }
 
 void SimpleTempoCalculator::process(float input){
@@ -29,6 +52,8 @@ void SimpleTempoCalculator::process(float input){
         
         std::cout << "Calc received\n";
         //listener->peakDetected();
+        setIndicateState(true);
+        
         
         //increment number of beats that have been detected
         beatCount++;
@@ -65,6 +90,13 @@ void SimpleTempoCalculator::process(float input){
     
     }
     
+    if (indicating) {
+        indicatorCounter++;
+        if (indicatorCounter >= indicatorTarget) {
+            setIndicateState(false);
+        }
+    }
+    
     //increment counter
     sampleCount++;
 }
@@ -81,4 +113,13 @@ void SimpleTempoCalculator::setListener(Listener* newListener){
 void SimpleTempoCalculator::setCountInBeats(int newNumberOfBeats){
     
     countInBeats = newNumberOfBeats;
+}
+void SimpleTempoCalculator::setIndicateState(bool state){
+    
+    MessageManagerLock mml (Thread::getCurrentThread());
+    if (! mml.lockWasGained())
+        return;
+    
+    tapIndicator.setToggleState(state, dontSendNotification);
+    indicating = state;
 }

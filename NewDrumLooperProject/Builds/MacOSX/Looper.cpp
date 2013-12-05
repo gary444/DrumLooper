@@ -127,13 +127,20 @@ void Looper::deleteAllLayers(){
     }
 }
 
+void Looper::setReaderToZero(){
+    
+    bufferPosition = 0;
+    looperGUI.setTransportUpdateStatus(true, 0.0, false);
+    
+}
+
 
 //Beat Detector Callbacks
 void Looper::setLoopStartPoint(){
     
     
-    mode3waiting = false;
-    setPlayState(true);
+//    mode3waiting = false;
+//    setPlayState(true);
     
 }
 void Looper::setLoopEndPoint(){
@@ -236,6 +243,7 @@ void Looper::endLoop(){
 void Looper::setMode(int newModeIndex){
     
     modeIndex = newModeIndex;
+    mode3waiting = false;
     
     if (newModeIndex == 1) {
         bufferSize = static_cast<int>(((60 * sampleRate) / tempo) * beats);
@@ -254,6 +262,8 @@ void Looper::tempoValueChanged(const float newTempo){
     tempo = newTempo;
     
     bufferSize = static_cast<int>(((60 * sampleRate) / tempo) * beats);
+    
+    countInLength = static_cast<int>(((60 * sampleRate) / newTempo) * countInBeats);
     
 }
 void Looper::numberOfBeatsChanged(const int newNumberOfBeats){

@@ -21,9 +21,9 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     //run thread
     setThreadState(true);
     
-    testButton.addListener(this);
-    testButton.setButtonText("Test");
-    addAndMakeVisible(&testButton);
+    //testButton.addListener(this);
+    //testButton.setButtonText("Test");
+    //addAndMakeVisible(&testButton);
     
     //slider setup
     addAndMakeVisible(&gainSlider);
@@ -64,6 +64,9 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     playButton.addListener(this);
     addAndMakeVisible(&playButton);
     
+    toStartButton.addListener(this);
+    addAndMakeVisible(&toStartButton);
+    
     recordButton.addListener(this);
     addAndMakeVisible(&recordButton);
     
@@ -97,7 +100,8 @@ void LooperGUI::resized(){
     //int x = getWidth();
     //int y = getHeight();
     
-    testButton.setBounds(410, 10, 60, 30);
+    //testButton.setBounds(410, 10, 60, 30);
+    
     selectedLabel.setBounds(TIME_DISPLAY_WIDTH + 2, TOP_CORNER_Y + 0, 100, 20);
     selecterLabel.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 20, 70, 20);
     gainSlider.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 70, 70, 70);
@@ -105,7 +109,8 @@ void LooperGUI::resized(){
     muteButton.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 150, 50, 50);
     
     playButton.setBounds(10, 10, 50, 50);
-    recordButton.setBounds(70, 10, 50, 50);
+    toStartButton.setBounds(70, 10, 50, 50);
+    recordButton.setBounds(130, 10, 50, 50);
     
     clearLayerButton.setBounds(TOP_CORNER_X + 10, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 10, 70, 30);
     clearAllButton.setBounds(TOP_CORNER_X + 10, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 50, 70, 30);
@@ -226,10 +231,21 @@ void LooperGUI::buttonClicked(Button* button){
         muteValues.clear();
     }
     
-    else if (button == &testButton){
+    else if (button == &toStartButton){
         
-        //listener->tick();
+        listener->playButtonToggled();
+        listener->setReaderToZero();
+        
+        
+        MessageManagerLock mml (Thread::getCurrentThread());
+        if (! mml.lockWasGained())
+            return;
+        playButton.setToggleState(false, dontSendNotification);
     }
+    
+    //else if (button == &testButton){
+        //listener->tick();
+    //}
 }
 
 

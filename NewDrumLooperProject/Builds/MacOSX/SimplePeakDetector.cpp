@@ -11,10 +11,10 @@
 SimplePeakDetector::SimplePeakDetector(){
     
     //default sample rate is 44.1kHz
-    sampleRate = 44100;
+    //sampleRate = 44100;
     holdTime = 0.1;
     holdTimeInSamples = static_cast<int>(sampleRate * holdTime);
-    isHolding = false;
+    //isHolding = false;
     
     triggerThreshold = 0.2;
     //noiseThreshold = 0.001;

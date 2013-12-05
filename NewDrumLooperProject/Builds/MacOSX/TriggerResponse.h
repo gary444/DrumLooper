@@ -11,12 +11,12 @@
 
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
-//#include "SimpleTempoCalculator.h"
+#include "PeakDetector.h"
 
 class TriggerResponse : public Component,
 public Button::Listener,
-public Slider::Listener//,
-//public SimpleTempoCalculator::Listener
+public Slider::Listener,
+public PeakDetector
 {
 public:
     
@@ -57,7 +57,7 @@ public:
     void setListener(Listener* newListener);
     
     //set sample rate in order to calculate correct hold time
-    void setSampleRate(const int newSampleRate);
+    //void setSampleRate(const int newSampleRate);
     
     void processInput(float input);
     
@@ -76,6 +76,7 @@ protected:
     TextButton indicatorButton;
     Slider thresholdSlider;
     Label sensitivityLabel;
+    Label triggerLabel;
     
     CriticalSection sharedMemory;
     
@@ -83,13 +84,13 @@ protected:
     
     Listener* listener;
     
-    float triggerThreshold;
-    //float noiseThreshold;
-    int sampleRate;
-    float holdTime;
-    int holdTimeInSamples;
-    bool isHolding;
-    int holdCounter;
+//    float triggerThreshold;
+//    //float noiseThreshold;
+//    int sampleRate;
+//    float holdTime;
+//    int holdTimeInSamples;
+//    bool isHolding;
+//    int holdCounter;
     //int indicatorCount;
     //bool indicatorCounting;
     

@@ -20,6 +20,9 @@ Audio::Audio()
     sampleCountTarget = 0;
     tempoTapAboutToStartLooper = false;
     
+    //tempo calc
+    addAndMakeVisible(&tempoCalculator);
+    
     //master
     addAndMakeVisible(&masterControls);
     
@@ -68,15 +71,19 @@ Audio::~Audio(){
 //ComponentCallbacks============================================================
 void Audio::resized(){
     
-    int x = getWidth();
-    int y = getHeight();
+    //int x = getWidth();
+    //int y = getHeight();
     
     
-    masterControls.setBounds(x - 50, y - 150, 50 , 150);
-    triggerResponse.setBounds(x - 50, 0, 50, 50);
+    //masterControls.setBounds(x - 50, y - 150, 50 , 150);
+    //triggerResponse.setBounds(x - 50, 0, 50, 50);
+    
+    masterControls.setBoundsRelative(0.9, 0.81, 0.25, 0.19);
+    triggerResponse.setBoundsRelative(0.75, 0.0, 0.25, 0.15);
     looper.setBoundsRelative(0.0, 0.0, 0.75, 1.0);
-    modeSelecter.setBoundsRelative(0.75, 0.1, 0.25, 0.35);
-    manualLoopControl.setBoundsRelative(0.75, 0.46, 0.25, 0.28);
+    modeSelecter.setBoundsRelative(0.75, 0.15, 0.25, 0.30);
+    manualLoopControl.setBoundsRelative(0.75, 0.46, 0.25, 0.35);
+    tempoCalculator.setBoundsRelative(0.86, 0.0, 0.1, 0.1);
     
     //meters
 //    for (int i = 0; i < NUMBER_OF_METERS; i++) {

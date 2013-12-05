@@ -16,6 +16,7 @@
 #include "MuteButton.h"
 #include "ClearAllButton.h"
 #include "ClearLayerButton.h"
+#include "ToStartButton.h"
 #include "LayerGUI.h"
 #include "CustomAudioThumbnail.h"
 
@@ -56,6 +57,9 @@ public:
          
          //called when all layers should be deleted.
          virtual void deleteAllLayers() = 0;
+         
+         //set position to 0
+         virtual void setReaderToZero() = 0;
          
          //virtual void tick() = 0;
          
@@ -137,6 +141,7 @@ private:
     Label selecterLabel;
     ClearAllButton clearAllButton;
     ClearLayerButton clearLayerButton;
+    ToStartButton toStartButton;
     Slider scaleSlider;
     Label scaleLabel;
 
@@ -144,7 +149,7 @@ private:
     Array<float> gainValues;
     Array<bool> muteValues;
     //test button
-    TextButton testButton;
+    //TextButton testButton;
     
     //float gainValues[8];
     

@@ -12,12 +12,13 @@
 #include <iostream>
 #include <math.h>
 
-#include "TriggerResponse.h"
+//#include "TriggerResponse.h"
+#include "PeakDetector.h"
 
 //class that detects peaks. based on trigger response class but has a detect function that returns true/false if a peak is found for quick processing.
 
 
-class SimplePeakDetector : public TriggerResponse
+class SimplePeakDetector : public PeakDetector
 {
     
     

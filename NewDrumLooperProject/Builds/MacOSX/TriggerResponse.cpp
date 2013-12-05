@@ -11,12 +11,12 @@
 TriggerResponse::TriggerResponse(){
     
     //default sample rate is 44.1kHz
-    sampleRate = 44100;
+    //sampleRate = 44100;
     holdTime = 0.1;
     holdTimeInSamples = static_cast<int>(sampleRate * holdTime);
-    holdCounter = 0;
+    //holdCounter = 0;
     
-    triggerThreshold = 0.5;
+    //triggerThreshold = 0.5;
     //noiseThreshold = 0.05;
     listener = nullptr;
     
@@ -36,14 +36,19 @@ TriggerResponse::TriggerResponse(){
     
     sensitivityLabel.setText("Sensitivity", dontSendNotification);
     sensitivityLabel.setJustificationType(Justification::centred);
-    sensitivityLabel.setEditable(false);
+    //sensitivityLabel.setEditable(false);
     addAndMakeVisible(&sensitivityLabel);
     
     indicatorButton.addListener(this);
-    indicatorButton.setButtonText("T");
+    //indicatorButton.setButtonText("T");
     indicatorButton.setColour(TextButton::buttonColourId, Colours::grey);
     indicatorButton.setColour(TextButton::buttonOnColourId, Colours::red);
     addAndMakeVisible(&indicatorButton);
+    
+    triggerLabel.setText("Trigger", dontSendNotification);
+    triggerLabel.setJustificationType(Justification::left);
+    //triggerLabel.setEditable(false);
+    addAndMakeVisible(&triggerLabel);
 }
 TriggerResponse::~TriggerResponse(){
     
@@ -53,9 +58,10 @@ TriggerResponse::~TriggerResponse(){
 
 void TriggerResponse::resized(){
     
-    indicatorButton.setBounds(40, 10, 10, 10);
-    thresholdSlider.setBounds(0, 0, 40, 40);
-    sensitivityLabel.setBounds(0, 40, 40, 20);
+    indicatorButton.setBounds(75, 5, 10, 10);
+    thresholdSlider.setBounds(30, 0, 40, 40);
+    sensitivityLabel.setBounds(0, 41, 100, 15);
+    triggerLabel.setBounds(85, 2, 70, 15);
 }
 
 void TriggerResponse::buttonClicked(Button* button){
@@ -98,11 +104,11 @@ void TriggerResponse::setListener(Listener* newListener){
     listener = newListener;
 }
 
-void TriggerResponse::setSampleRate(const int newSampleRate){
-    
-    sampleRate = newSampleRate;
-    holdTimeInSamples = static_cast<int>(sampleRate * holdTime);
-}
+//void TriggerResponse::setSampleRate(const int newSampleRate){
+//    
+//    sampleRate = newSampleRate;
+//    holdTimeInSamples = static_cast<int>(sampleRate * holdTime);
+//}
 
 void TriggerResponse::processInput(float input){
     

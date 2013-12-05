@@ -18,7 +18,7 @@ class SimplePeakDetector;
 
 //class to pass values to a peak detector and determine a tempo from the peaks detected, with a given number of count in beats. Informs listener when tempo is found.
 
-class SimpleTempoCalculator {
+class SimpleTempoCalculator : public Component {
     
 public:
     
@@ -34,6 +34,8 @@ public:
     SimpleTempoCalculator();
     ~SimpleTempoCalculator();
     
+    void resized();
+    
     void process(float input);
     
     void setSampleRate(int newSampleRate);
@@ -41,6 +43,8 @@ public:
     void setListener(Listener* newListener);
     
     void setCountInBeats(int newNumberOfBeats);
+    
+    void setIndicateState(bool state);
     
 private:
     Listener* listener;
@@ -53,6 +57,12 @@ private:
     int firstHitSampleTime;
     int lastHitSampleTime;
     int beatCount;
+    
+    int indicatorCounter;
+    int indicatorTarget;
+    bool indicating;
+    TextButton tapIndicator;
+    Label tapLabel;
     
 };
 

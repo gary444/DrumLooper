@@ -56,6 +56,7 @@ public:
     void layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted);
     void deleteLayer(int layerIndex);
     void deleteAllLayers();
+    void setReaderToZero();
     
     //Beat Detector Callbacks
     void setLoopStartPoint();

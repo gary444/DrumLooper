@@ -11,7 +11,7 @@
 MasterControls::MasterControls(){
     
     gainSlider.setSliderStyle(Slider::LinearVertical);
-    gainSlider.setTextBoxStyle(Slider::TextBoxAbove, false, 40, 20);
+    gainSlider.setTextBoxStyle(Slider::NoTextBox, false, 40, 20);
     gainSlider.setRange(0.0, 1.0, 0.01);
     gainSlider.setValue(0.8);
     gainSlider.addListener(this);
@@ -27,12 +27,12 @@ MasterControls::~MasterControls(){
 
 void MasterControls::resized(){
     
-    gainSlider.setBounds(0, 0, 30, 100);
+    gainSlider.setBounds(0, 0, 30, 80);
 }
 void MasterControls::paint(Graphics &g){
     
     g.setColour(Colours::black);
-    g.drawSingleLineText("Master", 0, 110);
+    g.drawSingleLineText("Master", 0, 90);
 }
 
 void MasterControls::setGain(const float newGain){
