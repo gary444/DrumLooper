@@ -12,7 +12,6 @@
 #include <iostream>
 #include <math.h>
 
-//#include "TriggerResponse.h"
 #include "PeakDetector.h"
 
 //class that detects peaks. based on trigger response class but has a detect function that returns true/false if a peak is found for quick processing.
@@ -29,16 +28,6 @@ public:
     bool detect(float input);
     
 private:
-    
-//    float triggerThreshold;
-//    //float noiseThreshold;
-//    int sampleRate;
-//    float holdTime;
-//    int holdTimeInSamples;
-//    bool isHolding;
-//    int holdCounter;
-//    int indicatorCount;
-//    bool indicatorCounting;
     
 };
 

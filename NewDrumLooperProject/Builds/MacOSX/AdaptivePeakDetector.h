@@ -1,13 +1,13 @@
 //
 //  AdaptivePeakDetector.h
-//  DrumLooper
+//  sdaFileEffect
 //
-//  Created by Gary Rendle on 27/11/2013.
+//  Created by Gary Rendle on 13/12/2013.
 //
 //
 
-#ifndef __DrumLooper__AdaptivePeakDetector__
-#define __DrumLooper__AdaptivePeakDetector__
+#ifndef __sdaFileEffect__AdaptivePeakDetector__
+#define __sdaFileEffect__AdaptivePeakDetector__
 
 #include <iostream>
 #include "PeakDetector.h"
@@ -29,7 +29,7 @@ public:
     void reset();
     
 private:
-  
+    
     float initialThreshold;
     bool isDetecting;
     
@@ -44,4 +44,5 @@ private:
     Array<float> localAverages;
 };
 
-#endif /* defined(__DrumLooper__AdaptivePeakDetector__) */
+
+#endif /* defined(__sdaFileEffect__AdaptivePeakDetector__) */

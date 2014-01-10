@@ -13,7 +13,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CustomAudioThumbnail.h"
 
-class LayerGUI : public Component
+class LayerGUI : public Component,
+public SettableTooltipClient
 {
     
 public:
@@ -52,6 +53,8 @@ public:
     
     void setGain(float newGain);
     
+    void setPan(float newPan);
+    
     void setMuted(float shouldBeMuted);
     
     void setScale(float newScale);
@@ -65,6 +68,7 @@ private:
     bool isMuted;
     bool gotThumbnailInfo;
     float gain;
+    float pan;
     float scale;
     
     //pointer to listener

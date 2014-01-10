@@ -29,6 +29,8 @@ public:
     
     void setLayerGain(float newGain);
     
+    void setLayerPan(float newPan);
+    
     void setMuted(bool shouldBeMuted);
     
     void setSize(unsigned int newSize);
@@ -37,11 +39,14 @@ public:
     
     int getLayerIndex();
     
+    void smooth(int sampleRate);
+    
 private:
     //Audio data
     unsigned int bufferSize; //constant (90 sec = 3969000)
     int layerIndex;
     float layerGain;
+    float layerPan;
     bool isMuted;
     
     //members

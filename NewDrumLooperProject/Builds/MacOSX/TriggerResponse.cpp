@@ -32,10 +32,14 @@ TriggerResponse::TriggerResponse(){
     thresholdSlider.setRange(0.f, 0.95, 0.01);
     thresholdSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
     thresholdSlider.addListener(this);
+    thresholdSlider.setColour(Slider::rotarySliderFillColourId, Colours::deepskyblue);
+    thresholdSlider.setColour(Slider::rotarySliderOutlineColourId, Colours::grey);
+    thresholdSlider.setTooltip("Adjust sensitivity of trigger pad");
     addAndMakeVisible(&thresholdSlider);
     
     sensitivityLabel.setText("Sensitivity", dontSendNotification);
     sensitivityLabel.setJustificationType(Justification::centred);
+    sensitivityLabel.setColour(Label::textColourId, Colours::lightgrey);
     //sensitivityLabel.setEditable(false);
     addAndMakeVisible(&sensitivityLabel);
     
@@ -47,6 +51,7 @@ TriggerResponse::TriggerResponse(){
     
     triggerLabel.setText("Trigger", dontSendNotification);
     triggerLabel.setJustificationType(Justification::left);
+    triggerLabel.setColour(Label::textColourId, Colours::lightgrey);
     //triggerLabel.setEditable(false);
     addAndMakeVisible(&triggerLabel);
 }

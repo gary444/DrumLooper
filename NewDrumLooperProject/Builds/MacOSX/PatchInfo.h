@@ -37,9 +37,28 @@ public:
         numOutputChannels = numChannels;
     }
     
+//    int getNumberOfInputChannels(){
+//        return numInputChannels;
+//    }
+//    int getNumberOfOutputChannels(){
+//        return numOutputChannels;
+//    }
+    
     int getlooperInput1Index() {return looperInput1Index;}
     int getlooperInput2Index() {return looperInput2Index;}
     int getTriggerInputIndex() {return triggerInputIndex;}
+    
+    String getDeviceName(){return deviceName;}
+    void setDeviceName(String newDeviceName) {
+        deviceName = newDeviceName;
+    }
+    
+    int getSampleRate() {return sampleRate;}
+    void setSampleRate(int newSampleRate){
+        sampleRate = newSampleRate;
+    }
+    
+    
     
 private:
     
@@ -49,6 +68,12 @@ private:
     int looperInput1Index;
     int looperInput2Index;
     int triggerInputIndex;
+    
+    String deviceName;
+    
+    int sampleRate;
+    
+    
 };
 
 #endif /* defined(__DrumLooper__PatchInfo__) */

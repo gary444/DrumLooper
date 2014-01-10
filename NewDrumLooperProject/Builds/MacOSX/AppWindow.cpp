@@ -13,7 +13,7 @@ AppWindow::AppWindow()
 :
 DocumentWindow(
                "DrumLooper",                     // Set the text to use for the title
-               Colours::lightgrey,					// Set the colour of the window
+               Colours::grey,					// Set the colour of the window
                DocumentWindow::allButtons,		// Set which buttons are displayed
                true							// This window should be added to the desktop
                )
@@ -24,7 +24,7 @@ DocumentWindow(
     Audio* audio = new Audio();
     
     setContentOwned(audio, false);
-    setMenuBar (audio);
+    //setMenuBar (audio);
 }
 
 AppWindow::~AppWindow()

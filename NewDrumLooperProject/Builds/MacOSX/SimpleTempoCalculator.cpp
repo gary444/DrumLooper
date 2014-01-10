@@ -29,6 +29,7 @@ SimpleTempoCalculator::SimpleTempoCalculator(){
     
     tapLabel.setText("Tap", dontSendNotification);
     tapLabel.setJustificationType(Justification::left);
+    tapLabel.setColour(Label::textColourId, Colours::lightgrey);
     addAndMakeVisible(&tapLabel);
     
     
@@ -103,6 +104,7 @@ void SimpleTempoCalculator::process(float input){
 void SimpleTempoCalculator::setSampleRate(int newSampleRate){
     
     sampleRate = newSampleRate;
+    peakDetector.setSampleRate(newSampleRate);
 }
 
 void SimpleTempoCalculator::setListener(Listener* newListener){

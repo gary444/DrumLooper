@@ -1,20 +1,20 @@
 //
 //  BeatDetector.h
-//  DrumLooper
+//  sdaFileEffect
 //
-//  Created by Gary Rendle on 24/11/2013.
+//  Created by Gary Rendle on 13/12/2013.
 //
 //
 
-#ifndef __DrumLooper__BeatDetector__
-#define __DrumLooper__BeatDetector__
+#ifndef __sdaFileEffect__BeatDetector__
+#define __sdaFileEffect__BeatDetector__
 
 #include <iostream>
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "AdaptivePeakDetector.h"
 #include "DetectionState.h"
+#include "BeatDetectorBase.h"
 
-class BeatDetector {
+class BeatDetector : public BeatDetectorBase
+{
     
 public:
     
@@ -24,20 +24,19 @@ public:
         
         virtual ~Listener() {}
         virtual void tempoUpdated(float newTempo) = 0;
+        virtual void setLoopStartPoint() = 0;
+        virtual void setLoopEndPoint() = 0;
     };
+    
     
     BeatDetector();
     ~BeatDetector();
-    
+
     void setListener(Listener* newListener);
     
     void process(float input, int channel);
     
-    void setNumberOfBeats(int newNumberOfBeats);
-    
     void reset();
-    
-    void showHits(bool should);
     
     void printConfidences();
     
@@ -48,29 +47,24 @@ private:
     
     void reportMostLikelyTempo();
     
+    Array<int> sortAgent(Array<DetectionState*> agentToSort);
+    
+    float getTempo(Array<DetectionState*> hostAgent, int index);
+    
+    bool tempiAreClose(float tempo1, float tempo2);
+    
+    void updateLoopSampleTarget(float tempo);
+    
+    
     //members
-    
-    Atomic<int> waitingForFirstHit;
-    int noOfBeats;
-    float tempoLowerLimit;
-    float tempoUpperLimit;
-    float tempLChannelData;
-    
-    int intervalCount;
-    bool intervalCounting;
-    
     Array<DetectionState*> agent1;
+    Array<DetectionState*> agent2;
+    Array<DetectionState*> agent3;
     Array<float> testedNoteValues;
     
     Listener* listener;
-    AdaptivePeakDetector peakDetector;
     
-    //for testing
-    int hitCount;
-    Atomic<int> showingHits;
-    float highestInputValue;
+    int loopSampleTarget;
     
 };
-
-
-#endif /* defined(__DrumLooper__BeatDetector__) */
+#endif /* defined(__sdaFileEffect__BeatDetector__) */

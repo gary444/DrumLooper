@@ -132,7 +132,7 @@ void Metronome::tick()
     }
     //sharedMemory.exit();
     
-    std::cout << "tick\n";
+    //std::cout << "tick\n";
 }
 
 void Metronome::togglePlayState()

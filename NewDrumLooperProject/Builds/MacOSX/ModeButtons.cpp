@@ -37,6 +37,11 @@ ModeButtons::ModeButtons(){
         Label* newLabel = new Label;
         
         newLabel->setText(s, dontSendNotification);
+        newLabel->setColour(Label::textColourId, Colours::lightgrey);
+        
+        String t;
+        t << "Select " << s;
+        newButton->setTooltip(t);
         addAndMakeVisible(newLabel);
         labels.add(newLabel);
     }

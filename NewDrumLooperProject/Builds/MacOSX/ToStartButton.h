@@ -12,11 +12,11 @@
 class ToStartButton : public TextButton {
     
 public:
-    ToStartButton() : TextButton("v", "return play head to start")
+    ToStartButton() : TextButton("v", "Return play head to start")
     {
         setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnRight);
-        setColour(TextButton::buttonColourId, Colours::grey);
-        setColour(TextButton::buttonOnColourId, Colours::lightgrey);
+        //setColour(TextButton::buttonOnColourId, Colours::deepskyblue);
+        setColour(TextButton::buttonColourId, Colours::steelblue);
         
     }
     Font 	getFont (){return Font ("Wingdings 3", jmin(getHeight(),getWidth())/1.5f, Font::plain);}

@@ -17,6 +17,11 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     selectedLayerIndex = -1;
     //playPosition = 0;
     listener = nullptr;
+    recordCycle = false;
+    //playState = false;
+    muteValues.clear();
+    gainValues.clear();
+    panValues.clear();
     
     //run thread
     setThreadState(true);
@@ -30,38 +35,65 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
 	gainSlider.setRange(0.0, 1.0, 0.01);
 	gainSlider.setSliderStyle(Slider::RotaryVerticalDrag);
 	gainSlider.addListener(this);
-	gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 40, 20);
+	gainSlider.setTextBoxStyle(Slider::NoTextBox, false, 40, 20);
 	gainSlider.setValue(0.8, dontSendNotification);
+    gainSlider.setColour(Slider::rotarySliderFillColourId, Colours::deepskyblue);
+    gainSlider.setColour(Slider::rotarySliderOutlineColourId, Colours::grey);
+    gainSlider.setTooltip("Adjust gain of selected layer");
     
     scaleSlider.setRange(1, 40, 1);
     scaleSlider.setSliderStyle(Slider::LinearVertical);
     scaleSlider.addListener(this);
     scaleSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
     scaleSlider.setValue(10, dontSendNotification);
+    scaleSlider.setColour(Slider::thumbColourId, Colours::deepskyblue);
+    scaleSlider.setTooltip("Adjust scale of audio graphic for all layers");
     addAndMakeVisible(&scaleSlider);
+    
+    panSlider.setRange(0.0, 1.0, 0.01);
+    panSlider.setSliderStyle(Slider::RotaryVerticalDrag);
+    panSlider.setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
+    panSlider.setTooltip("Adjust pan for selected layer");
+    panSlider.addListener(this);
+    panSlider.setValue(0.5);
+    panSlider.setColour(Slider::rotarySliderFillColourId, Colours::deepskyblue);
+    panSlider.setColour(Slider::rotarySliderOutlineColourId, Colours::grey);
+    addAndMakeVisible(&panSlider);
+    
     
     //Labels
 	gainLabel.setText("Layer Gain", dontSendNotification);
 	gainLabel.setJustificationType(Justification::centred);
+    gainLabel.setColour(Label::textColourId, Colours::lightgrey);
 	addAndMakeVisible(&gainLabel);
+    
+    panLabel.setText("Layer Pan", dontSendNotification);
+    panLabel.setJustificationType(Justification::centred);
+    panLabel.setColour(Label::textColourId, Colours::lightgrey);
+    addAndMakeVisible(&panLabel);
     
     selectedLabel.setText("Selected Layer:", dontSendNotification);
     selectedLabel.setJustificationType(Justification::centred);
     selectedLabel.setEditable(false);
+    selectedLabel.setColour(Label::textColourId, Colours::lightgrey);
     addAndMakeVisible(&selectedLabel);
     
     selecterLabel.setText("None", dontSendNotification);
     selecterLabel.setJustificationType(Justification::centred);
     selecterLabel.setEditable(true);
     selecterLabel.addListener(this);
+    selecterLabel.setColour(Label::textColourId, Colours::lightgrey);
+    selecterLabel.setTooltip("Click to change selected layer");
     addAndMakeVisible(&selecterLabel);
     
     scaleLabel.setText("Scale", dontSendNotification);
     scaleLabel.setJustificationType(Justification::centred);
+    scaleLabel.setColour(Label::textColourId, Colours::lightgrey);
     addAndMakeVisible(&scaleLabel);
     
     //buttons
     playButton.addListener(this);
+    playButton.setToggleState(false, dontSendNotification);
     addAndMakeVisible(&playButton);
     
     toStartButton.addListener(this);
@@ -78,9 +110,11 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     
     clearAllButton.addListener(this);
     addAndMakeVisible(&clearAllButton);
+    
+    loopRecButton.addListener(this);
+    loopRecButton.setClickingTogglesState(true);
+    addAndMakeVisible(&loopRecButton);
 
-    
-    
 }
 LooperGUI::~LooperGUI(){
     
@@ -104,13 +138,18 @@ void LooperGUI::resized(){
     
     selectedLabel.setBounds(TIME_DISPLAY_WIDTH + 2, TOP_CORNER_Y + 0, 100, 20);
     selecterLabel.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 20, 70, 20);
-    gainSlider.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 70, 70, 70);
+    gainSlider.setBounds(TIME_DISPLAY_WIDTH + 23, TOP_CORNER_Y + 70, 50, 50);
     gainLabel.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 50, 70, 20);
-    muteButton.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 150, 50, 50);
+    
+    panSlider.setBounds(TIME_DISPLAY_WIDTH + 23, TOP_CORNER_Y + 150, 50, 50);
+    panLabel.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 130, 70, 20);
+    
+    muteButton.setBounds(TIME_DISPLAY_WIDTH + 13, TOP_CORNER_Y + 210, 50, 50);
     
     playButton.setBounds(10, 10, 50, 50);
     toStartButton.setBounds(70, 10, 50, 50);
     recordButton.setBounds(130, 10, 50, 50);
+    loopRecButton.setBounds(190, 10, 105, 50);
     
     clearLayerButton.setBounds(TOP_CORNER_X + 10, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 10, 70, 30);
     clearAllButton.setBounds(TOP_CORNER_X + 10, TOP_CORNER_Y + TIME_DISPLAY_HEIGHT + 50, 70, 30);
@@ -127,26 +166,50 @@ void LooperGUI::resized(){
 void LooperGUI::paint(Graphics &g){
     
     //draw time display background
-    g.setColour(Colours::slateblue);
+    //Colour c = Colours::grey;
+    //c = c.withAlpha(0.23);
+    
+    
+    g.setColour(Colours::grey.withAlpha(0.2f));
     g.fillRoundedRectangle(TOP_CORNER_X, TOP_CORNER_Y, TIME_DISPLAY_WIDTH, TIME_DISPLAY_HEIGHT, CORNER_SIZE);
     
     //draw label if recording first layer
-    if (recordState.get() == true && playState.get() == true && layerIcons.size() == 0) {
+    if (recordState.get() == true && playState.get() == true) {
+        
         g.setColour(Colours::red);
         
-        if (countIn.get() == true) {
-            g.drawSingleLineText("Count In...", TOP_CORNER_X + 30, TOP_CORNER_Y + 60);
+        if (layerIcons.size() == 0) {
+            
+            if (countIn.get() == true) {
+                g.drawSingleLineText("Count In...", 10, 90);
+            }
+            else {
+                g.drawSingleLineText("Recording First Layer...", 10, 90);
+            }
         }
         else {
-            g.drawSingleLineText("Recording First Layer...", TOP_CORNER_X + 30, TOP_CORNER_Y + 60);
+         
+            bool showLabel = false;
+            if (loopRecButton.getToggleState()) {
+                
+                if (recordCycle.get()) {
+                    showLabel = true;
+                }
+            }
+            else{
+                showLabel = true;
+            }
+            
+            if (layerIcons.size() < 7 && showLabel) {
+                String s;
+                s << "Recording Layer " << layerIcons.size() + 1;
+                g.drawSingleLineText(s, 10, 90);
+            }
         }
-        
     }
     
-    
-    
     //play head
-    g.setColour(Colours::pink);
+    g.setColour(Colours::grey);
     int playPosition = static_cast<int>(TIME_DISPLAY_WIDTH * transportPosition.get());
     g.drawRect(TOP_CORNER_X + playPosition, TOP_CORNER_Y, 2, TIME_DISPLAY_HEIGHT);
 }
@@ -185,8 +248,10 @@ void LooperGUI::buttonClicked(Button* button){
             if (listener != nullptr) {
                 listener->layerMuteToggled(selectedLayerIndex, muteButton.getToggleState());
             }
-            muteValues.set(selectedLayerIndex, muteButton.getToggleState());
+            muteValues.set(selectedLayerIndex, !muteValues[selectedLayerIndex]);
             layerIcons[selectedLayerIndex]->setMuted(muteButton.getToggleState());
+            
+            
             
         }
         
@@ -205,6 +270,7 @@ void LooperGUI::buttonClicked(Button* button){
                 layerIcons.remove(selectedLayerIndex);
                 gainValues.remove(selectedLayerIndex);
                 muteValues.remove(selectedLayerIndex);
+                panValues.remove(selectedLayerIndex);
                 
                 //reposition and re-number layers
                 for (int i = 0; i < layerIcons.size(); i++) {
@@ -229,11 +295,19 @@ void LooperGUI::buttonClicked(Button* button){
         layerIcons.clear();
         gainValues.clear();
         muteValues.clear();
+        panValues.clear();
+        
+        muteButton.setToggleState(false, dontSendNotification);
+        gainSlider.setValue(0.8);
+        selecterLabel.setText("None", dontSendNotification);
+        panSlider.setValue(0.5);
     }
     
     else if (button == &toStartButton){
         
-        listener->playButtonToggled();
+        if (playState.get() == true)
+            listener->playButtonToggled();
+        
         listener->setReaderToZero();
         
         
@@ -243,9 +317,13 @@ void LooperGUI::buttonClicked(Button* button){
         playButton.setToggleState(false, dontSendNotification);
     }
     
-    //else if (button == &testButton){
-        //listener->tick();
-    //}
+    else if (button == &loopRecButton){
+        
+        listener->setAlternateLoopRec(loopRecButton.getToggleState());
+        //loopRecButton.setToggleState(!loopRecButton.getToggleState(), 0);
+        
+        //std::cout << "Boo " << loopRecButton.getToggleState() << "\n";
+    }
 }
 
 
@@ -278,6 +356,8 @@ void LooperGUI::labelTextChanged (Label *labelThatHasChanged){
             //change slider value to selected layer's value
             gainSlider.setValue(gainValues[selectedLayerIndex], dontSendNotification);
             muteButton.setToggleState(muteValues[selectedLayerIndex], dontSendNotification);
+            panSlider.setValue(panValues[selectedLayerIndex], dontSendNotification);
+            
         }
     }
     
@@ -287,7 +367,9 @@ void LooperGUI::labelTextChanged (Label *labelThatHasChanged){
 void LooperGUI::setPlayState (const bool newState)
 {
     playState = newState;
+    playButton.setToggleState(playState.get(), dontSendNotification);
     clearLayerButton.setEnabled(!newState);
+    loopRecButton.setEnabled(!newState);
     repaint();
     
     
@@ -370,6 +452,16 @@ void LooperGUI::sliderValueChanged (Slider* slider)
             layerIcons[i]->setScale(slider->getValue());
         }
     }
+    else if (slider == &panSlider){
+        
+        // selected layer is valid
+        if (selectedLayerIndex >= 0 && selectedLayerIndex < layerIcons.size())
+        {
+            panValues.set(selectedLayerIndex, slider->getValue());
+            listener->layerPanChanged(selectedLayerIndex, slider->getValue());
+            layerIcons[selectedLayerIndex]->setPan(slider->getValue());
+        }
+    }
 }
 
 void LooperGUI::mouseDown(const MouseEvent &event)
@@ -400,6 +492,7 @@ void LooperGUI::selected(LayerGUI* layerGUI){
     //change slider value to selected layer's value
     gainSlider.setValue(gainValues[selectedLayerIndex]);
     muteButton.setToggleState(muteValues[selectedLayerIndex], dontSendNotification);
+    panSlider.setValue(panValues[selectedLayerIndex]);
     
     
     
@@ -415,10 +508,11 @@ void LooperGUI::shouldUpdatePlayState(){
 
 void LooperGUI::addLayer(CustomAudioThumbnail thumbnailToAdd){
     
-    std::cout << "GUI Layer Added\n";
+    //std::cout << "GUI Layer Added\n";
     
     //add a new layer Icon - first create a pointer to a new object
     LayerGUI* newLayerGUI = new LayerGUI(layerIcons.size(), thumbnailToAdd);
+    newLayerGUI->setTooltip("Click to select this layer");
     //pass this to owned array
     layerIcons.add(newLayerGUI);
     //add this looper gui object as its listener
@@ -434,8 +528,10 @@ void LooperGUI::addLayer(CustomAudioThumbnail thumbnailToAdd){
     
     
     sharedMemory.enter();
-    //increment number of layers and add gain value
+    //increment number of layers and add gain value and mute value
     gainValues.add(0.8);
+    muteValues.add(false);
+    panValues.add(0.5);
     //noOfLayers++;
     sharedMemory.exit();
     

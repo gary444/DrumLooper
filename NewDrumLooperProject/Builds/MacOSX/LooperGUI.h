@@ -17,6 +17,7 @@
 #include "ClearAllButton.h"
 #include "ClearLayerButton.h"
 #include "ToStartButton.h"
+#include "AlternateLoopRecordButton.h"
 #include "LayerGUI.h"
 #include "CustomAudioThumbnail.h"
 
@@ -49,6 +50,9 @@ public:
          //called when the gain of a layer is changed
          virtual void layerGainChanged(const int layerIndex, float newGain) = 0;
          
+         //called when a layer's gain is changed
+         virtual void layerPanChanged(const int layerIndex, const float newPanPosition) = 0;
+         
          //called when a layer is muted or unmuted
          virtual void layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted) = 0;
          
@@ -60,6 +64,9 @@ public:
          
          //set position to 0
          virtual void setReaderToZero() = 0;
+         
+         //set alternate cycle record option
+         virtual void setAlternateLoopRec(bool shouldBeOn) = 0;
          
          //virtual void tick() = 0;
          
@@ -121,14 +128,14 @@ public:
     
     void shouldUpdatePlayState();
     
-    
     void addLayer(CustomAudioThumbnail thumbnailToAdd);
     void deleteLayer(int layerIndex);
     void deleteAllLayers();
     
-    
-    
     void setThreadState (bool shouldBeRunning);
+    
+    
+    Atomic<int> recordCycle;
     
 private:
     
@@ -136,17 +143,21 @@ private:
     RecordButton recordButton;
     Slider gainSlider;
     Label gainLabel;
+    Slider panSlider;
+    Label panLabel;
     MuteButton muteButton;
     Label selectedLabel;
     Label selecterLabel;
     ClearAllButton clearAllButton;
     ClearLayerButton clearLayerButton;
     ToStartButton toStartButton;
+    AlternateLoopRecordButton loopRecButton;
     Slider scaleSlider;
     Label scaleLabel;
 
     OwnedArray<LayerGUI> layerIcons;
     Array<float> gainValues;
+    Array<float> panValues;
     Array<bool> muteValues;
     //test button
     //TextButton testButton;

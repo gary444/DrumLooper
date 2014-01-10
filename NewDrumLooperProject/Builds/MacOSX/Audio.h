@@ -18,6 +18,8 @@
 #include "ManualLoopControl.h"
 #include "SimpleTempoCalculator.h"
 #include "PatchInfo.h"
+#include "AudioSetupButton.h"
+
 
 class Audio : public AudioIODeviceCallback,
                 public Component,
@@ -26,7 +28,8 @@ public ModeSelecter::Listener,
 public ManualLoopControl::Listener,
 public Looper::Listener,
 public SimpleTempoCalculator::Listener,
-public MenuBarModel
+//public MenuBarModel,
+public Button::Listener
 {
 public:
     
@@ -44,6 +47,10 @@ public:
                                 int numOutputChannels,
                                 int numSamples);
     
+    
+    //Button Listener
+    void buttonClicked (Button* button);
+    
     void audioDeviceAboutToStart (AudioIODevice* device);
     void audioDeviceStopped();
     
@@ -60,6 +67,7 @@ public:
     void countInChanged(const int newNumberOfBeats);
     void tapTempoChanged(const bool shouldTapTempo);
     void metroToggled(const bool shouldBeOn);
+    void endLoopOnHitToggled(const bool shouldBeOn);
     
     //looper listener callback
     void looperReady(bool isReady);
@@ -67,19 +75,19 @@ public:
     //tempo calculator callbacks
     
     //MenuBarEnums/Callbacks========================================================
-    enum Menus {
-		OptionMenu=0, NumMenus
-	};
-    
-    enum FileMenuItems
-	{
-        AudioPrefs = 1,
-		
-		NumFileItems
-	};
-    StringArray getMenuBarNames();
-    PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName);
-	void menuItemSelected (int menuItemID, int topLevelMenuIndex);
+//    enum Menus {
+//		OptionMenu=0, NumMenus
+//	};
+//    
+//    enum FileMenuItems
+//	{
+//        AudioPrefs = 1,
+//		
+//		NumFileItems
+//	};
+//    StringArray getMenuBarNames();
+//    PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName);
+//	void menuItemSelected (int menuItemID, int topLevelMenuIndex);
     
     void showAudioPreferences(Component* centerComponent);
     void patch();
@@ -88,13 +96,14 @@ private:
     
     AudioDeviceManager audioDeviceManager;
     PatchInfo patchInfo;
-    int sampleRate;
+    //int sampleRate;
     
     //Components
     TriggerResponse triggerResponse;
     MasterControls masterControls;
     Looper looper;
     ModeSelecter modeSelecter;
+    AudioSetupButton audioSetupButton;
     ManualLoopControl manualLoopControl;
     //Meter meter[2];
     

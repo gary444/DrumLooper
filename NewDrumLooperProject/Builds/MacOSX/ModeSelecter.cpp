@@ -17,10 +17,15 @@ ModeSelecter::ModeSelecter(){
     
     ModeButtons* newButtons = new ModeButtons;
     newButtons->addListener(this);
-    tabbedComponent->addTab("Mode Select", Colours::whitesmoke, newButtons, true);
+    
+    
+    //g.setColour(Colours::grey.withAlpha(0.2f));
+    tabbedComponent->addTab("Mode Select", Colours::grey.withAlpha(0.4f), newButtons, true);
     
     ModeInfo* info = new ModeInfo;
-    tabbedComponent->addTab("Mode Info", Colours::whitesmoke, info, true);
+    tabbedComponent->addTab("Mode Info", Colours::grey.withAlpha(0.4f), info, true);
+    
+    tabbedComponent->setColour(TabbedComponent::outlineColourId, Colours::deepskyblue);
     
 }
 ModeSelecter::~ModeSelecter(){

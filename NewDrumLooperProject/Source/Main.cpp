@@ -27,19 +27,19 @@ public:
     void initialise (const String& commandLine)
     {
         appWindow = new AppWindow();
-        appWindow->centreWithSize(700, 620);
+        appWindow->centreWithSize(700, 615);
         appWindow->setVisible(true);
     }
 
     void shutdown()
     {
         
-        std::cout << "main shutdown reached\n";
+        //std::cout << "main shutdown reached\n";
         
         deleteAndZero (appWindow);
         //delete appWindow;
         
-        std::cout << "main shutdown reached - app window deleted\n";
+        //std::cout << "main shutdown reached - app window deleted\n";
         
     }
 

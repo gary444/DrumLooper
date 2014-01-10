@@ -13,6 +13,7 @@ Layer::Layer()
     layerIndex = 0;
     bufferSize = 352800;
     layerGain = 0.8;
+    layerPan = 0.5;
     isMuted = false;
     
     //create and init buffer
@@ -54,11 +55,19 @@ float Layer::getSampleData(int channel, int offset)
     
     sharedMemory.enter();
     
+    //apply mute/gain
     if (isMuted)
         output = 0.f;
     else
         output = output * layerGain;
+    
 
+    //apply pan
+    if (channel == 0)
+        output = output * (1 - layerPan);
+    else if (channel == 1)
+        output = output * layerPan;
+    
     sharedMemory.exit();
     
     return output;
@@ -88,12 +97,21 @@ void Layer::setLayerGain(float newGain){
     
     if (newGain >= 0.0 && newGain <= 1.0)
     {
-        sharedMemory.enter();//is this needed?
+        sharedMemory.enter();
         layerGain = newGain;
         sharedMemory.exit();
     }
 }
 
+void Layer::setLayerPan(float newPan){
+    
+    if (newPan >= 0.0 && newPan <= 1.0)
+    {
+        sharedMemory.enter();
+        layerPan = newPan;
+        sharedMemory.exit();
+    }
+}
 void Layer::setMuted(bool shouldBeMuted){
     
     sharedMemory.enter();
@@ -119,4 +137,33 @@ int Layer::getLayerIndex(){
     sharedMemory.exit();
     
     return iD;
+}
+
+void Layer::smooth(int sampleRate){
+    
+    //int sampleRate = 44100;
+    float fadeLengthTime = 0.001;
+    int fadeLengthSamples = fadeLengthTime * sampleRate;
+    
+    //fade in
+    
+    for (int i = 0; i < fadeLengthSamples; i++) {
+        
+        float* sampleL = audioSampleBuffer->getSampleData(0, i);
+        *sampleL = *sampleL * (i / fadeLengthSamples);
+        
+        float* sampleR = audioSampleBuffer->getSampleData(1, i);
+        *sampleR = *sampleR * (i / fadeLengthSamples);
+    }
+    
+    //fade out
+    for (int i = 0; i < fadeLengthSamples; i++) {
+        
+        float* sampleL = audioSampleBuffer->getSampleData(0, audioSampleBuffer->getNumSamples() - 1 - i);
+        *sampleL = *sampleL * (i / fadeLengthSamples);
+        
+        float* sampleR = audioSampleBuffer->getSampleData(1, audioSampleBuffer->getNumSamples() - 1 - i);
+        *sampleR = *sampleR * (i / fadeLengthSamples);
+    }
+    
 }

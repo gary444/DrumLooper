@@ -12,11 +12,11 @@
 class PlayButton : public TextButton
 {
 public:
-    PlayButton() : TextButton("u", "click here to play")
+    PlayButton() : TextButton("u", "Click to play")
     {
         setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnRight);
-        setColour(TextButton::buttonColourId, Colours::grey);
-        setColour(TextButton::buttonOnColourId, Colours::lightgrey);
+        setColour(TextButton::buttonOnColourId, Colours::deepskyblue);
+        setColour(TextButton::buttonColourId, Colours::steelblue);
         
     }
     Font 	getFont (){return Font ("Wingdings 3", jmin(getHeight(),getWidth())/1.5f, Font::plain);}

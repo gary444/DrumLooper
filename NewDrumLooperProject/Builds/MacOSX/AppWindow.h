@@ -34,6 +34,10 @@ public:
 	void closeButtonPressed();
     //AppComponent appComponent;
     //Audio audio;
+    
+private:
+    
+    TooltipWindow tooltipWindow;
 	
 };
 

@@ -9,17 +9,19 @@
 #ifndef DrumLooper_ClearLayerButton_h
 #define DrumLooper_ClearLayerButton_h
 
-class ClearAllButton : public TextButton
+
+class ClearLayerButton : public TextButton
 {
 public:
-    ClearAllButton() : TextButton("Clear All", "click here to record")
+    ClearLayerButton() : TextButton("Clear Layer", "Clear Selected Layer")
     {
         setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnRight);
-        setColour(TextButton::buttonColourId, Colours::grey);
-        setColour(TextButton::buttonOnColourId, Colours::grey);
+        setColour(TextButton::buttonColourId, Colours::deepskyblue);
+        setColour(TextButton::buttonOnColourId, Colours::deepskyblue);
+        //setColour(TextButton::textColourOnId, Colours::darkgrey);
+        //setColour(TextButton::textColourOffId, Colours::darkgrey);
     }
 private:
 };
-
 
 #endif

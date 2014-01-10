@@ -22,10 +22,11 @@ class ModeInfo : public Component{
 public:
     ModeInfo() {
         String s;
-        s << "Mode 1: manually start and end loop using drum trigger pad. \n\n Mode 2: Set tempo and play to metronome.\n\n Mode 3: Beat Detection";
+        s << "1: Manually start and end loop using drum trigger pad. \n\n 2: Set tempo and play to metronome.\n\n 3: Beat Detection";
         text = new Label;
         text->setEditable(false);
         text->setText(s, dontSendNotification);
+        text->setColour(Label::textColourId, Colours::lightgrey);
         addAndMakeVisible(text);
     };
     ~ModeInfo() {text = nullptr;};

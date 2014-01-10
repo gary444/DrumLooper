@@ -1,17 +1,20 @@
 //
 //  AdaptivePeakDetector.cpp
-//  DrumLooper
+//  sdaFileEffect
 //
-//  Created by Gary Rendle on 27/11/2013.
+//  Created by Gary Rendle on 13/12/2013.
 //
 //
 
 #include "AdaptivePeakDetector.h"
 
+
 AdaptivePeakDetector::AdaptivePeakDetector(){
     
     initialThreshold = 0.1;
     isDetecting = false;
+    
+    std::cout << "initial threshold = " << initialThreshold << "\n";
     
     float localAverageTimeInSeconds = 0.05;
     localAverageSampleCount = 0;
@@ -23,9 +26,11 @@ AdaptivePeakDetector::AdaptivePeakDetector(){
     averagesRequired = static_cast<int>(totalAverageTimeInSeconds / localAverageTimeInSeconds);
     
     holdTime = 0.4;
+    std::cout << "Hold Time = " << holdTime << "\n";
     holdTimeInSamples = static_cast<int>(holdTime * sampleRate);
     
-    detectionFactor = 8;
+    detectionFactor = 6;
+    std::cout << "detection factor = " << detectionFactor << "\n";
     
     localAverages.clear();
     
@@ -109,5 +114,6 @@ void AdaptivePeakDetector::reset(){
     
     sharedMemory.enter();
     isDetecting = false;
+    localAverages.clear();
     sharedMemory.exit();
 }

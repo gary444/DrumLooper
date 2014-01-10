@@ -1,4 +1,4 @@
-//
+    //
 //  Audio.cpp
 //  DrumLooper
 //
@@ -15,10 +15,13 @@ Audio::Audio()
 {
     modeIndex = 0;
     isUsingTapTempo = false;
-    sampleRate = 44100;
     sampleCount = 0;
     sampleCountTarget = 0;
     tempoTapAboutToStartLooper = false;
+    
+    //audio setup
+    audioSetupButton.addListener(this);
+    addAndMakeVisible(&audioSetupButton);
     
     //tempo calc
     addAndMakeVisible(&tempoCalculator);
@@ -58,6 +61,9 @@ Audio::Audio()
     audioDeviceManager.addAudioCallback(this);
     
     
+    //sampleRate = patchInfo.getSampleRate();
+    
+    
 }
 Audio::~Audio(){
     
@@ -75,23 +81,46 @@ void Audio::resized(){
     //int y = getHeight();
     
     
-    //masterControls.setBounds(x - 50, y - 150, 50 , 150);
-    //triggerResponse.setBounds(x - 50, 0, 50, 50);
-    
     masterControls.setBoundsRelative(0.9, 0.81, 0.25, 0.19);
+    
     triggerResponse.setBoundsRelative(0.75, 0.0, 0.25, 0.15);
-    looper.setBoundsRelative(0.0, 0.0, 0.75, 1.0);
-    modeSelecter.setBoundsRelative(0.75, 0.15, 0.25, 0.30);
-    manualLoopControl.setBoundsRelative(0.75, 0.46, 0.25, 0.35);
     tempoCalculator.setBoundsRelative(0.86, 0.0, 0.1, 0.1);
     
-    //meters
-//    for (int i = 0; i < NUMBER_OF_METERS; i++) {
-//        meter[i].setBounds(x - 110, 100 + (i * 20), 110, 20);
-//    }
+    looper.setBoundsRelative(0.0, 0.0, 0.75, 1.0);
+    
+    modeSelecter.setBoundsRelative(0.75, 0.15, 0.25, 0.30);
+    
+    manualLoopControl.setBoundsRelative(0.75, 0.46, 0.25, 0.35);
+    
+    
+    //audioSetupButton.setBounds(525, 420, 90, 30);
+    audioSetupButton.setBoundsRelative(0.75, 0.83, 0.13, 0.05);
+    
 }
 void Audio::paint (Graphics &g){
     
+    int x = getWidth();
+    int y = getHeight();
+    
+    Colour colour1(13, 36, 85);
+    //Colour colour2(0b, 3d, ae);
+    
+    //0b3dae
+   // 133685
+    
+    ColourGradient gradient1(colour1, 0, 0, Colours::darkgrey, x, y, false);
+    
+    g.setGradientFill(gradient1);
+    
+    g.fillAll();
+    
+    g.setColour(Colours::lightgrey);
+    String s;
+    s << "Audio Device: " << patchInfo.getDeviceName() << ". Sample Rate: " << patchInfo.getSampleRate() << "Hz";
+    g.drawSingleLineText(s, 5, y - 5);
+    
+    
+   // ColourGradient (Colour colour1, float x1, float y1, Colour colour2, float x2, float y2, bool isRadial)
 }
 
 //AudioCallbacks================================================================
@@ -189,6 +218,8 @@ void Audio::audioDeviceIOCallback (const float** inputChannelData,
             outputL = looper.processSample(outputL, 0);
             outputR = looper.processSample(outputR, 1);
             
+            
+            
             //apply master control
             *outL = masterControls.processSample(outputL);
             *outR = masterControls.processSample(outputR);
@@ -199,6 +230,19 @@ void Audio::audioDeviceIOCallback (const float** inputChannelData,
             outL++;
             outR++;
         }
+    }
+}
+
+
+void Audio::buttonClicked (Button* button){
+    
+    
+    //std::cout << "abutton clicked\n";
+    
+    if (button == &audioSetupButton) {
+        
+        showAudioPreferences(this);
+        //std::cout << "audio setup\n";
     }
 }
 
@@ -221,6 +265,10 @@ void Audio::triggerReceived(const int triggerType){
         
         looper.trigger();
     }
+    else if (modeIndex == 2){
+        
+        //looper.deleteAllLayers();
+    }
     
 }
 void Audio::tempoDetected(float newTempo){
@@ -228,7 +276,7 @@ void Audio::tempoDetected(float newTempo){
     looper.tempoValueChanged(newTempo);
     
     sampleCount = 0;
-    sampleCountTarget = (sampleRate * 60) / newTempo;
+    sampleCountTarget = (patchInfo.getSampleRate() * 60) / newTempo;
     tempoTapAboutToStartLooper.set(true);
     
     //lock before updating slider
@@ -257,7 +305,7 @@ void Audio::tempoValueChanged(const float newTempo){
 }
 void Audio::numberOfBeatsChanged(const int newNumberOfBeats)
 {
-    if (modeIndex == 1) {
+    if (modeIndex == 1 || modeIndex == 2) {
         looper.numberOfBeatsChanged(newNumberOfBeats);
     }
 
@@ -281,49 +329,56 @@ void Audio::metroToggled(const bool shouldBeOn){
     looper.metroToggled(shouldBeOn);
 }
 
+
+void Audio::endLoopOnHitToggled(const bool shouldBeOn){
+    
+    looper.endLoopOnHitToggled(shouldBeOn);
+}
+
 //looper listener callback
 void  Audio::looperReady(bool isReady){
     
     
     modeSelecter.setEnabled(isReady);
     manualLoopControl.setEnabled(isReady);
+    audioSetupButton.setEnabled(isReady);
 }
 
 //tempo calculator callbacks
 
 
-StringArray Audio::getMenuBarNames()
-{
-	const char* const names[] = { "Options", 0 };
-	return StringArray (names);
-}
-
-PopupMenu Audio::getMenuForIndex (int topLevelMenuIndex, const String& menuName)
-{
-	PopupMenu menu;
-	if (topLevelMenuIndex == 0)
-        menu.addItem(AudioPrefs, "Audio Preferences", true, false);
-	return menu;
-}
-
-void Audio::menuItemSelected (int menuItemID, int topLevelMenuIndex)
-{
-	if (topLevelMenuIndex == OptionMenu)
-    {
-        if (menuItemID == AudioPrefs)
-        {
-            showAudioPreferences(this);
-        }
-        
-    }
-}
+//StringArray Audio::getMenuBarNames()
+//{
+//	const char* const names[] = { "Options", 0 };
+//	return StringArray (names);
+//}
+//
+//PopupMenu Audio::getMenuForIndex (int topLevelMenuIndex, const String& menuName)
+//{
+//	PopupMenu menu;
+//	if (topLevelMenuIndex == 0)
+//        menu.addItem(AudioPrefs, "Audio Preferences", true, false);
+//	return menu;
+//}
+//
+//void Audio::menuItemSelected (int menuItemID, int topLevelMenuIndex)
+//{
+//	if (topLevelMenuIndex == OptionMenu)
+//    {
+//        if (menuItemID == AudioPrefs)
+//        {
+//            showAudioPreferences(this);
+//        }
+//        
+//    }
+//}
 void Audio::showAudioPreferences(Component* centerComponent)
 {
     AudioDeviceSelectorComponent audioSettingsComp (audioDeviceManager,
                                                     2, 3, 2, 2,
                                                     false, false, false, true);
     audioSettingsComp.setSize (500, 300);
-    DialogWindow::showModalDialog ("Drum Looper Audio Setup...Close to Start App!", &audioSettingsComp, centerComponent, Colours::azure, true, true);
+    DialogWindow::showModalDialog ("Drum Looper Audio Setup", &audioSettingsComp, centerComponent, Colours::grey, true, true);
     
     patch();
     
@@ -342,4 +397,14 @@ void Audio::patch(){
     patchInfo.setNumberOfOutputChannels(outs);
     std::cout << "DrumLooper is using " << iODevice->getName() << " as audio device\n"
     << "Inputs: " << ins << "\nOutputs: " << outs << "\n";
+    
+    patchInfo.setDeviceName(iODevice->getName());
+    patchInfo.setSampleRate(iODevice->getCurrentSampleRate());
+    
+    
+    tempoCalculator.setSampleRate(patchInfo.getSampleRate());
+    triggerResponse.setSampleRate(patchInfo.getSampleRate());
+    looper.setSampleRate(patchInfo.getSampleRate());
+    
+    repaint();
 }

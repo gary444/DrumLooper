@@ -16,6 +16,10 @@
 #include "Metronome.h"
 #include "CustomAudioThumbnail.h"
 #include "BeatDetector.h"
+#include "BeatDetectorB.h"
+
+//forward declaration
+//class BeatDetector;
 
 /**
 
@@ -53,14 +57,13 @@ public:
     void playButtonToggled();
     void recordButtonToggled();
     void layerGainChanged(const int layerIndex, float newGain);
+    void layerPanChanged(const int layerIndex, const float newPanPosition);
     void layerMuteToggled(const int layerIndexToggled, bool shouldBeMuted);
     void deleteLayer(int layerIndex);
     void deleteAllLayers();
     void setReaderToZero();
+    void setAlternateLoopRec(bool shouldBeOn);
     
-    //Beat Detector Callbacks
-    void setLoopStartPoint();
-    void setLoopEndPoint();
     
     /**
      Starts or stops playback of the looper
@@ -86,7 +89,7 @@ public:
     
     void trigger();
     
-    void startLoop();
+    //void startLoop();
     
     void endLoop();
     
@@ -98,6 +101,7 @@ public:
     void numberOfBeatsChanged(const int newNumberOfBeats);
     void countInChanged(const int newNumberOfBeats);
     void metroToggled(bool shouldBeOn);
+    void endLoopOnHitToggled(const bool shouldBeOn);
     
     /**
      Processes the audio sample by sample.
@@ -109,9 +113,12 @@ public:
     
     void setListener(Listener* newListener);
     
-    
     //void tick();
     
+    //beat detector callbacks
+    void tempoUpdated(float newTempo);
+    void setLoopStartPoint();
+    void setLoopEndPoint();
     
     
 private:
@@ -124,6 +131,8 @@ private:
     Atomic<int> mode1loopSet;
     Atomic<int> mode3waiting;
     Atomic<int> detectingBeat;
+    Atomic<int> alternateLoopRec;
+    bool alternateLoopRecState;
     
     CriticalSection sharedMemory;
     

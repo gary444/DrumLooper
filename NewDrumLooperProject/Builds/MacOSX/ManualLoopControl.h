@@ -31,6 +31,7 @@ public:
         virtual void countInChanged(const int newNumberOfBeats) = 0;
         virtual void tapTempoChanged(const bool shouldTapTempo) = 0;
         virtual void metroToggled(const bool shouldBeOn) = 0;
+        virtual void endLoopOnHitToggled(const bool shouldBeOn) = 0;
         
     };
     /**
@@ -97,6 +98,8 @@ private:
     Label tapTempoLabel;
     ToggleButton metroOnOffButton;
     Label metroOnOffLabel;
+    ToggleButton endLoopOnHitButton;
+    Label endLoopOnHitLabel;
     
     //Shared Memory Lock
     CriticalSection sharedMemory;//needed? are all operations taking place in message thread?

@@ -15,6 +15,8 @@ MasterControls::MasterControls(){
     gainSlider.setRange(0.0, 1.0, 0.01);
     gainSlider.setValue(0.8);
     gainSlider.addListener(this);
+    gainSlider.setColour(Slider::thumbColourId, Colours::deepskyblue);
+    gainSlider.setTooltip("Adjust master volume");
     addAndMakeVisible(&gainSlider);
     
     //repaint();
@@ -31,7 +33,7 @@ void MasterControls::resized(){
 }
 void MasterControls::paint(Graphics &g){
     
-    g.setColour(Colours::black);
+    g.setColour(Colours::lightgrey);
     g.drawSingleLineText("Master", 0, 90);
 }
 

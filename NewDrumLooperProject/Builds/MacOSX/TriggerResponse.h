@@ -80,21 +80,8 @@ protected:
     
     CriticalSection sharedMemory;
     
-    //SimpleTempoCalculator tempoCalculator;
-    
     Listener* listener;
     
-//    float triggerThreshold;
-//    //float noiseThreshold;
-//    int sampleRate;
-//    float holdTime;
-//    int holdTimeInSamples;
-//    bool isHolding;
-//    int holdCounter;
-    //int indicatorCount;
-    //bool indicatorCounting;
-    
-    //Atomic<int> isUsingTapTempo;
 };
 
 #endif /* defined(__DrumLooper__TriggerResponse__) */

@@ -12,11 +12,12 @@
 class MuteButton : public TextButton
 {
 public:
-    MuteButton() : TextButton("Mute", "click to mute this channel") {
+    MuteButton() : TextButton("M", "Mute/Unmute selected channel") {
     
     setColour(TextButton::buttonColourId, Colours::darkred);
     setColour(TextButton::buttonOnColourId, Colours::red);
-    setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnRight);
+    //setColour(TextButton::textColourOffId, Colours::darkgrey);
+    //setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnRight);
     }
     
 };

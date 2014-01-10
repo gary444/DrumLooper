@@ -14,6 +14,7 @@ LayerGUI::LayerGUI(){
     listener = nullptr;
     isSelected = false;
     gain = 0.8;
+    pan = 0.5;
     isMuted = false;
     scale = 5;
     gotThumbnailInfo = false;
@@ -29,6 +30,7 @@ LayerGUI::LayerGUI(int newLayerIndex, CustomAudioThumbnail newThumbnailInfo){
     listener = nullptr;
     isSelected = false;
     gain = 0.8;
+    pan = 0.5;
     isMuted = false;
     scale = 20;
     gotThumbnailInfo = false;
@@ -58,7 +60,11 @@ void LayerGUI::paint (Graphics &g){
     int y = getHeight();
     
     //bg fill
-    g.setColour(Colours::whitesmoke);
+    //g.setColour(Colours::whitesmoke);
+    ColourGradient gradient1(Colours::whitesmoke, 0, 0, Colours::grey, 0, y, false);
+    
+    g.setGradientFill(gradient1);
+    
     g.fillRoundedRectangle(0, 0, x, y, 3);
     
     //thumbnail
@@ -68,7 +74,7 @@ void LayerGUI::paint (Graphics &g){
     }
     
     
-    g.setColour(Colours::lightblue);
+    g.setColour(Colours::deepskyblue);
     
     for (int i = 0; i < x; i++) {
         
@@ -84,7 +90,7 @@ void LayerGUI::paint (Graphics &g){
     
     //label - add 1 to convert from index to human number. draw red if muted
     if (isMuted) {
-        g.setColour(Colours::red);
+        g.setColour(Colours::darkred);
     }
     else
     {
@@ -97,11 +103,17 @@ void LayerGUI::paint (Graphics &g){
     //gain indicator
     int indicatorHeight = static_cast<int>(y * gain);
     g.setColour(Colours::grey);
-    g.fillRect(x - 8, y - indicatorHeight, 8, indicatorHeight);
+    g.fillRect(x - 9, y - indicatorHeight, 9, indicatorHeight);
+    
+    //pan indicator
+    int panIndicatorPosition = static_cast<int>(9.f - (9.f * pan));
+    g.setColour(Colours::darkgrey);
+    g.fillRect(x - panIndicatorPosition - 1, y - indicatorHeight, 1, indicatorHeight);
+    
     
     //selected indicator
     if (isSelected) {
-        g.setColour(Colours::black);
+        g.setColour(Colours::deepskyblue);
         g.drawRoundedRectangle(0, 0, x, getHeight(), 3, 2);
         
     }
@@ -135,6 +147,12 @@ void LayerGUI::setSelected(bool shouldBeSelected){
 void LayerGUI::setGain(float newGain){
     
     gain = newGain;
+    repaint();
+}
+
+void LayerGUI::setPan(float newPan){
+    
+    pan = newPan;
     repaint();
 }
 
