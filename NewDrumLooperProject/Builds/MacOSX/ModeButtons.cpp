@@ -12,6 +12,7 @@
 
 ModeButtons::ModeButtons(){
     
+    
     //init listener
     listener = nullptr;
     
@@ -115,4 +116,12 @@ void ModeButtons::setEnabled(bool shouldBeEnabled){
     }
     
     std::cout << "buttons enabled: " << shouldBeEnabled << "\n";
+}
+
+
+void ModeButtons::setModeFromKeypress(int newModeIndex){
+    
+    if (newModeIndex < NUMBER_OF_MODES && newModeIndex > -1) {
+        buttonClicked(buttons[newModeIndex]);
+    }
 }

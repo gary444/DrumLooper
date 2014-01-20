@@ -12,7 +12,7 @@
 class PlayButton : public TextButton
 {
 public:
-    PlayButton() : TextButton("u", "Click to play")
+    PlayButton() : TextButton("u", "Click to Play/Stop Looper")
     {
         setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnRight);
         setColour(TextButton::buttonOnColourId, Colours::deepskyblue);

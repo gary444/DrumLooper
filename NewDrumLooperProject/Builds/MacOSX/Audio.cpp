@@ -13,6 +13,9 @@
 
 Audio::Audio()
 {
+    addKeyListener(this);
+    
+    looperIsReady = true;
     modeIndex = 0;
     isUsingTapTempo = false;
     sampleCount = 0;
@@ -34,8 +37,8 @@ Audio::Audio()
     addAndMakeVisible(&triggerResponse);
     
     //mode selecter
-    modeSelecter.addListener(this);
-    addAndMakeVisible(&modeSelecter);
+    modeButtons.addListener(this);
+    addAndMakeVisible(&modeButtons);
     
     //manual Loop control
     manualLoopControl.addListener(this);
@@ -69,7 +72,6 @@ Audio::~Audio(){
     
     audioDeviceManager.removeAudioCallback(this);
     
-    //std::cout << "Audio dtor\n";
 }
 
 
@@ -88,7 +90,7 @@ void Audio::resized(){
     
     looper.setBoundsRelative(0.0, 0.0, 0.75, 1.0);
     
-    modeSelecter.setBoundsRelative(0.75, 0.15, 0.25, 0.30);
+    modeButtons.setBoundsRelative(0.75, 0.15, 0.25, 0.30);
     
     manualLoopControl.setBoundsRelative(0.75, 0.46, 0.25, 0.35);
     
@@ -236,13 +238,8 @@ void Audio::audioDeviceIOCallback (const float** inputChannelData,
 
 void Audio::buttonClicked (Button* button){
     
-    
-    //std::cout << "abutton clicked\n";
-    
     if (button == &audioSetupButton) {
-        
         showAudioPreferences(this);
-        //std::cout << "audio setup\n";
     }
 }
 
@@ -255,20 +252,7 @@ void Audio::audioDeviceStopped(){
 //Trigger Response Callbacks
 void Audio::triggerReceived(const int triggerType){
     
-    //std::cout << "trigger recieved\n";
-    
-    //first mode
-    if (modeIndex == 0) {
-        looper.trigger();
-    }
-    else if(modeIndex == 1){
-        
-        looper.trigger();
-    }
-    else if (modeIndex == 2){
-        
-        //looper.deleteAllLayers();
-    }
+    looper.trigger();
     
 }
 void Audio::tempoDetected(float newTempo){
@@ -338,40 +322,12 @@ void Audio::endLoopOnHitToggled(const bool shouldBeOn){
 //looper listener callback
 void  Audio::looperReady(bool isReady){
     
+    looperIsReady = isReady;
     
-    modeSelecter.setEnabled(isReady);
+    modeButtons.setEnabled(isReady);
     manualLoopControl.setEnabled(isReady);
     audioSetupButton.setEnabled(isReady);
 }
-
-//tempo calculator callbacks
-
-
-//StringArray Audio::getMenuBarNames()
-//{
-//	const char* const names[] = { "Options", 0 };
-//	return StringArray (names);
-//}
-//
-//PopupMenu Audio::getMenuForIndex (int topLevelMenuIndex, const String& menuName)
-//{
-//	PopupMenu menu;
-//	if (topLevelMenuIndex == 0)
-//        menu.addItem(AudioPrefs, "Audio Preferences", true, false);
-//	return menu;
-//}
-//
-//void Audio::menuItemSelected (int menuItemID, int topLevelMenuIndex)
-//{
-//	if (topLevelMenuIndex == OptionMenu)
-//    {
-//        if (menuItemID == AudioPrefs)
-//        {
-//            showAudioPreferences(this);
-//        }
-//        
-//    }
-//}
 void Audio::showAudioPreferences(Component* centerComponent)
 {
     AudioDeviceSelectorComponent audioSettingsComp (audioDeviceManager,
@@ -398,6 +354,8 @@ void Audio::patch(){
     std::cout << "DrumLooper is using " << iODevice->getName() << " as audio device\n"
     << "Inputs: " << ins << "\nOutputs: " << outs << "\n";
     
+    
+    
     patchInfo.setDeviceName(iODevice->getName());
     patchInfo.setSampleRate(iODevice->getCurrentSampleRate());
     
@@ -407,4 +365,40 @@ void Audio::patch(){
     looper.setSampleRate(patchInfo.getSampleRate());
     
     repaint();
+}
+
+//key listener callback
+bool Audio::keyPressed (const KeyPress &key, Component *originatingComponent){
+    
+    bool done = false;
+    
+    std::cout << "Audio Recieved "<< key.getTextDescription() << "\n";
+    
+    if (key.getTextDescription() == "command + A") {
+        
+        showAudioPreferences(this);
+        done = true;
+    }
+    else if (key.getTextDescription() == "command + 1") {
+        
+        if (looperIsReady)
+            modeButtons.setModeFromKeypress(0);
+        done = true;
+    }
+    else if (key.getTextDescription() == "command + 2") {
+        
+        if (looperIsReady)
+            modeButtons.setModeFromKeypress(1);
+        done = true;
+    }
+    else if (key.getTextDescription() == "command + 3") {
+        if (looperIsReady)
+            modeButtons.setModeFromKeypress(2);
+        done = true;
+    }
+    
+    
+    
+    
+    return done;
 }

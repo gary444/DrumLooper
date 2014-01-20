@@ -142,28 +142,30 @@ int Layer::getLayerIndex(){
 void Layer::smooth(int sampleRate){
     
     //int sampleRate = 44100;
-    float fadeLengthTime = 0.001;
-    int fadeLengthSamples = fadeLengthTime * sampleRate;
+    float fadeInLengthTime = 0.0005;
+    float fadeOutLengthTime = 0.005;
+    int fadeInLengthSamples = fadeInLengthTime * sampleRate;
+    int fadeOutLengthSamples = fadeOutLengthTime * sampleRate;
     
     //fade in
     
-    for (int i = 0; i < fadeLengthSamples; i++) {
+    for (int i = 0; i < fadeInLengthSamples; i++) {
         
         float* sampleL = audioSampleBuffer->getSampleData(0, i);
-        *sampleL = *sampleL * (i / fadeLengthSamples);
+        *sampleL = *sampleL * (i / fadeInLengthSamples);
         
         float* sampleR = audioSampleBuffer->getSampleData(1, i);
-        *sampleR = *sampleR * (i / fadeLengthSamples);
+        *sampleR = *sampleR * (i / fadeInLengthSamples);
     }
     
     //fade out
-    for (int i = 0; i < fadeLengthSamples; i++) {
+    for (int i = 0; i < fadeOutLengthSamples; i++) {
         
         float* sampleL = audioSampleBuffer->getSampleData(0, audioSampleBuffer->getNumSamples() - 1 - i);
-        *sampleL = *sampleL * (i / fadeLengthSamples);
+        *sampleL = *sampleL * (i / fadeOutLengthSamples);
         
         float* sampleR = audioSampleBuffer->getSampleData(1, audioSampleBuffer->getNumSamples() - 1 - i);
-        *sampleR = *sampleR * (i / fadeLengthSamples);
+        *sampleR = *sampleR * (i / fadeOutLengthSamples);
     }
     
 }

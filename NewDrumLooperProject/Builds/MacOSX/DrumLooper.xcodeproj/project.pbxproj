@@ -24,11 +24,11 @@
 		7ADAA55C020A9A4757AD905F /* juce_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6C0B31F464326DF678685381 /* juce_video.mm */; };
 		86134B1CCC06C3A4D3CA4851 /* juce_audio_formats.mm in Sources */ = {isa = PBXBuildFile; fileRef = C65DE3662C6AD3EB8729E300 /* juce_audio_formats.mm */; };
 		8697FE3EEB304892A1B7BBB7 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2057344235554C3404161EEF /* QTKit.framework */; };
+		872FC771188052DA000A7C01 /* BeatDetectorB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 872FC76F188052DA000A7C01 /* BeatDetectorB.cpp */; };
 		874D780E1841183700ADE7C3 /* DrumIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 874D780D1841183700ADE7C3 /* DrumIcon.png */; };
 		874D78101841199C00ADE7C3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 874D780F1841199C00ADE7C3 /* Images.xcassets */; };
 		877590E3187711BB006FA024 /* AdaptivePeakDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 877590DB187711BB006FA024 /* AdaptivePeakDetector.cpp */; };
 		877590E4187711BB006FA024 /* BeatDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 877590DD187711BB006FA024 /* BeatDetector.cpp */; };
-		877590E5187711BB006FA024 /* BeatDetectorB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 877590DF187711BB006FA024 /* BeatDetectorB.cpp */; };
 		877590E6187711BB006FA024 /* BeatDetectorBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 877590E1187711BB006FA024 /* BeatDetectorBase.cpp */; };
 		877590E918771531006FA024 /* DetectionState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 877590E718771531006FA024 /* DetectionState.cpp */; };
 		87B3281918462E9600ABE186 /* PeakDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 87B3281718462E9600ABE186 /* PeakDetector.cpp */; };
@@ -44,7 +44,6 @@
 		B762A033182412B500D7D268 /* Meter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A031182412B500D7D268 /* Meter.cpp */; };
 		B762A036182412C300D7D268 /* TriggerResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A034182412C300D7D268 /* TriggerResponse.cpp */; };
 		B762A039182412D400D7D268 /* MasterControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B762A037182412D400D7D268 /* MasterControls.cpp */; };
-		B7D336C1182D1DB100D48688 /* ModeSelecter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D336BF182D1DB100D48688 /* ModeSelecter.cpp */; };
 		B7D336C4182D1ED300D48688 /* ModeButtons.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D336C2182D1ED300D48688 /* ModeButtons.cpp */; };
 		B7D79624182933D7002A5EBE /* Looper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D79622182933D7002A5EBE /* Looper.cpp */; };
 		B7D796271829349D002A5EBE /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7D796251829349D002A5EBE /* Layer.cpp */; };
@@ -524,6 +523,8 @@
 		8541D2705842953CE422BAE5 /* juce_ChangeBroadcaster.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_ChangeBroadcaster.cpp; path = ../../JuceLibraryCode/modules/juce_events/broadcasters/juce_ChangeBroadcaster.cpp; sourceTree = SOURCE_ROOT; };
 		85D1B24C99818F4FFDEDAEB2 /* juce_cryptography.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_cryptography.h; path = "../../../Juce/JUCE-master/modules/juce_cryptography/juce_cryptography.h"; sourceTree = SOURCE_ROOT; };
 		85DF1B7D58AD4BCE042958A9 /* juce_AudioFormatReaderSource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_AudioFormatReaderSource.cpp; path = ../../JuceLibraryCode/modules/juce_audio_formats/format/juce_AudioFormatReaderSource.cpp; sourceTree = SOURCE_ROOT; };
+		872FC76F188052DA000A7C01 /* BeatDetectorB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BeatDetectorB.cpp; sourceTree = "<group>"; };
+		872FC770188052DA000A7C01 /* BeatDetectorB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeatDetectorB.h; sourceTree = "<group>"; };
 		87345B19D565F6497B360F51 /* juce_ArrowButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_ArrowButton.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/buttons/juce_ArrowButton.h; sourceTree = SOURCE_ROOT; };
 		874D780D1841183700ADE7C3 /* DrumIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DrumIcon.png; sourceTree = "<group>"; };
 		874D780F1841199C00ADE7C3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DrumLooper/Images.xcassets; sourceTree = "<group>"; };
@@ -533,8 +534,6 @@
 		877590DC187711BB006FA024 /* AdaptivePeakDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdaptivePeakDetector.h; sourceTree = "<group>"; };
 		877590DD187711BB006FA024 /* BeatDetector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BeatDetector.cpp; sourceTree = "<group>"; };
 		877590DE187711BB006FA024 /* BeatDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeatDetector.h; sourceTree = "<group>"; };
-		877590DF187711BB006FA024 /* BeatDetectorB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BeatDetectorB.cpp; sourceTree = "<group>"; };
-		877590E0187711BB006FA024 /* BeatDetectorB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeatDetectorB.h; sourceTree = "<group>"; };
 		877590E1187711BB006FA024 /* BeatDetectorBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BeatDetectorBase.cpp; sourceTree = "<group>"; };
 		877590E2187711BB006FA024 /* BeatDetectorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeatDetectorBase.h; sourceTree = "<group>"; };
 		877590E718771531006FA024 /* DetectionState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DetectionState.cpp; sourceTree = "<group>"; };
@@ -724,8 +723,6 @@
 		B762A038182412D400D7D268 /* MasterControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterControls.h; sourceTree = "<group>"; };
 		B7A4C79C183BDA510040352D /* PatchInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PatchInfo.h; sourceTree = "<group>"; };
 		B7C896D9FADC82721568BB43 /* juce_TemporaryFile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TemporaryFile.cpp; path = ../../JuceLibraryCode/modules/juce_core/files/juce_TemporaryFile.cpp; sourceTree = SOURCE_ROOT; };
-		B7D336BF182D1DB100D48688 /* ModeSelecter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModeSelecter.cpp; sourceTree = "<group>"; };
-		B7D336C0182D1DB100D48688 /* ModeSelecter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModeSelecter.h; sourceTree = "<group>"; };
 		B7D336C2182D1ED300D48688 /* ModeButtons.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModeButtons.cpp; sourceTree = "<group>"; };
 		B7D336C3182D1ED300D48688 /* ModeButtons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModeButtons.h; sourceTree = "<group>"; };
 		B7D79622182933D7002A5EBE /* Looper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Looper.cpp; sourceTree = "<group>"; };
@@ -2038,14 +2035,14 @@
 		8777D8951841845B00535D93 /* BeatDetection */ = {
 			isa = PBXGroup;
 			children = (
+				872FC76F188052DA000A7C01 /* BeatDetectorB.cpp */,
+				872FC770188052DA000A7C01 /* BeatDetectorB.h */,
 				877590E718771531006FA024 /* DetectionState.cpp */,
 				877590E818771531006FA024 /* DetectionState.h */,
 				877590DB187711BB006FA024 /* AdaptivePeakDetector.cpp */,
 				877590DC187711BB006FA024 /* AdaptivePeakDetector.h */,
 				877590DD187711BB006FA024 /* BeatDetector.cpp */,
 				877590DE187711BB006FA024 /* BeatDetector.h */,
-				877590DF187711BB006FA024 /* BeatDetectorB.cpp */,
-				877590E0187711BB006FA024 /* BeatDetectorB.h */,
 				877590E1187711BB006FA024 /* BeatDetectorBase.cpp */,
 				877590E2187711BB006FA024 /* BeatDetectorBase.h */,
 			);
@@ -2391,8 +2388,6 @@
 		B7D336C8182D2E6D00D48688 /* ModeSelection */ = {
 			isa = PBXGroup;
 			children = (
-				B7D336BF182D1DB100D48688 /* ModeSelecter.cpp */,
-				B7D336C0182D1DB100D48688 /* ModeSelecter.h */,
 				B7D336C2182D1ED300D48688 /* ModeButtons.cpp */,
 				B7D336C3182D1ED300D48688 /* ModeButtons.h */,
 			);
@@ -2879,7 +2874,6 @@
 				4E0C393EB8F1EE744BC4A166 /* Main.cpp in Sources */,
 				67FE0BBEF56271D2E489B137 /* BinaryData.cpp in Sources */,
 				E0230D133160604FEBF87FBB /* juce_audio_basics.mm in Sources */,
-				877590E5187711BB006FA024 /* BeatDetectorB.cpp in Sources */,
 				3689D674191A9FA40EB0EE00 /* juce_audio_devices.mm in Sources */,
 				86134B1CCC06C3A4D3CA4851 /* juce_audio_formats.mm in Sources */,
 				0BAE061CBCC3B122DC00DFD1 /* juce_audio_processors.mm in Sources */,
@@ -2905,9 +2899,9 @@
 				B7D796271829349D002A5EBE /* Layer.cpp in Sources */,
 				B7D7962A18293705002A5EBE /* LooperGUI.cpp in Sources */,
 				B7D7962F182963A9002A5EBE /* LayerGUI.cpp in Sources */,
+				872FC771188052DA000A7C01 /* BeatDetectorB.cpp in Sources */,
 				877590E6187711BB006FA024 /* BeatDetectorBase.cpp in Sources */,
 				877590E4187711BB006FA024 /* BeatDetector.cpp in Sources */,
-				B7D336C1182D1DB100D48688 /* ModeSelecter.cpp in Sources */,
 				877590E3187711BB006FA024 /* AdaptivePeakDetector.cpp in Sources */,
 				B7D336C4182D1ED300D48688 /* ModeButtons.cpp in Sources */,
 				B72C40AC1832ABAC00D92B8E /* ManualLoopControl.cpp in Sources */,

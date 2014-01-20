@@ -27,7 +27,8 @@ public Button::Listener,
 public Thread,
 public Slider::Listener,
 public LayerGUI::Listener,
-public Label::Listener
+public Label::Listener,
+public KeyListener
 //public MouseListener
 {
 public:
@@ -110,9 +111,13 @@ public:
      */
     bool getRecordState () const;
     
+    int getSelectedLayerIndex() const;
+    
     void setLoopSampleLength(const int newLength);
     
     void setTransportUpdateStatus(bool shouldUpdate, float relativePosition, bool countingIn);
+    
+    void updateTriggerFunction(String newFunction);
     
     //Thread Callback===============================================================
 	void run();
@@ -134,8 +139,13 @@ public:
     
     void setThreadState (bool shouldBeRunning);
     
+    void cancelAlternateLoopRec();
     
     Atomic<int> recordCycle;
+    
+    //key listener callback
+    bool keyPressed (const KeyPress &key, Component *originatingComponent);
+    
     
 private:
     
@@ -179,6 +189,8 @@ private:
     Atomic<int> updatePlayState;
     Atomic<float> transportPosition;
     int loopSampleLength;
+    
+    String triggerFunction;
     
     
     //layout variables

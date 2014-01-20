@@ -10,12 +10,14 @@
 
 Looper::Looper()
 {
+    addKeyListener(this);
+    
     //inits
     playState = false;
     recordState = false;
     countInState = false;
     alternateLoopRec = false;
-    alternateLoopRecState = true;
+    //alternateLoopRecState = true;
     mode1loopSet = false;
     detectingBeat = false;
     mode3waiting = false;
@@ -39,7 +41,8 @@ Looper::Looper()
     
     //connect beat detector
     beatDetector.setListener(this);
-    
+    beatDetectorB.setListener(this);
+    beatDetectorId = 1;
     
     bufferSize  = 3969000;//start at 90 sec @ 44.1khz
     
@@ -49,7 +52,6 @@ Looper::Looper()
 
 Looper::~Looper()
 {
-
     //std::cout << "Looper dtor\n";
 }
 
@@ -79,9 +81,6 @@ void Looper::layerGainChanged(const int layerIndex, float newGain){
     if (layerIndex < currentLayer) {
         layers[layerIndex]->setLayerGain(newGain);
     }
-    
-    
-    //std::cout << "new gain = " << newGain << " for layer = " << layerIndex + 1 << "\n";
 }
 
 void Looper::layerPanChanged(const int layerIndex, const float newPanPosition){
@@ -139,10 +138,13 @@ void Looper::deleteAllLayers(){
     //reset beat detector if mode 3
     if (modeIndex == 2) {
         beatDetector.reset();
+        beatDetectorB.reset();
         detectingBeat = false;
         mode3waiting = true;
         bufferSize  = 3969000;//start at 90 sec @ 44.1khz
     }
+    
+    updateTriggerFunction();
 }
 
 void Looper::setReaderToZero(){
@@ -162,6 +164,8 @@ void Looper::setAlternateLoopRec(bool shouldBeOn){
 void Looper::setLoopStartPoint(){
     
     
+    std::cout << "Looper recieved start loop signal \n";
+    
     mode3waiting = false;
     detectingBeat = true;
     setPlayState(true);
@@ -169,8 +173,12 @@ void Looper::setLoopStartPoint(){
 }
 void Looper::setLoopEndPoint(){
     
+    std::cout << "Looper recieved end loop signal \n";
     if (detectingBeat.get() == true) {
         detectingBeat.set(false);
+        
+        std::cout << "Loop ended\n";
+        
         endLoop();
     }
 }
@@ -178,6 +186,8 @@ void Looper::setLoopEndPoint(){
 
 void Looper::setPlayState (const bool newState)
 {
+    
+    
     
     //add a first layer if looper started
     if (layers.size() == 0) {
@@ -194,8 +204,9 @@ void Looper::setPlayState (const bool newState)
         return;
     listener->looperReady(false);
     
-    
     looperGUI.setPlayState(getPlayState());
+    
+    updateTriggerFunction();
 }
 
 bool Looper::getPlayState () const
@@ -205,8 +216,14 @@ bool Looper::getPlayState () const
 
 void Looper::setRecordState (const bool newState)
 {
+    MessageManagerLock mml (Thread::getCurrentThread());
+    if (! mml.lockWasGained())
+        return;
+    
     recordState = newState;
     looperGUI.setRecordState(getRecordState());
+    
+    updateTriggerFunction();
     
     //std::cout << "setRec Called";
 }
@@ -227,30 +244,64 @@ void Looper::trigger(){
     std::cout << "looper has receieved trigger\n";
     
     //for mode 1, if recording...
-    if (modeIndex == 0 && recordState.get() == true) {
-        //if not playing, start playing (and recording)
-        if (playState.get() == false) {
-            setPlayState(true);
-            //playButtonToggled();
+    if (modeIndex == 0) {
+        
+        
+        
+        if (recordState.get() && currentLayer == 0) {
+            //if not playing, start playing (and recording)
+            if (playState.get() == false) {
+                setPlayState(true);
+                //playButtonToggled();
+            }
+            else if(mode1loopSet.get() == false){
+                //if playing, stop recording and set loop end point
+                //setRecordState(false);
+                endLoop();
+                mode1loopSet = true;
+            }
         }
-        else if(mode1loopSet.get() == false){
-            //if playing, stop recording and set loop end point
-            //setRecordState(false);
-            endLoop();
-            mode1loopSet = true;
+        
+        if (currentLayer > 0) {
+            
+            if (alternateLoopRec.get()) {
+                alternateLoopRec.set(false);
+                
+                MessageManagerLock mml (Thread::getCurrentThread());
+                if (! mml.lockWasGained())
+                    return;
+                looperGUI.cancelAlternateLoopRec();
+            }
+            
+            setRecordState(!recordState.get());
         }
+        
+        
     }
     
     //for mode 2
-    else if (modeIndex == 1 && recordState.get() == true){
+    else if (modeIndex == 1){
         
-        //if not playing, start count in
-        if (playState.get() == false) {
-            setPlayState(true);
-            setCountInState(true);
-            
-            //tell gui we are counting in
-            looperGUI.setTransportUpdateStatus(true, 0, true);
+        if (recordState.get()) {
+            //if not playing, start count in
+            if (playState.get() == false) {
+                setPlayState(true);
+                setCountInState(true);
+                
+                //tell gui we are counting in
+                looperGUI.setTransportUpdateStatus(true, 0, true);
+            }
+        }
+        
+        if (currentLayer > 0) {
+            setRecordState(!recordState.get());
+        }
+        
+        
+    }
+    else if (modeIndex == 2){
+        if (currentLayer > 0) {
+            setRecordState(!recordState.get());
         }
     }
 }
@@ -280,6 +331,7 @@ void Looper::setMode(int newModeIndex){
     modeIndex = newModeIndex;
     mode3waiting = false;
     
+    
     if (newModeIndex == 1) {
         bufferSize = static_cast<int>(((60 * sampleRate) / tempo) * beats);
     }
@@ -288,6 +340,8 @@ void Looper::setMode(int newModeIndex){
         detectingBeat = false;
         mode3waiting = true;
     }
+    
+    updateTriggerFunction();
 }
 
 
@@ -312,6 +366,7 @@ void Looper::numberOfBeatsChanged(const int newNumberOfBeats){
     
     //tell beat detector
     beatDetector.setNumberOfBeats(newNumberOfBeats);
+    beatDetectorB.setNumberOfBeats(newNumberOfBeats);
     
 }
 
@@ -329,6 +384,7 @@ void Looper::metroToggled(bool shouldBeOn){
 void Looper::endLoopOnHitToggled(const bool shouldBeOn){
     
     beatDetector.setEndLoopOnHit(shouldBeOn);
+    beatDetectorB.setEndLoopOnHit(shouldBeOn);
 }
 
 //if the same function is used for L + R, buffer should not be moved on each time!
@@ -342,7 +398,11 @@ float Looper::processSample (float input, int channel)
     //if waiting for loop to be started in mode 3
     if (modeIndex == 2 && mode3waiting.get() && recordState.get()) {
         
-        beatDetector.process(input, channel);
+        if (beatDetectorId == 0)
+            beatDetector.process(input, channel);
+        else if (beatDetectorId == 1)
+            beatDetectorB.process(input, channel);
+        
     }
     //if playing....
     else if (playState.get() == true)
@@ -414,7 +474,10 @@ float Looper::processSample (float input, int channel)
             //pass to beat detector
             else if (modeIndex == 2 && detectingBeat.get()) {
                 
-                beatDetector.process(input, channel);
+                if (beatDetectorId == 0)
+                    beatDetector.process(input, channel);
+                else if (beatDetectorId == 1)
+                    beatDetectorB.process(input, channel);
             }
             
             //increment the buffer position.
@@ -439,7 +502,9 @@ float Looper::processSample (float input, int channel)
             }
             
             //if the end of the buffer is reached...
-            if (bufferPosition == bufferSize){
+            if (bufferPosition >= bufferSize){
+                
+                std::cout << "End of buffer reached\n";
                 
                 //if recording....
                 if (recordState.get() == true && currentLayer != 7){
@@ -458,8 +523,7 @@ float Looper::processSample (float input, int channel)
                 
                 if (alternateLoopRec.get()) {
                     
-                    recordState.set(!recordState.get());
-                    //looperGUI.setRecordState(recordState.get());
+                    setRecordState(!recordState.get());
                 }
                 
                 if (recordState.get() == true && currentLayer != 7) {
@@ -480,6 +544,8 @@ float Looper::processSample (float input, int channel)
                     
                     //increment current layer to correspond to layer just added
                     currentLayer++;
+                    
+                    updateTriggerFunction();
                 }
                 
                 //reset
@@ -497,6 +563,9 @@ float Looper::processSample (float input, int channel)
 void Looper::setSampleRate(const int newSampleRate){
     
     sampleRate = newSampleRate;
+    
+    beatDetectorB.setSampleRate(newSampleRate);
+    beatDetector.setSampleRate(newSampleRate);
 }
 
 void Looper::setListener(Listener* newListener){
@@ -508,4 +577,88 @@ void Looper::setListener(Listener* newListener){
 void Looper::tempoUpdated(float newTempo){
     
     std::cout << "Tempo = " << newTempo << "\n";
+}
+
+void Looper::updateTriggerFunction(){
+    
+    String tempString;
+    tempString = "None";
+    
+    if (modeIndex == 0) {
+        if (recordState.get()) {
+            if (currentLayer == 0) {
+                if (playState.get()) {
+                    tempString = "Set Loop End Point";
+                }
+                else {
+                    tempString = "Set Loop Start Point";
+                }
+            }
+            else {
+                    tempString = "Turn Off Record";
+            }
+        }
+        else {
+            if (currentLayer > 0) {
+                
+                tempString = "Turn On Record";
+            }
+        }
+    }
+    else if (modeIndex == 1){
+     
+        if (recordState.get()) {
+            if (currentLayer == 0) {
+                if (playState.get()) {
+                    //reset?
+                }
+                else {
+                    tempString = "Start Count In/Tap In";
+                }
+            }
+            else {
+                
+                tempString = "Turn Off Record";
+            }
+        }
+        else {
+            if (currentLayer > 0) {
+                
+                tempString = "Turn On Record";
+            }
+        }
+    }
+    else if (modeIndex == 2){
+        if (currentLayer > 0) {
+            if (recordState.get()) {
+                tempString = "Turn Off Record";
+            }
+            else {
+                tempString = "Turn On Record";
+            }
+        }
+    }
+    
+    looperGUI.updateTriggerFunction(tempString);
+}
+//key listener callback
+bool Looper::keyPressed (const KeyPress &key, Component *originatingComponent){
+    
+    bool done = false;
+    
+    //std::cout << "Looper Recieved " << key.getTextDescription() << "\n";
+    
+    if (key.getTextDescription() == "T"){
+        trigger();
+        done = true;
+    }
+    else if (key.getTextDescription() == "E"){
+        bufferPosition = 0;
+        looperGUI.setTransportUpdateStatus(true, 0, false);
+        done = true;
+    }
+    
+    updateTriggerFunction();
+    
+    return done;
 }

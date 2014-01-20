@@ -33,6 +33,9 @@ public:
     
     void setSampleRate(int newSampleRate);
 
+    void updateLoopSampleTarget(float tempo);
+    
+    bool tempiAreClose(float tempo1, float tempo2);
     
 protected:
     
@@ -50,6 +53,8 @@ protected:
     float tempoUpperLimit;
     float tempLChannelData;
     
+    
+    int loopSampleTarget;
     bool endLoopOnHit;
     bool waitingForLastHit;
     

@@ -31,6 +31,8 @@ BeatDetectorBase::BeatDetectorBase(){
     hitCount = 0;
     sampleNumber = 0;
     
+    
+    loopSampleTarget = 90 * sampleRate;//start at 90 sec
 }
 
 BeatDetectorBase::~BeatDetectorBase(){
@@ -109,4 +111,31 @@ void BeatDetectorBase::setSampleRate(int newSampleRate){
     
     sampleRate = newSampleRate;
     peakDetector.setSampleRate(newSampleRate);
+}
+void BeatDetectorBase::updateLoopSampleTarget(float tempo){
+    
+    
+    if (endLoopOnHit) {
+        //shorter loop length if ending on hit to allow for early hits
+        loopSampleTarget = static_cast<int>(((60.0 * sampleRate) / tempo) * (noOfBeats - 0.25));
+    }
+    else {
+        loopSampleTarget = static_cast<int>(((60 * sampleRate) / tempo) * noOfBeats);
+    }
+    std::cout << "New loop sample target = " << loopSampleTarget << "\n";
+    std::cout << "Sample Count = " << sampleNumber << "\n";
+    
+}
+
+
+bool BeatDetectorBase::tempiAreClose(float tempo1, float tempo2){
+    
+    bool tempiAreClose = false;
+    
+    if (fabsf(tempo1 - tempo2) < 3.0) {
+        tempiAreClose = true;
+    }
+    
+    return tempiAreClose;
+    
 }

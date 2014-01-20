@@ -12,6 +12,8 @@
 
 LooperGUI::LooperGUI()  : Thread ("GuiThread")
 {
+    addKeyListener(this);
+    
     //initialisations
     //noOfLayers = 0;
     selectedLayerIndex = -1;
@@ -22,6 +24,8 @@ LooperGUI::LooperGUI()  : Thread ("GuiThread")
     muteValues.clear();
     gainValues.clear();
     panValues.clear();
+    
+    triggerFunction = "None";
     
     //run thread
     setThreadState(true);
@@ -212,6 +216,12 @@ void LooperGUI::paint(Graphics &g){
     g.setColour(Colours::grey);
     int playPosition = static_cast<int>(TIME_DISPLAY_WIDTH * transportPosition.get());
     g.drawRect(TOP_CORNER_X + playPosition, TOP_CORNER_Y, 2, TIME_DISPLAY_HEIGHT);
+    
+    //trigger function
+    g.drawText("Trigger Function:", 310, 18, 150, 15, Justification::centred, false);
+    g.drawText(triggerFunction, 310, 33, 150, 15, Justification::centred, false);
+    g.drawRect(310, 10, 150, 50);
+    
 }
 
 //ButtonCallback==============================================================================
@@ -264,27 +274,39 @@ void LooperGUI::buttonClicked(Button* button){
             //if selected layer is valid
             if (selectedLayerIndex >= 0 && selectedLayerIndex < layerIcons.size())
             {
-                //inform looper
-                listener->deleteLayer(selectedLayerIndex);
-                //clear one element of icon and parameter arrays
-                layerIcons.remove(selectedLayerIndex);
-                gainValues.remove(selectedLayerIndex);
-                muteValues.remove(selectedLayerIndex);
-                panValues.remove(selectedLayerIndex);
                 
-                //reposition and re-number layers
-                for (int i = 0; i < layerIcons.size(); i++) {
+                if (layerIcons.size() == 1) {
+                    buttonClicked(&clearAllButton);
+                }
+                else {
                     
-                    layerIcons[i]->setLayerIndex(i);
+                    //inform looper
+                    listener->deleteLayer(selectedLayerIndex);
+                    //clear one element of icon and parameter arrays
+                    layerIcons.remove(selectedLayerIndex);
+                    gainValues.remove(selectedLayerIndex);
+                    muteValues.remove(selectedLayerIndex);
+                    panValues.remove(selectedLayerIndex);
                     
-                    layerIcons.getUnchecked(i)->setBounds(TOP_CORNER_X, TOP_CORNER_Y + (i * (LAYER_HEIGHT + GAP_BETWEEN_LAYERS)), LAYER_WIDTH, LAYER_HEIGHT);
+                    selectedLayerIndex--;
+                    if (selectedLayerIndex < 0) {
+                        selectedLayerIndex = 0;
+                    }
                     
+                    
+                    
+                    selected(layerIcons[selectedLayerIndex]);
+                    
+                    //reposition and re-number layers
+                    for (int i = 0; i < layerIcons.size(); i++) {
+                        
+                        layerIcons[i]->setLayerIndex(i);
+                        
+                        layerIcons.getUnchecked(i)->setBounds(TOP_CORNER_X, TOP_CORNER_Y + (i * (LAYER_HEIGHT + GAP_BETWEEN_LAYERS)), LAYER_WIDTH, LAYER_HEIGHT);
+                    }
                 }
             }
         }
-        
-        
-        
     }
     else if (button == &clearAllButton){
         
@@ -371,8 +393,7 @@ void LooperGUI::setPlayState (const bool newState)
     clearLayerButton.setEnabled(!newState);
     loopRecButton.setEnabled(!newState);
     repaint();
-    
-    
+
 }
 
 bool LooperGUI::getPlayState () const
@@ -383,6 +404,7 @@ bool LooperGUI::getPlayState () const
 void LooperGUI::setRecordState (const bool newState)
 {
     recordState = newState;
+    recordButton.setToggleState(recordState.get(), dontSendNotification);
     repaint();
 }
 
@@ -391,6 +413,11 @@ bool LooperGUI::getRecordState () const
     return recordState.get();
 }
 
+
+int LooperGUI::getSelectedLayerIndex() const{
+    
+    return selectedLayerIndex;
+}
 
 void LooperGUI::setLoopSampleLength(const int newLength){
     
@@ -404,6 +431,12 @@ void LooperGUI::setTransportUpdateStatus(bool shouldUpdate, float relativePositi
     countIn.set(countingIn);
 }
 
+
+void LooperGUI::updateTriggerFunction(String newFunction){
+    
+    triggerFunction = newFunction;
+    //repaint();
+}
 
 void LooperGUI::run()
 {
@@ -543,5 +576,97 @@ void LooperGUI::setThreadState (bool shouldBeRunning)
         startThread();
     else
         stopThread(500);
+}
+
+
+void LooperGUI::cancelAlternateLoopRec(){
+    
+    loopRecButton.setToggleState(false, dontSendNotification);
+}
+
+//key listener callback
+bool LooperGUI::keyPressed (const KeyPress &key, Component *originatingComponent){
+    
+    bool done = false;
+    
+    std::cout << "LooperGUI received " << key.getTextDescription() << "\n";
+    
+    if (key.getTextDescription() == "spacebar") {
+        if (layerIcons.size() >= 1) {
+            listener->playButtonToggled();
+            playButton.setToggleState(playButton.getToggleState(), dontSendNotification);
+            
+        }
+        done = true;
+    }
+    else if (key.getTextDescription() == "R"){
+        listener->recordButtonToggled();
+        recordButton.setToggleState(recordButton.getToggleState(), dontSendNotification);
+        done = true;
+    }
+    else if (key.getTextDescription() == "M"){
+        
+        buttonClicked(&muteButton);
+        done = true;
+    }
+    else if (key.getTextDescription() == "cursor down" || key.getTextDescription() == "cursor up"){
+        
+        done = true;
+        
+        if (layerIcons.size() > 0) {
+            
+            
+            if (selectedLayerIndex > -1) {
+                
+                if (key.getTextDescription() == "cursor down")
+                    selectedLayerIndex++;
+                else if (key.getTextDescription() == "cursor up")
+                    selectedLayerIndex--;
+                
+                
+                if (selectedLayerIndex >= layerIcons.size())
+                    selectedLayerIndex = 0;
+                else if (selectedLayerIndex < 0)
+                    selectedLayerIndex = layerIcons.size() - 1;
+            }
+            else {
+                selectedLayerIndex = 0;
+            }
+            
+            //tell all icons whether they are selected
+            for (int i = 0; i < layerIcons.size(); i++)
+            {
+                if (i == selectedLayerIndex)
+                    layerIcons[i]->setSelected(true);
+                
+                else
+                    layerIcons[i]->setSelected(false);
+                
+            }
+            
+            String s;
+            s << selectedLayerIndex + 1;
+            selecterLabel.setText(s, dontSendNotification);
+            
+            //change slider value to selected layer's value
+            gainSlider.setValue(gainValues[selectedLayerIndex]);
+            muteButton.setToggleState(muteValues[selectedLayerIndex], dontSendNotification);
+            panSlider.setValue(panValues[selectedLayerIndex]);
+        }
+    }
+    else if (key.getTextDescription() == "command + backspace"){
+        
+        buttonClicked(&clearAllButton);
+        done = true;
+    }
+    else if (key.getTextDescription() == "backspace"){
+        
+        buttonClicked(&clearLayerButton);
+        done = true;
+    }
+    
+    
+    
+    return done;
 }
 

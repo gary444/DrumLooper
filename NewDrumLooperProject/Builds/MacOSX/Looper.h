@@ -26,7 +26,9 @@
  */
 class Looper :  public Component,
                 public LooperGUI::Listener,
-public BeatDetector::Listener
+public BeatDetector::Listener,
+public BeatDetectorB::Listener,
+public KeyListener
 {
 public:
     
@@ -120,8 +122,12 @@ public:
     void setLoopStartPoint();
     void setLoopEndPoint();
     
+    bool keyPressed (const KeyPress &key, Component *originatingComponent);
+    
     
 private:
+    
+    void updateTriggerFunction();
     
     
     //state data
@@ -132,7 +138,7 @@ private:
     Atomic<int> mode3waiting;
     Atomic<int> detectingBeat;
     Atomic<int> alternateLoopRec;
-    bool alternateLoopRecState;
+    //bool alternateLoopRecState;
     
     CriticalSection sharedMemory;
     
@@ -165,7 +171,9 @@ private:
     //metro
     Metronome metronome;
     
+    int beatDetectorId;
     BeatDetector beatDetector;
+    BeatDetectorB beatDetectorB;
 };
 
 #endif /* defined(__DrumLooper__Looper__) */

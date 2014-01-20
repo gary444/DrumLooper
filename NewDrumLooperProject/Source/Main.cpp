@@ -27,7 +27,8 @@ public:
     void initialise (const String& commandLine)
     {
         appWindow = new AppWindow();
-        appWindow->centreWithSize(700, 615);
+        //appWindow->centreWithSize(700, 615);
+        appWindow->setFullScreen(true);
         appWindow->setVisible(true);
     }
 

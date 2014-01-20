@@ -38,6 +38,8 @@ public:
     void addListener(Listener* newListener);
     void setEnabled(bool shouldBeEnabled);
     
+    void setModeFromKeypress(int newModeIndex);
+    
 private:
     
     //void toggleEnabled();

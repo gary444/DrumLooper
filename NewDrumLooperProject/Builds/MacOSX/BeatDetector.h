@@ -51,9 +51,7 @@ private:
     
     float getTempo(Array<DetectionState*> hostAgent, int index);
     
-    bool tempiAreClose(float tempo1, float tempo2);
     
-    void updateLoopSampleTarget(float tempo);
     
     
     //members
@@ -64,7 +62,6 @@ private:
     
     Listener* listener;
     
-    int loopSampleTarget;
     
 };
 #endif /* defined(__sdaFileEffect__BeatDetector__) */

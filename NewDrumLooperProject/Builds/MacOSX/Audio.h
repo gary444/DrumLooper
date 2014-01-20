@@ -14,7 +14,7 @@
 #include "Looper.h"
 #include "TriggerResponse.h"
 #include "Meter.h"
-#include "ModeSelecter.h"
+#include "ModeButtons.h"
 #include "ManualLoopControl.h"
 #include "SimpleTempoCalculator.h"
 #include "PatchInfo.h"
@@ -24,12 +24,12 @@
 class Audio : public AudioIODeviceCallback,
                 public Component,
                 public TriggerResponse::Listener,
-public ModeSelecter::Listener,
+public ModeButtons::Listener,
 public ManualLoopControl::Listener,
 public Looper::Listener,
 public SimpleTempoCalculator::Listener,
-//public MenuBarModel,
-public Button::Listener
+public Button::Listener,
+public KeyListener
 {
 public:
     
@@ -72,27 +72,15 @@ public:
     //looper listener callback
     void looperReady(bool isReady);
     
-    //tempo calculator callbacks
-    
-    //MenuBarEnums/Callbacks========================================================
-//    enum Menus {
-//		OptionMenu=0, NumMenus
-//	};
-//    
-//    enum FileMenuItems
-//	{
-//        AudioPrefs = 1,
-//		
-//		NumFileItems
-//	};
-//    StringArray getMenuBarNames();
-//    PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName);
-//	void menuItemSelected (int menuItemID, int topLevelMenuIndex);
-    
     void showAudioPreferences(Component* centerComponent);
     void patch();
     
+    //key listener callback
+    bool keyPressed (const KeyPress &key, Component *originatingComponent);
+    
 private:
+    
+    bool looperIsReady;
     
     AudioDeviceManager audioDeviceManager;
     PatchInfo patchInfo;
@@ -102,7 +90,7 @@ private:
     TriggerResponse triggerResponse;
     MasterControls masterControls;
     Looper looper;
-    ModeSelecter modeSelecter;
+    ModeButtons modeButtons;
     AudioSetupButton audioSetupButton;
     ManualLoopControl manualLoopControl;
     //Meter meter[2];
@@ -117,8 +105,6 @@ private:
     int sampleCountTarget;
     int sampleCount;
     
-    // the command manager object used to dispatch command events
-    ApplicationCommandManager commandManager;
 };
 
 #endif /* defined(__DrumLooper__Audio__) */

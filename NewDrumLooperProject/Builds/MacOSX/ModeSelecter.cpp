@@ -54,3 +54,11 @@ void ModeSelecter::setEnabled(bool shouldBeEnabled){
     
     tabbedComponent->setEnabled(shouldBeEnabled);
 }
+
+
+void ModeSelecter::setModeFromKeypress(int newModeIndex){
+    
+//    ModeButtons* c = tabbedComponent->getTabContentComponent(0);
+//    c->ModeButtons::setModeFromKeypress(newModeIndex);
+    
+}

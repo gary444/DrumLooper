@@ -16,7 +16,6 @@ BeatDetector::BeatDetector(){
     agent2.clear();
     agent3.clear();
     
-    loopSampleTarget = 90 * sampleRate;//start at 90 sec
     
     //fill tested note value array
     testedNoteValues.clear();
@@ -152,7 +151,11 @@ void BeatDetector::reset(){
     interval2Counting = false;
     interval3Counting = false;
     waitingForFirstHit = true;
+    waitingForLastHit = false;
     sampleNumber = 0;
+    
+    
+    loopSampleTarget = 90 * sampleRate;//start at 90 sec
 }
 
 
@@ -429,17 +432,6 @@ float BeatDetector::getTempo(Array<DetectionState*> hostAgent, int index){
 }
 
 
-bool BeatDetector::tempiAreClose(float tempo1, float tempo2){
-    
-    bool tempiAreClose = false;
-    
-    if (fabsf(tempo1 - tempo2) < 3.0) {
-        tempiAreClose = true;
-    }
-    
-    return tempiAreClose;
-    
-}
 
 void BeatDetector::printConfidences(){
     
@@ -463,17 +455,3 @@ void BeatDetector::printConfidences(){
     
 }
 
-void BeatDetector::updateLoopSampleTarget(float tempo){
-    
-    
-    if (endLoopOnHit) {
-        //shorter loop length if ending on hit to allow for early hits
-        loopSampleTarget = static_cast<int>(((60.0 * sampleRate) / tempo) * (noOfBeats - 0.25));
-    }
-    else {
-        loopSampleTarget = static_cast<int>(((60 * sampleRate) / tempo) * noOfBeats);
-    }
-    std::cout << "New loop sample target = " << loopSampleTarget << "\n";
-    std::cout << "Sample Count = " << sampleNumber << "\n";
-    
-}

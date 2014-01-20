@@ -12,7 +12,7 @@
 class RecordButton : public TextButton
 {
 public:
-    RecordButton() : TextButton("R", "Click to record")
+    RecordButton() : TextButton("R", "Click to Toggle Record")
     {
         setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnRight);
         setColour(TextButton::buttonColourId, Colours::darkred);

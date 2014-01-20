@@ -19,7 +19,7 @@ struct IntervalInfo {
     int sampleLength;
     int confidence;
     float tempoVal;
-    Array<int> matchedValues;
+    //Array<int> matchedValues;
 };
 
 class BeatDetectorB : public BeatDetectorBase
@@ -33,6 +33,8 @@ public:
         
         virtual ~Listener() {}
         virtual void tempoUpdated(float newTempo) = 0;
+        virtual void setLoopStartPoint() = 0;
+        virtual void setLoopEndPoint() = 0;
     };
     
     BeatDetectorB();
@@ -59,12 +61,10 @@ private:
     
     float getTempo(int sampleInterval);
     
-    bool tempiAreClose(float tempo1, float tempo2);
     
     bool sampleValuesAreClose(int val1, int val2);
     
     Array<IntervalInfo> sortIntervalInfos(Array<IntervalInfo> arrayToSort);
-    
     
     
     //members
